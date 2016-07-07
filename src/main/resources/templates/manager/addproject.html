@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <hr/>
+            <form class="form-inline" action="addproject" method="post" autocomplete="off">
+                <div class="form-group">
+                    <label for="projname">项目名称</label>
+                    <input type="text" class="form-control" name="project" id="projname" placeholder="项目名称" />
+                </div>
+                <button type="submit" class="btn btn-default">增加</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

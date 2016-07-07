@@ -1,0 +1,45 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <hr/>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr>
+                        <th>编号</th>
+                        <th>项目编码</th>
+                        <th>项目名称</th>
+                        <th>项目类型</th>
+                        <th>项目负责人</th>
+                        <th>项目描述</th>
+                    </tr>
+                    <tr th:each="list:${plist}">
+                        <td th:text="${list.id}">project id</td>
+                        <td><a th:text="${list.pcode}" th:href="@{pconf.html(ptype=${list.ptype}, pcode=${list.pcode})}">project code</a></td>
+                        <td th:text="${list.pname}">project name</td>
+                        <td th:text="${list.ptype}">project type</td>
+                        <td th:text="${list.powner}">project owner</td>
+                        <td th:text="${list.pdesc}">project desc</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-5 col-md-offset-5">
+                <a class="btn btn-primary" href="new.html" role="button">新建项目</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

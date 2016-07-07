@@ -1,0 +1,54 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统</title>
+</head>
+
+<body>
+    <div class="container">
+        <a type="button" class="btn btn-success" th:href="@{myconfnew(pcode=${pcode})}" target="_blank"> 新增配置 </a>
+
+        <div class="row">
+            <div class="col-md-12" role="main">
+                <p th:text="'项目编码:'+${pcode}"></p>
+                <table class="table table-bordered">
+                    <p th:text="${pmylist}"></p>
+                    <hr/>
+                    <tr>
+                        <th>GroupName</th>
+                        <th>dbname</th>
+                        <th>M/S</th>
+                        <th>ip:port</th>
+                    </tr>
+                    <span th:each="listx : ${pmylist}">
+                        <tr>
+                            <td rowspan="2" th:text="${listx.group_id}"></td>
+                            <td rowspan="2" th:text="${listx.dbname}"></td>
+                            <td th:text="master"></td>
+                            <span th:each="mastx : ${listx.master}">
+                                <td th:text="${mastx.ip}+':'+${mastx.port}"></td>
+                            </span>
+                        </tr>
+
+                        <tr>
+                        <td th:text="slave"></td>
+                        <span th:each="slavx : ${listx.slave}">
+                            <td th:text="${slavx.ip}+':'+${slavx.port}"></td>
+                        </span>
+                        </tr>
+                    </span>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
