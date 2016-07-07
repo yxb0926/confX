@@ -122,6 +122,6 @@ public class ManagerController {
     public ModelAndView myconfadd(HttpServletRequest request){
         Integer res = mySQLService.addConf(request);
 
-        return new ModelAndView("redirect:myconf");
+        return new ModelAndView("redirect:myconf?pcode="+request.getParameter("pcode"));
     }
 }

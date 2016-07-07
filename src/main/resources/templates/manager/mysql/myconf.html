@@ -15,14 +15,14 @@
 
 <body>
     <div class="container">
+        <hr/>
         <a type="button" class="btn btn-success" th:href="@{myconfnew(pcode=${pcode})}" target="_blank"> 新增配置 </a>
 
         <div class="row">
             <div class="col-md-12" role="main">
+                <hr/>
                 <p th:text="'项目编码:'+${pcode}"></p>
                 <table class="table table-bordered">
-                    <p th:text="${pmylist}"></p>
-                    <hr/>
                     <tr>
                         <th>GroupName</th>
                         <th>dbname</th>
