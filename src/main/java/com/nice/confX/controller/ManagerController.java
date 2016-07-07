@@ -1,11 +1,8 @@
 package com.nice.confX.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.nice.confX.model.ContentModel;
 import com.nice.confX.service.manager.MySQLService;
 import com.nice.confX.service.manager.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yxb on 16/6/28.
