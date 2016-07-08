@@ -23,8 +23,20 @@ public class PreviewController {
 
     @RequestMapping("/MySQL/index")
     @ResponseBody
-    public String mysqlIndex(){
+    public String mysqlIndex(String pcode, String groupid){
 
-        return null;
+        if ( pcode == null || pcode.length() <=0 ){
+            // 如果不指定pcode,则直接返回null
+            return null;
+        }else if (groupid == null || groupid.length() <=0 ){
+            // 获取整个pcode的数据
+        }else {
+            // 获取pcode下的groupid的数据,
+            // 注意,groupid可以是一串id|id|id,可以获取单个或多个groupid
+
+        }
+
+
+        return "xxxxxxxxxxxxxx";
     }
 }

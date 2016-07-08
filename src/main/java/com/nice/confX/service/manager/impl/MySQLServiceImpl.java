@@ -7,16 +7,13 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 /**
@@ -27,6 +24,9 @@ public class MySQLServiceImpl implements MySQLService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public Integer addConf(HttpServletRequest request) {
@@ -96,26 +96,59 @@ public class MySQLServiceImpl implements MySQLService {
     }
 
     @Override
-    public List getAllMyConf() {
-        List myList = new ArrayList();
+    public List getAllMyConf(String dataid) {
+        List myList  = new ArrayList();
+        List pmyList = new ArrayList();
         try {
             myList = jdbcTemplate.queryForList("SELECT data_id, group_id, dbname, content " +
-                    "FROM config_info");
+                    "FROM config_info WHERE data_id=?", dataid);
         }catch (DataAccessException e){
             System.out.println(e);
             return null;
         }
-        return myList;
+
+        JsonUtil jsonUtil = new JsonUtil();
+        if (myList.size()>0){
+            for (int i=0; i<myList.size(); i++){
+                Map myMap = (Map) myList.get(i);
+
+                String myConent = myMap.get("content").toString();
+
+                /**
+                 * 将content内容转换为一个hashmap
+                 * */
+                HashMap msMap = jsonUtil.jsonToMap(myConent);
+                msMap.put("group_id", myMap.get("group_id"));
+                msMap.put("data_id",  myMap.get("data_id"));
+
+                pmyList.add(msMap);
+            }
+        }
+        return pmyList;
     }
 
     @Override
-    public List getOneMyConf(String dataid) {
-        List myList = new ArrayList();
+    public List getOneMyConf(String dataid, String groupid) {
+        List myList  = new ArrayList();
         List pmyList = new ArrayList();
+
+        String[] groupidx = groupid.split("\\|");
+        String group_id = "";
+        for (int i = 0; i <groupidx.length; i++){
+            group_id = group_id + "'" + groupidx[i] + "'";
+            if (i < groupidx.length-1){
+                group_id += ",";
+            }
+        }
+
+        String sql = "select data_id, group_id, dbname, content FROM config_info " +
+                "WHERE data_id=" + "'" + dataid + "'" +
+                "  AND group_id in (" + group_id +
+                ")";
+
+
         try{
-            myList = jdbcTemplate.queryForList("SELECT data_id, group_id, dbname, content " +
-                    "FROM config_info " +
-                    "WHERE data_id=?", dataid);
+            myList = jdbcTemplate.queryForList(sql);
         }catch (DataAccessException e){
             System.out.println(e);
             return null;

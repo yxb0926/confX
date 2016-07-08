@@ -57,17 +57,22 @@ public class ManagerController {
     }
 
     @RequestMapping("/project/myconf")
-    public ModelAndView myconf(String pcode){
+    public ModelAndView myconf(String pcode, String groupid){
         /**
-         *  查询pcode的相应信息,返回页面
+         *  pcode为项目编码不能为空,如果为空则返回错误页面;
+         *  groupid为空,表示查找该pcode下的所有groupid的信息;
+         *  groupid可以为单个或多个id|id|id ...
          * */
 
         List myList = new ArrayList();
-        if (pcode == null || pcode == ""){
-            myList = mySQLService.getAllMyConf();
+        if ( pcode == null || pcode.length() <=0 ){
+            return null;
+        }else if( groupid == null || groupid.length() <=0 ){
+            myList = mySQLService.getAllMyConf(pcode);
         }else {
-            myList = mySQLService.getOneMyConf(pcode);
+            myList = mySQLService.getOneMyConf(pcode, groupid);
         }
+
 
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconf");
         modelAndView.addObject("pcode", pcode);

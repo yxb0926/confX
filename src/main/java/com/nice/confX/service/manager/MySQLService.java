@@ -34,7 +34,7 @@ public interface MySQLService {
      * */
     Integer checkConf();
 
-    List getAllMyConf();
+    List getAllMyConf(String dataid);
 
-    List getOneMyConf(String dataid);
+    List getOneMyConf(String dataid, String groupid);
 }
