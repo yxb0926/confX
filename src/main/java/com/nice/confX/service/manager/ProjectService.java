@@ -31,4 +31,10 @@ public interface ProjectService {
      * */
     List queryAllProject();
 
+    /**
+     *  检查groupname是否已经存在
+     * */
+    Boolean checkExist(String dataid,String groupid);
+
 }
+

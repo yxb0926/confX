@@ -40,10 +40,12 @@
                         </tr>
 
                         <tr>
-                        <td th:text="slave"></td>
-                        <span th:each="slavx : ${listx.slave}">
-                            <td th:text="${slavx.ip}+':'+${slavx.port}"></td>
-                        </span>
+                            <td th:text="slave"></td>
+                            <td>
+                            <span th:each="slavx : ${listx.slave}">
+                                <div><span th:text="${slavx.ip}+':'+${slavx.port}"></span></div>
+                            </span>
+                            </td>
                         </tr>
                     </span>
                 </table>

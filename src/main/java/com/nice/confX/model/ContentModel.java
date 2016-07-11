@@ -1,65 +1,45 @@
 package com.nice.confX.model;
 
-import com.alibaba.fastjson.JSONArray;
-
-import java.lang.reflect.Array;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Created by yxb on 16/7/6.
  */
 public class ContentModel {
     String dbname;
-    String tbprefix;
-    String charset;
-    String timeout;
-    JSONArray master;
-    JSONArray slave;
-
-    public void setDbname(String dbname) {
-        this.dbname = dbname;
-    }
-
-    public void setTbprefix(String tbprefix) {
-        this.tbprefix = tbprefix;
-    }
-
-    public void setCharset(String charset) {
-        this.charset = charset;
-    }
-
-    public void setTimeout(String timeout) {
-        this.timeout = timeout;
-    }
-
-    public void setMaster(JSONArray master) {
-        this.master = master;
-    }
-
-    public void setSlave(JSONArray slave) {
-        this.slave = slave;
-    }
+    String groupid;
+    String dataid;
+    JSONObject dbkey;
 
     public String getDbname() {
         return dbname;
     }
 
-    public String getTbprefix() {
-        return tbprefix;
+    public void setDbname(String dbname) {
+        this.dbname = dbname;
     }
 
-    public String getCharset() {
-        return charset;
+    public String getGroupid() {
+        return groupid;
     }
 
-    public String getTimeout() {
-        return timeout;
+    public void setGroupid(String groupid) {
+        this.groupid = groupid;
     }
 
-    public JSONArray getMaster() {
-        return master;
+    public String getDataid() {
+        return dataid;
     }
 
-    public JSONArray getSlave() {
-        return slave;
+    public void setDataid(String dataid) {
+        this.dataid = dataid;
+    }
+
+    public JSONObject getDbkey() {
+        return dbkey;
+    }
+
+    public void setDbkey(JSONObject dbkey) {
+        this.dbkey = dbkey;
     }
 }

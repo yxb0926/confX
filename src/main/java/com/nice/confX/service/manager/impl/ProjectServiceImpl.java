@@ -66,4 +66,24 @@ public class ProjectServiceImpl implements ProjectService {
         return pAllList;
     }
 
+    @Override
+    public Boolean checkExist(String dataid, String groupid) {
+        try{
+            String sql = "SELECT COUNT(1) AS cnt FROM config_info WHERE data_id=? AND group_id=? ";
+            List<Map<String, Object>> rs = jdbcTemplate.queryForList(sql, dataid, groupid);
+
+            Number number = (Number) rs.get(0).get("cnt");
+            int cnt = number.intValue();
+
+            if ( cnt > 0 ){
+                return true;
+            }else {
+                return false;
+            }
+
+        }catch (DataAccessException e){
+            System.out.println(e);
+            return true;
+        }
+    }
 }

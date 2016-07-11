@@ -17,26 +17,38 @@
     <div class="container">
         <div class="row">
             <hr/>
+            <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
+
+
             <form class="form-horizontal" th:action="@{myconfadd(pcode=${pcode})}" method="post" autocomplete="off">
                 <div class="form-group">
-                    <h3 th:text="${pcode}"></h3>
-                    <hr/>
-                    <h3>全局参数:</h3>
-                    <label for="groupname" class="col-sm-2 control-label">groupname</label>
+                    <label for="appname" class="col-sm-2 control-label">AppName</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pgroupname" id="groupname" placeholder="" />
+                        <input type="text" class="form-control" name="pappname" id="appname" placeholder="" th:value="${pcode}" readonly="readonly"/>
                     </div>
-
-                    <label for="dbname" class="col-sm-1 control-label">dbname</label>
+                </div>
+                <div class="form-group">
+                    <label for="groupname" class="col-sm-2 control-label">GroupName</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pdbname" id="dbname" placeholder="" />
+                        <input type="text" class="form-control" name="pgroupname" id="groupname" placeholder="不能为空,且唯一!" />
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="tbprefix" class="col-sm-2 control-label">表前缀</label>
+                    <label for="dbname" class="col-sm-2 control-label">DBname</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="pdbname" id="dbname" placeholder="不能为空!" />
+                    </div>
+                    <label for="tbprefix" class="col-sm-1 control-label">表前缀</label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="ptbprefix" id="tbprefix" placeholder="" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="user" class="col-sm-2 control-label">用户名</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="puser" id="user" placeholder="" />
                     </div>
                     <label for="charsetx" class="col-sm-1 control-label">字符集</label>
                     <div class="col-sm-3">
@@ -45,59 +57,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="timeoutx" class="col-sm-2 control-label">超时时间</label>
+                    <label for="pass" class="col-sm-2 control-label">密码</label>
+                    <div class="col-sm-3">
+                        <input type="password" class="form-control" name="ppass" id="pass" placeholder="" />
+                    </div>
+                    <label for="timeoutx" class="col-sm-1 control-label">超时时间</label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="ptimeoutx" id="timeoutx" placeholder="" value="1"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <h3>Master:</h3>
-                    <label for="mip" class="col-sm-2 control-label">ip</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pmip" id="mip" placeholder="" autocomplete="off" />
-                    </div>
-
-                    <label for="mport" class="col-sm-1 control-label">port</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pmport" id="mport" placeholder="" value="3306" />
+                    <label for="miport" class="col-sm-2 control-label">Master Host</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" rows="3" name="pmiport" id="miport" placeholder="ip:port #master只能有一个"></textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="muser" class="col-sm-2 control-label">username</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pmuser" id="muser" placeholder="" />
-                    </div>
-
-                    <label for="mpass" class="col-sm-1 control-label">password</label>
-                    <div class="col-sm-3">
-                        <input type="password" class="form-control" name="pmpass" id="mpass" placeholder="" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <h3>Slave:</h3>
-                    <label for="sip" class="col-sm-2 control-label">ip</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="psip" id="sip" placeholder="" />
-                    </div>
-
-                    <label for="sport" class="col-sm-1 control-label">port</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="psport" id="sport" placeholder="" value="3306"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="suser" class="col-sm-2 control-label">username</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="psuser" id="suser" placeholder="" />
-                    </div>
-
-                    <label for="spass" class="col-sm-1 control-label">password</label>
-                    <div class="col-sm-3">
-                        <input type="password" class="form-control" name="pspass" id="spass" placeholder="" />
+                    <label for="siport" class="col-sm-2 control-label">Slave Host</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" rows="3" name="psiport" id="siport" placeholder="ip:port,ip:port # 可以包含多个机器,多个机器以逗号隔开!"></textarea>
                     </div>
                 </div>
 

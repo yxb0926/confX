@@ -32,14 +32,6 @@ public class ManagerController {
         return modelAndView;
     }
 
-    /**
-    @RequestMapping("/addproject")
-    @ResponseBody
-    public String addproject(String project){
-        System.out.println(project);
-        return "Success:1";
-    }
-    */
 
     @RequestMapping("/project/new")
     public ModelAndView newproject(){
@@ -112,17 +104,43 @@ public class ManagerController {
     }
 
     @RequestMapping("/project/myconfnew")
-    public ModelAndView myconfnew(String pcode){
+    public ModelAndView myconfnew(String pcode, String errmsg){
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconfnew");
         modelAndView.addObject("pcode", pcode);
+        modelAndView.addObject("errmsg", errmsg);
 
         return modelAndView;
     }
 
     @RequestMapping("/project/myconfadd")
     public ModelAndView myconfadd(HttpServletRequest request){
-        Integer res = mySQLService.addConf(request);
 
-        return new ModelAndView("redirect:myconf?pcode="+request.getParameter("pcode"));
+        String dataid  = request.getParameter("pcode");
+        String groupid = request.getParameter("pgroupname");
+
+        /** 检查该配置是否已经存在,如果存在则不能添加项目,并发挥错误提示*/
+        if (groupid == "" || groupid.length() <= 0) {
+            String errmsg = "GroupName Is Null!";
+            ModelAndView modelAndView = new ModelAndView("redirect:myconfnew?pcode=" +
+                    dataid + "&errmsg=" + errmsg);
+            return  modelAndView;
+        }else if ( projectService.checkExist(dataid, groupid) ){
+            String errmsg = "GroupName Already Exists!";
+            ModelAndView modelAndView = new ModelAndView("redirect:myconfnew?pcode=" +
+                    dataid + "&errmsg=" + errmsg);
+            modelAndView.addObject("errmsg", "GroupName:" + dataid + "已经存在,不得重复添加!");
+            return  modelAndView;
+        }
+
+        Integer res = mySQLService.addConf(request);
+        if (res == 1){
+            return new ModelAndView("redirect:myconf?pcode="+dataid);
+        }else {
+            String errmsg = "Some Err, Please Try Again!";
+            ModelAndView modelAndView = new ModelAndView("redirect:myconfnew?pcode=" +
+                    dataid + "&errmsg=" + errmsg);
+            return  modelAndView;
+        }
+
     }
 }

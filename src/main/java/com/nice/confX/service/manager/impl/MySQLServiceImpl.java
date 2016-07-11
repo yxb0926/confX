@@ -31,36 +31,73 @@ public class MySQLServiceImpl implements MySQLService {
     @Override
     public Integer addConf(HttpServletRequest request) {
 
-        String dataid = request.getParameter("pcode");
-        String groupid = request.getParameter("pgroupname");
-        String dbname  = request.getParameter("pdbname");
+        String dataid   = request.getParameter("pcode").trim(); // pcode, appname
+        String groupid  = request.getParameter("pgroupname").trim();
+        String dbname   = request.getParameter("pdbname").trim();
+        String tbprefix = request.getParameter("ptbprefix").trim();
+        String username = request.getParameter("puser").trim();
+        String passwd   = request.getParameter("ppass").trim();
+        String charset  = request.getParameter("pcharsetx").trim();
+        String timeout  = request.getParameter("ptimeoutx").trim();
+        String masterx  = request.getParameter("pmiport").trim();
+        String slaverx  = request.getParameter("psiport").trim();
+
+        String[] master = masterx.split(",");
+        String[] slaver = slaverx.split(",");
+
+
+        /**
+         *  Master  只允许1个,不允许多个
+         * */
+
+        if ( master.length > 1){
+            return 0;
+        }
 
         JSONObject jsonObject = new JSONObject();
         JSONArray  masterarr  = new JSONArray();
         JSONArray  slavearr   = new JSONArray();
+        JSONArray  hostarr    = new JSONArray();
 
+        /**
+         *  解析Master信息
+         * */
+        String[] mip_port = master[0].trim().split(":");
         JSONObject mobj = new JSONObject();
-        mobj.put("ip",   request.getParameter("pmip"));
-        mobj.put("port", request.getParameter("pmport"));
-        mobj.put("user", request.getParameter("pmuser"));
-        mobj.put("passwd", request.getParameter("pmpass"));
-
+        mobj.put("ip",   mip_port[0].trim());
+        mobj.put("port", mip_port[1].trim());
         masterarr.put(mobj);
 
-        JSONObject sobj = new JSONObject();
-        sobj.put("ip",      request.getParameter("psip"));
-        sobj.put("port",    request.getParameter("psport"));
-        sobj.put("user",    request.getParameter("psuser"));
-        sobj.put("passwd",  request.getParameter("pspass"));
+        /**
+         *  解析Slave信息
+         * */
+        for (int j=0; j< slaver.length; j++){
+            String[] sip_port = slaver[j].trim().split(":");
 
-        slavearr.put(sobj);
+            JSONObject sobj = new JSONObject();
+            sobj.put("ip",     sip_port[0].trim());
+            sobj.put("port",   sip_port[1].trim());
+            slavearr.put(sobj);
+        }
 
-        jsonObject.put("master", masterarr);
-        jsonObject.put("slave", slavearr);
-        jsonObject.put("dbname", request.getParameter("pdbname"));
-        jsonObject.put("tbprefix", request.getParameter("ptbprefix"));
-        jsonObject.put("charset", request.getParameter("pcharsetx"));
-        jsonObject.put("timeout", request.getParameter("ptimeoutx"));
+
+        JSONObject attachObj  = new JSONObject();
+        attachObj.put("tbprefix", tbprefix);
+        attachObj.put("charset",  charset);
+        attachObj.put("timeout",  timeout);
+        attachObj.put("user",     username);
+        attachObj.put("passwd",   passwd);
+
+        JSONObject hostObj  = new JSONObject();
+        hostObj.put("master", masterarr);
+        hostObj.put("slave",  slavearr);
+        hostObj.put("attach", attachObj);
+
+
+        jsonObject.put("dbname",  dbname);
+        jsonObject.put("dbkey",   hostObj);
+        jsonObject.put("groupid", groupid);
+        jsonObject.put("dataid",  dataid);
 
         String md5 = DigestUtils.md5Hex(jsonObject.toString());
 
@@ -100,7 +137,7 @@ public class MySQLServiceImpl implements MySQLService {
         List myList  = new ArrayList();
         List pmyList = new ArrayList();
         try {
-            myList = jdbcTemplate.queryForList("SELECT data_id, group_id, dbname, content " +
+            myList = jdbcTemplate.queryForList("SELECT data_id, group_id, dbname, content, md5 " +
                     "FROM config_info WHERE data_id=?", dataid);
         }catch (DataAccessException e){
             System.out.println(e);
@@ -120,6 +157,8 @@ public class MySQLServiceImpl implements MySQLService {
                 HashMap msMap = jsonUtil.jsonToMap(myConent);
                 msMap.put("group_id", myMap.get("group_id"));
                 msMap.put("data_id",  myMap.get("data_id"));
+                msMap.put("dbname",   myMap.get("dbname"));
+                msMap.put("md5",      myMap.get("md5"));
 
                 pmyList.add(msMap);
             }

@@ -13,13 +13,12 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <hr/>
+            <br/>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-bordered">
                     <tr>
-                        <th>编号</th>
                         <th>项目编码</th>
                         <th>项目名称</th>
                         <th>项目类型</th>
@@ -27,8 +26,7 @@
                         <th>项目描述</th>
                     </tr>
                     <tr th:each="list:${plist}">
-                        <td th:text="${list.id}">project id</td>
-                        <td><a th:text="${list.pcode}" th:href="@{pconf.html(ptype=${list.ptype}, pcode=${list.pcode})}">project code</a></td>
+                        <td><a th:text="${list.pcode}" th:href="@{pconf(ptype=${list.ptype}, pcode=${list.pcode})}">project code</a></td>
                         <td th:text="${list.pname}">project name</td>
                         <td th:text="${list.ptype}">project type</td>
                         <td th:text="${list.powner}">project owner</td>
@@ -37,7 +35,7 @@
                 </table>
             </div>
             <div class="col-md-5 col-md-offset-5">
-                <a class="btn btn-primary" href="new.html" role="button">新建项目</a>
+                <a class="btn btn-primary" href="new" role="button">新建项目</a>
             </div>
         </div>
     </div>
