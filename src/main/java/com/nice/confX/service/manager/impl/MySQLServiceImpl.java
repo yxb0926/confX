@@ -1,7 +1,9 @@
 package com.nice.confX.service.manager.impl;
 
+import com.mysql.jdbc.Connection;
 import com.nice.confX.service.manager.MySQLService;
 import com.nice.confX.utils.JsonUtil;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +18,26 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
+
 /**
  * Created by yxb on 16/7/5.
  */
 @Service
 public class MySQLServiceImpl implements MySQLService {
 
+    private Logger logger =  Logger.getLogger(MySQLServiceImpl.class);
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Override
+    /**
+     * 2016-7-14
+     * 3 个表都增加成功才算成功, 这里有事务请注意
+     * appname_info 表
+     * groupname_info 表
+     * project_info 表
+     * */
     public Integer addConf(HttpServletRequest request) {
 
         String dataid   = request.getParameter("pcode").trim(); // pcode, appname
@@ -41,23 +50,24 @@ public class MySQLServiceImpl implements MySQLService {
         String timeout  = request.getParameter("ptimeoutx").trim();
         String masterx  = request.getParameter("pmiport").trim();
         String slaverx  = request.getParameter("psiport").trim();
-
+        String type     = "MySQL";
         String[] master = masterx.split(",");
         String[] slaver = slaverx.split(",");
-
-
-        /**
-         *  Master  只允许1个,不允许多个
-         * */
-
-        if ( master.length > 1){
-            return 0;
-        }
 
         JSONObject jsonObject = new JSONObject();
         JSONArray  masterarr  = new JSONArray();
         JSONArray  slavearr   = new JSONArray();
         JSONArray  hostarr    = new JSONArray();
+
+        /**
+         *  Master  只允许1个,不允许多个
+         * */
+
+        if ( master.length !=  1 ){
+            return 0;
+        }
+
+
 
         /**
          *  解析Master信息
@@ -66,6 +76,11 @@ public class MySQLServiceImpl implements MySQLService {
         JSONObject mobj = new JSONObject();
         mobj.put("ip",   mip_port[0].trim());
         mobj.put("port", mip_port[1].trim());
+
+        //HashMap masterMap = new HashMap();
+        //masterMap.put("ip",   mip_port[0].trim());
+        //masterMap.put("port", mip_port[1].trim());
+
         masterarr.put(mobj);
 
         /**
@@ -107,6 +122,30 @@ public class MySQLServiceImpl implements MySQLService {
 
 
         try {
+            // 更新表appname_info
+            jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
+                    "VALUE (?,?,?,?,?)", dataid,groupid,type,gmt_create,gmt_create);
+
+            // 更新表groupname_info
+
+            // 新增master
+            jdbcTemplate.update("INSERT INTO groupname_info(groupname,dbname,role,ip,port," +
+                    "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
+                    "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)",groupid, dbname, "master",
+                    mobj.get("ip"),mobj.get("port"),username,passwd,charset,
+                    tbprefix,timeout,gmt_create,gmt_create);
+
+            // 新增slave
+            for (int i=0; i<slavearr.length(); i++){
+                JSONObject tmpobj = (JSONObject) slavearr.get(i);
+                jdbcTemplate.update("INSERT INTO groupname_info(groupname,dbname,role,ip,port," +
+                        "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
+                        "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)", groupid, dbname, "slave",
+                        tmpobj.get("ip"), tmpobj.get("port"),username,passwd,charset,
+                        tbprefix, timeout, gmt_create, gmt_create);
+            }
+
+            // 更新表config_info
             jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,dbname,content,md5,gmt_create,gmt_modified) " +
                     "VALUE (?,?,?,?,?,?,?)", dataid, groupid, dbname, jsonObject.toString(), md5, gmt_create, gmt_create);
         }catch (DataAccessException e){

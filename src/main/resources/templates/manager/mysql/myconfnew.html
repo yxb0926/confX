@@ -19,7 +19,6 @@
             <hr/>
             <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
 
-
             <form class="form-horizontal" th:action="@{myconfadd(pcode=${pcode})}" method="post" autocomplete="off">
                 <div class="form-group">
                     <label for="appname" class="col-sm-2 control-label">AppName</label>
@@ -48,18 +47,22 @@
                 <div class="form-group">
                     <label for="user" class="col-sm-2 control-label">用户名</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="puser" id="user" placeholder="" />
+                        <input type="text" class="form-control" name="puser" id="user" placeholder="" autocomplete="off" />
                     </div>
                     <label for="charsetx" class="col-sm-1 control-label">字符集</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pcharsetx" id="charsetx" placeholder="" value="utf8mb4"/>
+                        <select class="form-control" name="pcharsetx" id="charsetx">
+                            <option>utf8mb4</option>
+                            <option>utf8</option>
+                            <option>gbk</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="pass" class="col-sm-2 control-label">密码</label>
                     <div class="col-sm-3">
-                        <input type="password" class="form-control" name="ppass" id="pass" placeholder="" />
+                        <input type="password" class="form-control" name="ppass" id="pass" placeholder="" autocomplete="off" />
                     </div>
                     <label for="timeoutx" class="col-sm-1 control-label">超时时间</label>
                     <div class="col-sm-3">

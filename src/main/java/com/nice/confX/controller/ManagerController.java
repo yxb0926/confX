@@ -2,6 +2,7 @@ package com.nice.confX.controller;
 
 import com.nice.confX.service.manager.MySQLService;
 import com.nice.confX.service.manager.ProjectService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/manager")
 public class ManagerController {
+
+    private Logger logger = Logger.getLogger(ManagerController.class);
 
     @Autowired
     private ProjectService projectService;
@@ -118,7 +121,7 @@ public class ManagerController {
         String dataid  = request.getParameter("pcode");
         String groupid = request.getParameter("pgroupname");
 
-        /** 检查该配置是否已经存在,如果存在则不能添加项目,并发挥错误提示*/
+        /** 检查该配置是否已经存在,如果存在则不能添加项目,并返回错误提示*/
         if (groupid == "" || groupid.length() <= 0) {
             String errmsg = "GroupName Is Null!";
             ModelAndView modelAndView = new ModelAndView("redirect:myconfnew?pcode=" +
