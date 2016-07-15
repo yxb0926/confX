@@ -29,21 +29,23 @@
                         <th>M/S</th>
                         <th>ip:port</th>
                     </tr>
-                    <span th:each="listx : ${pmylist}">
+
+                    <span th:each="listx : ${pmymap}">
                         <tr>
-                            <td rowspan="2" th:text="${listx.group_id}"></td>
-                            <td rowspan="2" th:text="${listx.dbname}"></td>
-                            <td th:text="master"></td>
-                            <span th:each="mastx : ${listx.master}">
-                                <td th:text="${mastx.ip}+':'+${mastx.port}"></td>
+                            <td rowspan="2" th:text="${listx.key}"></td>
+                            <td rowspan="2" th:text="${listx.value.content.dbname}"></td>
+                            <td>Master</td>
+                            <span th:each="master : ${listx.value.content.dbkey.master}">
+                                <td>
+                                    <div th:text="${master.ip}+':'+${master.port}"></div>
+                                </td>
                             </span>
                         </tr>
-
                         <tr>
-                            <td th:text="slave"></td>
+                            <td>Slave</td>
                             <td>
-                            <span th:each="slavx : ${listx.slave}">
-                                <div><span th:text="${slavx.ip}+':'+${slavx.port}"></span></div>
+                            <span th:each="slave : ${listx.value.content.dbkey.slave}">
+                                <div><span th:text="${slave.ip}+':'+${slave.port}"></span></div>
                             </span>
                             </td>
                         </tr>

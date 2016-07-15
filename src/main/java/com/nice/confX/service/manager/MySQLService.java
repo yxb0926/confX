@@ -3,8 +3,8 @@ package com.nice.confX.service.manager;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yxb on 16/7/5.
@@ -34,7 +34,7 @@ public interface MySQLService {
      * */
     Integer checkConf();
 
-    List getAllMyConf(String dataid);
+    Map getMyConf(String dataid);
+    Map getMyConf(String dataid, String groupid);
 
-    List getOneMyConf(String dataid, String groupid);
 }

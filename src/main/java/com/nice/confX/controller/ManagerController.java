@@ -10,7 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yxb on 16/6/28.
@@ -59,20 +61,18 @@ public class ManagerController {
          *  groupid可以为单个或多个id|id|id ...
          * */
 
-        List myList = new ArrayList();
+        Map myMap = new HashMap();
         if ( pcode == null || pcode.length() <=0 ){
             return null;
         }else if( groupid == null || groupid.length() <=0 ){
-            myList = mySQLService.getAllMyConf(pcode);
+            myMap = mySQLService.getMyConf(pcode);
         }else {
-            myList = mySQLService.getOneMyConf(pcode, groupid);
+            myMap = mySQLService.getMyConf(pcode, groupid);
         }
-
 
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconf");
         modelAndView.addObject("pcode", pcode);
-        modelAndView.addObject("pmylist", myList);
-
+        modelAndView.addObject("pmymap", myMap);
 
         return modelAndView;
     }

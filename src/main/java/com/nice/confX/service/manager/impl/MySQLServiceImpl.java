@@ -1,6 +1,5 @@
 package com.nice.confX.service.manager.impl;
 
-import com.mysql.jdbc.Connection;
 import com.nice.confX.service.manager.MySQLService;
 import com.nice.confX.utils.JsonUtil;
 import org.apache.log4j.Logger;
@@ -9,7 +8,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -25,11 +23,8 @@ import java.util.*;
 @Service
 public class MySQLServiceImpl implements MySQLService {
 
-    private Logger logger =  Logger.getLogger(MySQLServiceImpl.class);
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
 
     /**
      * 2016-7-14
@@ -76,10 +71,6 @@ public class MySQLServiceImpl implements MySQLService {
         JSONObject mobj = new JSONObject();
         mobj.put("ip",   mip_port[0].trim());
         mobj.put("port", mip_port[1].trim());
-
-        //HashMap masterMap = new HashMap();
-        //masterMap.put("ip",   mip_port[0].trim());
-        //masterMap.put("port", mip_port[1].trim());
 
         masterarr.put(mobj);
 
@@ -172,9 +163,10 @@ public class MySQLServiceImpl implements MySQLService {
     }
 
     @Override
-    public List getAllMyConf(String dataid) {
-        List myList  = new ArrayList();
-        List pmyList = new ArrayList();
+    public Map getMyConf(String dataid) {
+        List myList = null;
+        List outList = new ArrayList();
+        Map outMap = new HashMap();
         try {
             myList = jdbcTemplate.queryForList("SELECT data_id, group_id, dbname, content, md5 " +
                     "FROM config_info WHERE data_id=?", dataid);
@@ -184,31 +176,28 @@ public class MySQLServiceImpl implements MySQLService {
         }
 
         JsonUtil jsonUtil = new JsonUtil();
-        if (myList.size()>0){
-            for (int i=0; i<myList.size(); i++){
+        if (myList.size()>0) {
+            for (int i = 0; i < myList.size(); i++) {
+                Map tmpMap = new HashMap();
                 Map myMap = (Map) myList.get(i);
 
+                String groupname = myMap.get("group_id").toString();
                 String myConent = myMap.get("content").toString();
+                tmpMap.put("content", jsonUtil.contentToMap(myConent));
+                tmpMap.put("md5",     myMap.get("md5").toString());
 
-                /**
-                 * 将content内容转换为一个hashmap
-                 * */
-                HashMap msMap = jsonUtil.jsonToMap(myConent);
-                msMap.put("group_id", myMap.get("group_id"));
-                msMap.put("data_id",  myMap.get("data_id"));
-                msMap.put("dbname",   myMap.get("dbname"));
-                msMap.put("md5",      myMap.get("md5"));
+                outMap.put(groupname, tmpMap);
 
-                pmyList.add(msMap);
             }
         }
-        return pmyList;
+        return outMap;
     }
 
     @Override
-    public List getOneMyConf(String dataid, String groupid) {
+    public Map getMyConf(String dataid, String groupid) {
         List myList  = new ArrayList();
         List pmyList = new ArrayList();
+        Map outMap = new HashMap();
 
         String[] groupidx = groupid.split("\\|");
         String group_id = "";
@@ -221,9 +210,7 @@ public class MySQLServiceImpl implements MySQLService {
 
         String sql = "select data_id, group_id, dbname, content FROM config_info " +
                 "WHERE data_id=" + "'" + dataid + "'" +
-                "  AND group_id in (" + group_id +
-                ")";
-
+                "  AND group_id in (" + group_id + ")";
 
         try{
             myList = jdbcTemplate.queryForList(sql);
@@ -233,22 +220,20 @@ public class MySQLServiceImpl implements MySQLService {
         }
 
         JsonUtil jsonUtil = new JsonUtil();
-        if (myList.size()>0){
-            for (int i=0; i<myList.size(); i++){
+        if (myList.size()>0) {
+            for (int i = 0; i < myList.size(); i++) {
+                Map tmpMap = new HashMap();
                 Map myMap = (Map) myList.get(i);
 
+                String groupname = myMap.get("group_id").toString();
                 String myConent = myMap.get("content").toString();
+                tmpMap.put("content", jsonUtil.contentToMap(myConent));
+                tmpMap.put("md5",     myMap.get("md5").toString());
 
-                /**
-                 * 将content内容转换为一个hashmap
-                 * */
-                HashMap msMap = jsonUtil.jsonToMap(myConent);
-                msMap.put("group_id", myMap.get("group_id"));
-                msMap.put("data_id",  myMap.get("data_id"));
+                outMap.put(groupname, tmpMap);
 
-                pmyList.add(msMap);
             }
         }
-        return pmyList;
+        return outMap;
     }
 }
