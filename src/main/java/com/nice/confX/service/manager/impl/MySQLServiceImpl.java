@@ -196,7 +196,6 @@ public class MySQLServiceImpl implements MySQLService {
     @Override
     public Map getMyConf(String dataid, String groupid) {
         List myList  = new ArrayList();
-        List pmyList = new ArrayList();
         Map outMap = new HashMap();
 
         String[] groupidx = groupid.split("\\|");
@@ -208,7 +207,7 @@ public class MySQLServiceImpl implements MySQLService {
             }
         }
 
-        String sql = "select data_id, group_id, dbname, content FROM config_info " +
+        String sql = "select data_id, group_id, dbname, content, md5 FROM config_info " +
                 "WHERE data_id=" + "'" + dataid + "'" +
                 "  AND group_id in (" + group_id + ")";
 
@@ -226,8 +225,8 @@ public class MySQLServiceImpl implements MySQLService {
                 Map myMap = (Map) myList.get(i);
 
                 String groupname = myMap.get("group_id").toString();
-                String myConent = myMap.get("content").toString();
-                tmpMap.put("content", jsonUtil.contentToMap(myConent));
+                String myContent = myMap.get("content").toString();
+                tmpMap.put("content", jsonUtil.contentToMap(myContent));
                 tmpMap.put("md5",     myMap.get("md5").toString());
 
                 outMap.put(groupname, tmpMap);
