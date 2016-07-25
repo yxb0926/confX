@@ -34,12 +34,13 @@ public class ManagerController {
         List allProject = projectService.queryAllProject();
         modelAndView.addObject("plist", allProject);
         return modelAndView;
+
     }
 
 
     @RequestMapping("/project/new")
     public ModelAndView newproject(){
-       return new ModelAndView("manager/project/new");
+        return new ModelAndView("manager/project/new");
     }
 
     @RequestMapping("/project/add")

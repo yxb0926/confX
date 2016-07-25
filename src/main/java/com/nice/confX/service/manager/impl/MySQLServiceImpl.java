@@ -198,8 +198,10 @@ public class MySQLServiceImpl implements MySQLService {
         List myList  = new ArrayList();
         Map outMap = new HashMap();
 
+
         String[] groupidx = groupid.split("\\|");
         String group_id = "";
+
         for (int i = 0; i <groupidx.length; i++){
             group_id = group_id + "'" + groupidx[i] + "'";
             if (i < groupidx.length-1){
@@ -211,6 +213,7 @@ public class MySQLServiceImpl implements MySQLService {
                 "WHERE data_id=" + "'" + dataid + "'" +
                 "  AND group_id in (" + group_id + ")";
 
+        System.out.println(sql);
         try{
             myList = jdbcTemplate.queryForList(sql);
         }catch (DataAccessException e){
