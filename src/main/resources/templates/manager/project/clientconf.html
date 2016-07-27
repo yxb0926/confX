@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统 - Client 配置管理</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <hr/>
+            <a type="button" class="btn btn-success" target="_blank" th:href="@{clientadd(pcode=${pcode}, ptype=${ptype})}"> 新增 | 修改</a>
+            <hr/>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>AppName</th>
+                        <th>Type</th>
+                        <th>ip</th>
+                        <th>创建时间</th>
+                        <th>最后修改时间</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr th:each="list:${clientinfo}">
+                        <td th:text="${list.pcode}"></td>
+                        <td th:text="${list.ptype}"></td>
+                        <td th:text="${list.client_ip}"></td>
+                        <td th:text="${list.gmt_created}"></td>
+                        <td th:text="${list.gmt_modified}"></td>
+                        <td> <a>删除</a> </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>

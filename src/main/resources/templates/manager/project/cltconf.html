@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统 - Client 配置管理</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <form class="form-horizontal" th:action="@{clientreplace}" method="post" autocomplete="off">
+                <br/>
+                <br/>
+                <div class="form-group">
+                    <label for="appname" class="col-sm-2 control-label">AppName</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="pappname" id="appname" placeholder="" th:value="${pcode}" readonly="readonly"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">Type</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="ptype" id="type" placeholder="" th:value="${ptype}" readonly="readonly"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientlist" class="col-sm-2 control-label">Client List</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" rows="10" name="pclientlist" id="clientlist" placeholder="ip,ip...ip之间以逗号隔开,可以换行"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-5 col-sm-10">
+                        <button type="submit" class="btn btn-default">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

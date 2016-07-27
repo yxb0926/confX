@@ -1,14 +1,18 @@
 package com.nice.confX.controller;
 
+import com.nice.confX.service.manager.ClientService;
 import com.nice.confX.service.manager.MySQLService;
 import com.nice.confX.service.manager.ProjectService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +29,12 @@ public class ManagerController {
 
     @Autowired
     private ProjectService projectService;
+
     @Autowired
     private MySQLService mySQLService;
+
+    @Autowired
+    private ClientService clientService;
 
     @RequestMapping("/project/index")
     public ModelAndView index(){
@@ -36,7 +44,6 @@ public class ManagerController {
         return modelAndView;
 
     }
-
 
     @RequestMapping("/project/new")
     public ModelAndView newproject(){
@@ -146,4 +153,42 @@ public class ManagerController {
         }
 
     }
+
+    @RequestMapping("/project/clientadd")
+    public ModelAndView cltConf(String ptype, String pcode){
+        ModelAndView modelAndView = new ModelAndView("manager/project/clientadd");
+        String ipstr = clientService.getClientIps(pcode, ptype);
+
+        modelAndView.addObject("ipstr", ipstr);
+        modelAndView.addObject("ptype", ptype);
+        modelAndView.addObject("pcode", pcode);
+
+        return modelAndView;
+    }
+
+    @RequestMapping("/project/clientreplace")
+    @ResponseBody
+    public Object clientReplace(String pappname, String ptype, String pclientlist){
+        if ( pclientlist.length() >0 && pclientlist != ""){
+            Object res = clientService.clientReplace(pappname, ptype, pclientlist);
+            return res;
+        }else{
+            logger.error("Client List Is Null, Add Client Info Failed!");
+            return null;
+        }
+
+    }
+
+    @RequestMapping(value = "/project/clientconf", method = RequestMethod.GET)
+    public Object clientInfo(String pcode, String ptype){
+        ModelAndView modelAndView = new ModelAndView("manager/project/clientconf");
+
+        List myList = new ArrayList();
+        myList = clientService.getClientInfo(pcode, ptype);
+        modelAndView.addObject("clientinfo", myList);
+        modelAndView.addObject("pcode",      pcode);
+        modelAndView.addObject("ptype",      ptype);
+        return modelAndView;
+    }
 }
+
