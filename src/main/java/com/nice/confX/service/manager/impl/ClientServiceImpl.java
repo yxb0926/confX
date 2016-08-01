@@ -2,7 +2,6 @@ package com.nice.confX.service.manager.impl;
 
 import com.nice.confX.service.manager.ClientService;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

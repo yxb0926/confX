@@ -2,9 +2,8 @@ package com.nice.confX.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.nice.confX.model.Attach;
-import com.nice.confX.model.ClusterModel;
-import com.nice.confX.model.ContentModel;
+import com.nice.confX.model.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,8 +64,7 @@ public class JsonUtil {
         return list;
     }
 
-    public Map contentToMap(String jsonStr){
-
+    public Map myContentToMap(String jsonStr){
         ContentModel contentModel = JSON.parseObject(jsonStr, ContentModel.class);
         String groupid = contentModel.getGroupid();
         String dbname = contentModel.getDbname();
@@ -74,20 +72,18 @@ public class JsonUtil {
         JSONObject dbkey = contentModel.getDbkey();
         com.alibaba.fastjson.JSONArray masterArr =
                 (com.alibaba.fastjson.JSONArray) dbkey.get("master");
-        com.alibaba.fastjson.JSONArray slaveArr =
+        com.alibaba.fastjson.JSONArray slaveArr  =
                 (com.alibaba.fastjson.JSONArray) dbkey.get("slave");
         Attach attach = JSON.parseObject(dbkey.get("attach").toString(), Attach.class);
 
         HashMap clusterMap = new HashMap();
-        List masterList    = new ArrayList();
-        List slaveList     = new ArrayList();
         Map attachMap      = new HashMap();
 
         /** Master */
-        masterList = genClusterList(masterArr);
+        List masterList = genClusterList(masterArr);
 
         /** Slave */
-        slaveList = genClusterList(slaveArr);
+        List slaveList = genClusterList(slaveArr);
 
         /** Attach */
         attachMap.put("user",     attach.getUser());
@@ -104,6 +100,40 @@ public class JsonUtil {
 
         clusterMap.put("dbkey",   dbkeyMap);
         clusterMap.put("dbname",  dbname);
+        clusterMap.put("groupid", groupid);
+        clusterMap.put("dataid",  dataid);
+
+        return clusterMap;
+    }
+
+    public Map redisConentToMap(String jsonStr){
+        RedisContentModel redisContentModel = JSON.parseObject(jsonStr, RedisContentModel.class);
+        String dataid  = redisContentModel.getDataid();
+        String groupid = redisContentModel.getGroupid();
+        JSONObject dbkey   = redisContentModel.getDbkey();
+
+        System.out.println(jsonStr);
+        System.out.println(dbkey);
+        com.alibaba.fastjson.JSONArray masterArr =
+                (com.alibaba.fastjson.JSONArray) dbkey.get("master");
+
+        RedisAttach redisAttach =
+                JSON.parseObject(dbkey.get("attach").toString(), RedisAttach.class);
+
+        Map attachMap      = new HashMap();
+        attachMap.put("read_timeout", redisAttach.getRead_timeout());
+        attachMap.put("timeout", redisAttach.getTimeout());
+
+        /** Master */
+        List masterList = genClusterList(masterArr);
+
+        Map dbkeyMap = new HashMap();
+        dbkeyMap.put("master", masterList);
+        dbkeyMap.put("attach", attachMap);
+
+        HashMap clusterMap = new HashMap();
+
+        clusterMap.put("dbkey",   dbkeyMap);
         clusterMap.put("groupid", groupid);
         clusterMap.put("dataid",  dataid);
 

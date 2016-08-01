@@ -1,7 +1,8 @@
 package com.nice.confX.service.manager.impl;
 
-import com.nice.confX.service.manager.MySQLService;
-import com.nice.confX.utils.JsonUtil;
+import com.nice.confX.service.manager.ConfigService;
+import com.nice.confX.service.manager.MngService;
+import com.nice.confX.utils.ListToMap;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,11 +22,17 @@ import java.util.*;
  * Created by yxb on 16/7/5.
  */
 @Service
-public class MySQLServiceImpl implements MySQLService {
+public class MySQLServiceImpl implements MngService {
+
+    private Logger logger = Logger.getLogger(MySQLServiceImpl.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ConfigService configService;
+
+    ListToMap listToMap = new ListToMap();
     /**
      * 2016-7-14
      * 3 个表都增加成功才算成功, 这里有事务请注意
@@ -33,9 +40,14 @@ public class MySQLServiceImpl implements MySQLService {
      * groupname_info 表
      * project_info 表
      * */
-    public Integer addConf(HttpServletRequest request) {
+    @Override
+    public Map addConf(HttpServletRequest request) {
 
-        String dataid   = request.getParameter("pcode").trim(); // pcode, appname
+        Map msg = new HashMap();
+        msg.put("status", 201);
+        msg.put("msg", "");
+
+        String dataid   = request.getParameter("pappname").trim(); // pcode, appname
         String groupid  = request.getParameter("pgroupname").trim();
         String dbname   = request.getParameter("pdbname").trim();
         String tbprefix = request.getParameter("ptbprefix").trim();
@@ -45,7 +57,7 @@ public class MySQLServiceImpl implements MySQLService {
         String timeout  = request.getParameter("ptimeoutx").trim();
         String masterx  = request.getParameter("pmiport").trim();
         String slaverx  = request.getParameter("psiport").trim();
-        String type     = "MySQL";
+        String type     = request.getParameter("ptype");
         String[] master = masterx.split(",");
         String[] slaver = slaverx.split(",");
 
@@ -59,10 +71,9 @@ public class MySQLServiceImpl implements MySQLService {
          * */
 
         if ( master.length !=  1 ){
-            return 0;
+            msg.put("msg", "Master不允许多个!");
+            return msg;
         }
-
-
 
         /**
          *  解析Master信息
@@ -85,7 +96,6 @@ public class MySQLServiceImpl implements MySQLService {
             sobj.put("port",   sip_port[1].trim());
             slavearr.put(sobj);
         }
-
 
         JSONObject attachObj  = new JSONObject();
         attachObj.put("tbprefix", tbprefix);
@@ -120,7 +130,7 @@ public class MySQLServiceImpl implements MySQLService {
             // 更新表groupname_info
 
             // 新增master
-            jdbcTemplate.update("INSERT INTO groupname_info(groupname,dbname,role,ip,port," +
+            jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
                     "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
                     "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)",groupid, dbname, "master",
                     mobj.get("ip"),mobj.get("port"),username,passwd,charset,
@@ -129,7 +139,7 @@ public class MySQLServiceImpl implements MySQLService {
             // 新增slave
             for (int i=0; i<slavearr.length(); i++){
                 JSONObject tmpobj = (JSONObject) slavearr.get(i);
-                jdbcTemplate.update("INSERT INTO groupname_info(groupname,dbname,role,ip,port," +
+                jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
                         "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
                         "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)", groupid, dbname, "slave",
                         tmpobj.get("ip"), tmpobj.get("port"),username,passwd,charset,
@@ -137,14 +147,17 @@ public class MySQLServiceImpl implements MySQLService {
             }
 
             // 更新表config_info
-            jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,dbname,content,md5,gmt_create,gmt_modified) " +
-                    "VALUE (?,?,?,?,?,?,?)", dataid, groupid, dbname, jsonObject.toString(), md5, gmt_create, gmt_create);
+            jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,content,md5,gmt_create,gmt_modified) " +
+                    "VALUE (?,?,?,?,?,?)", dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
         }catch (DataAccessException e){
-            System.out.println(e);
-            return 0;
+            logger.error(e);
+            msg.put("msg", "更新数据库失败!"+e);
+            return msg;
         }
 
-        return 1;
+        msg.put("status", 200);
+        msg.put("msg", "ok");
+        return msg;
     }
 
     @Override
@@ -163,79 +176,34 @@ public class MySQLServiceImpl implements MySQLService {
     }
 
     @Override
-    public Map getMyConf(String dataid) {
-        List myList = null;
-        List outList = new ArrayList();
-        Map outMap = new HashMap();
-        try {
-            myList = jdbcTemplate.queryForList("SELECT data_id, group_id, dbname, content, md5 " +
-                    "FROM config_info WHERE data_id=?", dataid);
-        }catch (DataAccessException e){
-            System.out.println(e);
-            return null;
+    public Map getConf(String dataid) {
+        Map map = new HashMap();
+        Map myMap = new HashMap();
+        List myList = configService.getConf(dataid);
+        logger.info(myList);
+
+        myMap = listToMap.mylistToMap(myList);
+
+
+        if (myList.size()>0){
+            map.put("status",        200);
+            map.put("msg",           "ok");
+            map.put("item_content",  myMap);
+        }else{
+            map.put("status",       202);
+            map.put("msg",          "未查到该记录");
+            map.put("item_content", myMap);
         }
 
-        JsonUtil jsonUtil = new JsonUtil();
-        if (myList.size()>0) {
-            for (int i = 0; i < myList.size(); i++) {
-                Map tmpMap = new HashMap();
-                Map myMap = (Map) myList.get(i);
-
-                String groupname = myMap.get("group_id").toString();
-                String myConent = myMap.get("content").toString();
-                tmpMap.put("content", jsonUtil.contentToMap(myConent));
-                tmpMap.put("md5",     myMap.get("md5").toString());
-
-                outMap.put(groupname, tmpMap);
-
-            }
-        }
-        return outMap;
+        return map;
     }
 
     @Override
-    public Map getMyConf(String dataid, String groupid) {
-        List myList  = new ArrayList();
-        Map outMap = new HashMap();
+    public Map getConf(String dataid, String groupid) {
+        List myList = configService.getConf(dataid, groupid);
+        logger.info(myList);
 
-
-        String[] groupidx = groupid.split("\\|");
-        String group_id = "";
-
-        for (int i = 0; i <groupidx.length; i++){
-            group_id = group_id + "'" + groupidx[i] + "'";
-            if (i < groupidx.length-1){
-                group_id += ",";
-            }
-        }
-
-        String sql = "select data_id, group_id, dbname, content, md5 FROM config_info " +
-                "WHERE data_id=" + "'" + dataid + "'" +
-                "  AND group_id in (" + group_id + ")";
-
-        System.out.println(sql);
-        try{
-            myList = jdbcTemplate.queryForList(sql);
-        }catch (DataAccessException e){
-            System.out.println(e);
-            return null;
-        }
-
-        JsonUtil jsonUtil = new JsonUtil();
-        if (myList.size()>0) {
-            for (int i = 0; i < myList.size(); i++) {
-                Map tmpMap = new HashMap();
-                Map myMap = (Map) myList.get(i);
-
-                String groupname = myMap.get("group_id").toString();
-                String myContent = myMap.get("content").toString();
-                tmpMap.put("content", jsonUtil.contentToMap(myContent));
-                tmpMap.put("md5",     myMap.get("md5").toString());
-
-                outMap.put(groupname, tmpMap);
-
-            }
-        }
-        return outMap;
+        return listToMap.mylistToMap(myList);
     }
 }
+

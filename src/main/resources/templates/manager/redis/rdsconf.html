@@ -1,11 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="UTF-8" />
-    <title>Redis Configure Page</title>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统 - Redis配置</title>
 </head>
 <body>
-    <p>Redis conf Page</p>
+    <div class="container">
+        <div class="row">
+            <hr/>
+            <a type="button" class="btn btn-success" th:href="@{rdsconfnew(pcode=${pcode})}" target="_blank"> 新增配置 </a>
+            <hr/>
+            <div class="col-md-12" role="main">
+                <p th:text="'项目编码:'+${pcode}"></p>
+                <table  class="table table-bordered">
+                    <tr>
+                        <th>GroupName</th>
+                        <th>role</th>
+                        <th>ip:port</th>
+                        <th>read_timeout</th>
+                        <th>timeout</th>
+                    </tr>
+                    <span th:each="listx : ${pmap.item_content}">
+                        <tr>
+                            <td th:text="${listx.key}"></td>
+                            <td>Master</td>
+                            <span th:each="master : ${listx.value.content.dbkey.master}">
+                                <td th:text="${master.ip}+':'+${master.port}"></td>
+                            </span>
+                            <td th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
+                            <td th:text="${listx.value.content.dbkey.attach.timeout}"></td>
+                        </tr>
+                    </span>
+                </table>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

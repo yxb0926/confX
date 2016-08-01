@@ -1,14 +1,14 @@
 package com.nice.confX.controller;
 
-import com.nice.confX.service.manager.MySQLService;
+import com.nice.confX.service.manager.impl.MySQLServiceImpl;
 import com.nice.confX.service.preview.PreConfService;
+import com.nice.confX.service.preview.impl.PreConfServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -21,10 +21,7 @@ import java.util.Map;
 public class PreviewController {
 
     @Autowired
-    private MySQLService mySQLService;
-
-    @Autowired
-    private PreConfService preConfService;
+    private PreConfServiceImpl preConfService;
 
 
     @RequestMapping("/index")
@@ -40,7 +37,6 @@ public class PreviewController {
     public Object mysqlIndex(String items){
 
         Map map = preConfService.getConf(items);
-
         return map;
     }
 }

@@ -23,10 +23,9 @@
                 <div class="form-group">
                     <label for="type" class="col-sm-2 control-label">Type</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="ptype" id="type" placeholder="" th:value="MySQL" readonly="readonly"/>
+                        <input type="text" class="form-control" name="ptype" id="type" placeholder="" th:value="Redis" readonly="readonly"/>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="appname" class="col-sm-2 control-label">AppName</label>
                     <div class="col-sm-3">
@@ -41,39 +40,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="dbname" class="col-sm-2 control-label">DBname</label>
+                    <label for="timeout" class="col-sm-2 control-label">timeout</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="pdbname" id="dbname" placeholder="不能为空!" />
+                        <input type="text" class="form-control" name="ptimeout" id="timeout" placeholder="" autocomplete="off" />
                     </div>
-                    <label for="tbprefix" class="col-sm-1 control-label">表前缀</label>
+                    <label for="read_timeout" class="col-sm-1 control-label">read_timeout</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="ptbprefix" id="tbprefix" placeholder="" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="user" class="col-sm-2 control-label">用户名</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="puser" id="user" placeholder="" autocomplete="off" />
-                    </div>
-                    <label for="charsetx" class="col-sm-1 control-label">字符集</label>
-                    <div class="col-sm-3">
-                        <select class="form-control" name="pcharsetx" id="charsetx">
-                            <option>utf8mb4</option>
-                            <option>utf8</option>
-                            <option>gbk</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="pass" class="col-sm-2 control-label">密码</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="ppass" id="pass" placeholder="" autocomplete="off" />
-                    </div>
-                    <label for="timeoutx" class="col-sm-1 control-label">超时时间</label>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="ptimeoutx" id="timeoutx" placeholder="" value="1"/>
+                        <input type="text" class="form-control" name="preadtimeout" id="read_timeout" placeholder="" value="1"/>
                     </div>
                 </div>
 
@@ -85,18 +58,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="siport" class="col-sm-2 control-label">Slave Host</label>
-                    <div class="col-sm-7">
-                        <textarea class="form-control" rows="3" name="psiport" id="siport" placeholder="ip:port,ip:port # 可以包含多个机器,多个机器以逗号隔开!"></textarea>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <div class="col-sm-offset-5 col-sm-10">
                         <button type="submit" class="btn btn-default">提交</button>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>

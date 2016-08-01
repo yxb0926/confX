@@ -22,15 +22,16 @@
             <div class="col-md-12" role="main">
                 <hr/>
                 <p th:text="'项目编码:'+${pcode}"></p>
+
                 <table class="table table-bordered">
                     <tr>
                         <th>GroupName</th>
                         <th>dbname</th>
-                        <th>M/S</th>
+                        <th>role</th>
                         <th>ip:port</th>
                     </tr>
 
-                    <span th:each="listx : ${pmymap}">
+                    <span th:each="listx : ${pmymap.item_content}">
                         <tr>
                             <td rowspan="2" th:text="${listx.key}"></td>
                             <td rowspan="2" th:text="${listx.value.content.dbname}"></td>

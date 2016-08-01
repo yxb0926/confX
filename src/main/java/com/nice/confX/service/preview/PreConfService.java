@@ -11,10 +11,4 @@ import java.util.Map;
 @Service
 public interface PreConfService {
     public Map getConf(String items);
-
-    public Map getMysqlConf(String dataid);
-
-    public Map getRedisConf(String item);
-
-    public Map getNginxConf(String item);
 }
