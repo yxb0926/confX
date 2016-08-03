@@ -1,6 +1,7 @@
 package com.nice.confX.service.manager;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -16,7 +17,8 @@ public interface MngService {
      *
      *
      * @param request*/
-    Map addConf(HttpServletRequest request);
+    @Transactional
+    Map  addConf(HttpServletRequest request) throws Exception;
 
     /**
      * 删除一个mysql的配置

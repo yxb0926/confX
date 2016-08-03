@@ -7,10 +7,10 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Created by yxb on 16/7/5.
  */
-@Service
+@Service("mysql")
 public class MySQLServiceImpl implements MngService {
 
     private Logger logger = Logger.getLogger(MySQLServiceImpl.class);
@@ -40,8 +40,9 @@ public class MySQLServiceImpl implements MngService {
      * groupname_info 表
      * project_info 表
      * */
+    @Transactional
     @Override
-    public Map addConf(HttpServletRequest request) {
+    public Map addConf(HttpServletRequest request) throws Exception {
 
         Map msg = new HashMap();
         msg.put("status", 201);
@@ -121,43 +122,36 @@ public class MySQLServiceImpl implements MngService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String gmt_create = simpleDateFormat.format(date);
 
-
-        try {
-            // 更新表appname_info
-            jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
+        // 更新表appname_info
+        jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
                     "VALUE (?,?,?,?,?)", dataid,groupid,type,gmt_create,gmt_create);
 
-            // 更新表groupname_info
-
-            // 新增master
-            jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
+        // 新增master
+        jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
                     "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
                     "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)",groupid, dbname, "master",
                     mobj.get("ip"),mobj.get("port"),username,passwd,charset,
                     tbprefix,timeout,gmt_create,gmt_create);
 
-            // 新增slave
-            for (int i=0; i<slavearr.length(); i++){
-                JSONObject tmpobj = (JSONObject) slavearr.get(i);
-                jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
+        // 新增slave
+        for (int i=0; i<slavearr.length(); i++){
+            JSONObject tmpobj = (JSONObject) slavearr.get(i);
+            jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
                         "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
                         "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)", groupid, dbname, "slave",
                         tmpobj.get("ip"), tmpobj.get("port"),username,passwd,charset,
                         tbprefix, timeout, gmt_create, gmt_create);
-            }
-
-            // 更新表config_info
-            jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,content,md5,gmt_create,gmt_modified) " +
-                    "VALUE (?,?,?,?,?,?)", dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
-        }catch (DataAccessException e){
-            logger.error(e);
-            msg.put("msg", "更新数据库失败!"+e);
-            return msg;
         }
+
+        // 更新表config_info
+        jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,content,md5,gmt_create,gmt_modified) " +
+                    "VALUE (?,?,?,?,?,?)", dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
+
 
         msg.put("status", 200);
         msg.put("msg", "ok");
         return msg;
+
     }
 
     @Override

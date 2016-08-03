@@ -3,7 +3,7 @@ package com.nice.confX.service.preview.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.nice.confX.service.manager.MngService;
-import com.nice.confX.service.manager.SwitchService;
+import com.nice.confX.service.manager.DataSourceFactory;
 import com.nice.confX.service.preview.PreConfService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,10 @@ import java.util.Map;
 @Service
 public class PreConfServiceImpl implements PreConfService {
 
-    @Autowired
-    private SwitchService switchService;
-
     private Logger logger = Logger.getLogger(PreConfServiceImpl.class);
+
+    @Autowired
+    DataSourceFactory dataSourceFactory;
 
     @Override
     public Map getConf(String items) {
@@ -29,7 +29,7 @@ public class PreConfServiceImpl implements PreConfService {
         String item = jsonObject.getString("item");
         logger.info("Type:" + type + " Appname:" + item);
 
-        MngService service = switchService.getService(type);
+        MngService service = dataSourceFactory.getService(type);
         return service.getConf(item);
     }
 

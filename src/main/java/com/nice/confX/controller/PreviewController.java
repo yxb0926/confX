@@ -21,7 +21,7 @@ import java.util.Map;
 public class PreviewController {
 
     @Autowired
-    private PreConfServiceImpl preConfService;
+    private PreConfService preConfService;
 
 
     @RequestMapping("/index")

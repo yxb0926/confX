@@ -7,9 +7,9 @@ import com.nice.confX.utils.ListToMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by yxb on 16/7/28.
  */
-@Service
+@Service(value="redis")
 public class RedisServiceImpl implements MngService{
 
     @Autowired
@@ -34,8 +34,9 @@ public class RedisServiceImpl implements MngService{
 
     private Logger logger = Logger.getLogger(RedisServiceImpl.class);
 
+    @Transactional
     @Override
-    public Map addConf(HttpServletRequest request) {
+    public Map addConf(HttpServletRequest request) throws Exception {
         Map msg = new HashMap();
         msg.put("status", 201);
         msg.put("msg",    "添加失败");
@@ -83,29 +84,23 @@ public class RedisServiceImpl implements MngService{
         String gmt_create   = simpleDateFormat.format(date);
         String gmt_modified = gmt_create;
 
-        try{
-            // 更新表appname_info
-            jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
-                    "VALUE (?,?,?,?,?)", dataid,groupid,type,gmt_create,gmt_create);
+        // 更新表appname_info
+        jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
+                "VALUE (?,?,?,?,?)", dataid,groupid,type,gmt_create,gmt_create);
 
-            // 更新groupname_info_redis
-            jdbcTemplate.update("INSERT INTO groupname_info_redis (groupname, timeout, read_timeout, " +
-                    "role, ip, port, created_time, modified_time) " +
-                    "VALUES(?,?,?,?,?,?,?,?)",
-                    groupid,timeout,readtimeout,"Master",ip, port, gmt_create, gmt_modified);
+        // 更新groupname_info_redis
+        jdbcTemplate.update("INSERT INTO groupname_info_redis (groupname, timeout, read_timeout, " +
+                "role, ip, port, created_time, modified_time) " +
+                "VALUES(?,?,?,?,?,?,?,?)",
+                groupid,timeout,readtimeout,"Master",ip, port, gmt_create, gmt_modified);
 
-            // 更新config_info 表
-            String sql = "INSERT INTO config_info (data_id,group_id,content,md5,gmt_create,gmt_modified)" +
-                    "VALUES(?,?,?,?,?,?)";
-            jdbcTemplate.update(sql,dataid,groupid,content,md5,gmt_create,gmt_modified);
+        // 更新config_info 表
+        String sql = "INSERT INTO config_info (data_id,group_id,content,md5,gmt_create,gmt_modified)" +
+                "VALUES(?,?,?,?,?,?)";
+        jdbcTemplate.update(sql,dataid,groupid,content,md5,gmt_create,gmt_modified);
 
-            msg.put("status", 200);
-            msg.put("msg", "ok");
-        }catch (DataAccessException e){
-            logger.error(e);
-            msg.put("status", 201);
-            msg.put("msg", "更新数据库失败!" + e);
-        }
+        msg.put("status", 200);
+        msg.put("msg", "ok");
 
         return msg;
     }
