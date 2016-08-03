@@ -27,6 +27,7 @@
                         <th>ip:port</th>
                         <th>read_timeout</th>
                         <th>timeout</th>
+                        <td>管理</td>
                     </tr>
                     <span th:each="listx : ${pmap.item_content}">
                         <tr>
@@ -37,6 +38,11 @@
                             </span>
                             <td th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
                             <td th:text="${listx.value.content.dbkey.attach.timeout}"></td>
+                            <td>
+                                <a>检查</a>
+                                <a>修改</a>
+                                <a>删除</a>
+                            </td>
                         </tr>
                     </span>
                 </table>

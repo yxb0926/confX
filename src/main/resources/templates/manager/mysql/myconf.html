@@ -29,6 +29,7 @@
                         <th>dbname</th>
                         <th>role</th>
                         <th>ip:port</th>
+                        <th>管理</th>
                     </tr>
 
                     <span th:each="listx : ${pmymap.item_content}">
@@ -41,6 +42,11 @@
                                     <div th:text="${master.ip}+':'+${master.port}"></div>
                                 </td>
                             </span>
+                            <td rowspan="2">
+                                <a>检测</a>
+                                <a>修改</a>
+                                <a>删除</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>Slave</td>
