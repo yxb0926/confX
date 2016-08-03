@@ -42,12 +42,7 @@ public class MySQLServiceImpl implements MngService {
      * */
     @Transactional
     @Override
-    public Map addConf(HttpServletRequest request) throws Exception {
-
-        Map msg = new HashMap();
-        msg.put("status", 201);
-        msg.put("msg", "");
-
+    public void addConf(HttpServletRequest request) throws Exception {
         String dataid   = request.getParameter("pappname").trim(); // pcode, appname
         String groupid  = request.getParameter("pgroupname").trim();
         String dbname   = request.getParameter("pdbname").trim();
@@ -72,8 +67,7 @@ public class MySQLServiceImpl implements MngService {
          * */
 
         if ( master.length !=  1 ){
-            msg.put("msg", "Master不允许多个!");
-            return msg;
+            throw new Exception("Master 只能有一个!");
         }
 
         /**
@@ -146,12 +140,6 @@ public class MySQLServiceImpl implements MngService {
         // 更新表config_info
         jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,content,md5,gmt_create,gmt_modified) " +
                     "VALUE (?,?,?,?,?,?)", dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
-
-
-        msg.put("status", 200);
-        msg.put("msg", "ok");
-        return msg;
-
     }
 
     @Override

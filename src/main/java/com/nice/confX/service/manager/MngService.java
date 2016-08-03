@@ -18,7 +18,7 @@ public interface MngService {
      *
      * @param request*/
     @Transactional
-    Map  addConf(HttpServletRequest request) throws Exception;
+    void addConf(HttpServletRequest request) throws Exception;
 
     /**
      * 删除一个mysql的配置

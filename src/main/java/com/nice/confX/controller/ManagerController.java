@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -67,20 +68,23 @@ public class ManagerController {
     }
 
     @RequestMapping(value = "/project/confadd", method = RequestMethod.POST)
-    @ResponseBody
-    public Map addconf(HttpServletRequest httpServletRequest) {
-        MngService service = dataSourceFactory.getService(httpServletRequest.getParameter("ptype"));
-//        MngService service = mysqlService;
-        Map resMap = new HashMap();
+    public String addconf(HttpServletRequest httpServletRequest,
+                          RedirectAttributes redirectAttributes) {
+        String ptype = httpServletRequest.getParameter("ptype");
+        String pcode = httpServletRequest.getParameter("pappname");
+        MngService service = dataSourceFactory.getService(ptype);
+        Map urlMap = dataSourceFactory.getUrl(ptype, pcode);
         try {
-            resMap = service.addConf(httpServletRequest);
+            service.addConf(httpServletRequest);
+            return "redirect:"+urlMap.get("okurl");
+
         } catch (Exception e) {
             e.printStackTrace();
-            resMap.put("status", 201);
-            resMap.put("msg", "更新出错!");
+            logger.error(e);
+            redirectAttributes.addAttribute("errmsg", "添加失败,请检查后重新添加!");
 
+            return "redirect:"+urlMap.get("errurl");
         }
-        return resMap;
     }
 
 

@@ -36,18 +36,13 @@ public class RedisServiceImpl implements MngService{
 
     @Transactional
     @Override
-    public Map addConf(HttpServletRequest request) throws Exception {
-        Map msg = new HashMap();
-        msg.put("status", 201);
-        msg.put("msg",    "添加失败");
-
+    public void addConf(HttpServletRequest request) throws Exception {
         String type        = request.getParameter("ptype");
         String dataid      = request.getParameter("pappname");
         String groupid     = request.getParameter("pgroupname");
         String timeout     = request.getParameter("ptimeout");
         String readtimeout = request.getParameter("preadtimeout");
         String ipport      = request.getParameter("pmiport");
-
 
         String[] iport = ipport.trim().split(":");
         String ip   = iport[0];
@@ -98,11 +93,6 @@ public class RedisServiceImpl implements MngService{
         String sql = "INSERT INTO config_info (data_id,group_id,content,md5,gmt_create,gmt_modified)" +
                 "VALUES(?,?,?,?,?,?)";
         jdbcTemplate.update(sql,dataid,groupid,content,md5,gmt_create,gmt_modified);
-
-        msg.put("status", 200);
-        msg.put("msg", "ok");
-
-        return msg;
     }
 
     @Override

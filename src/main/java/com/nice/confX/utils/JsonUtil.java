@@ -112,8 +112,6 @@ public class JsonUtil {
         String groupid = redisContentModel.getGroupid();
         JSONObject dbkey   = redisContentModel.getDbkey();
 
-        System.out.println(jsonStr);
-        System.out.println(dbkey);
         com.alibaba.fastjson.JSONArray masterArr =
                 (com.alibaba.fastjson.JSONArray) dbkey.get("master");
 
