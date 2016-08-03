@@ -74,6 +74,7 @@ public class ManagerController {
         String pcode = httpServletRequest.getParameter("pappname");
         MngService service = dataSourceFactory.getService(ptype);
         Map urlMap = dataSourceFactory.getUrl(ptype, pcode);
+
         try {
             service.addConf(httpServletRequest);
             return "redirect:"+urlMap.get("okurl");

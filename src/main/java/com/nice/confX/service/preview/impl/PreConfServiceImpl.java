@@ -23,10 +23,7 @@ public class PreConfServiceImpl implements PreConfService {
     DataSourceFactory dataSourceFactory;
 
     @Override
-    public Map getConf(String items) {
-        JSONObject jsonObject = JSON.parseObject(items);
-        String type = jsonObject.getString("type");
-        String item = jsonObject.getString("item");
+    public Map getConf(String type, String item) {
         logger.info("Type:" + type + " Appname:" + item);
 
         MngService service = dataSourceFactory.getService(type);

@@ -10,5 +10,5 @@ import java.util.Map;
 
 @Service
 public interface PreConfService {
-    public Map getConf(String items);
+    public Map getConf(String type, String item);
 }
