@@ -117,34 +117,54 @@ public class MySQLServiceImpl implements MngService {
         String gmt_create = simpleDateFormat.format(date);
 
         // 更新表appname_info
-        jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
-                    "VALUE (?,?,?,?,?)", dataid,groupid,type,gmt_create,gmt_create);
+        jdbcTemplate.update("INSERT INTO appname_info(" +
+                "appname, groupname, type, created_time, modified_time) " +
+                "VALUE (?,?,?,?,?)",
+                dataid,groupid,type,gmt_create,gmt_create);
 
         // 新增master
-        jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
-                    "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
-                    "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)",groupid, dbname, "master",
-                    mobj.get("ip"),mobj.get("port"),username,passwd,charset,
-                    tbprefix,timeout,gmt_create,gmt_create);
+        jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
+                "appname,groupname,dbname,role,ip,port," +
+                "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
+                "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                dataid, groupid, dbname, "master",
+                mobj.get("ip"),mobj.get("port"),username,passwd,charset,
+                tbprefix,timeout,gmt_create,gmt_create);
 
         // 新增slave
         for (int i=0; i<slavearr.length(); i++){
             JSONObject tmpobj = (JSONObject) slavearr.get(i);
-            jdbcTemplate.update("INSERT INTO groupname_info_mysql(groupname,dbname,role,ip,port," +
-                        "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
-                        "VALUE (?,?,?,?,?,?,?,?,?,?,?,?)", groupid, dbname, "slave",
-                        tmpobj.get("ip"), tmpobj.get("port"),username,passwd,charset,
-                        tbprefix, timeout, gmt_create, gmt_create);
+            jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
+                    "appname,groupname,dbname,role,ip,port," +
+                    "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
+                    "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    dataid, groupid, dbname, "slave",
+                    tmpobj.get("ip"), tmpobj.get("port"),username,passwd,charset,
+                    tbprefix, timeout, gmt_create, gmt_create);
         }
 
         // 更新表config_info
-        jdbcTemplate.update("INSERT INTO config_info(data_id,group_id,content,md5,gmt_create,gmt_modified) " +
-                    "VALUE (?,?,?,?,?,?)", dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
+        jdbcTemplate.update("INSERT INTO config_info(" +
+                "data_id,group_id,content,md5,gmt_create,gmt_modified) " +
+                "VALUE (?,?,?,?,?,?)",
+                dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
     }
 
     @Override
-    public Integer delConf() {
-        return null;
+    @Transactional
+    public void delConf(String appname, String groupname, String type) throws Exception{
+        // 清理appname_info表相应信息
+        String sql1 = "DELETE FROM appname_info WHERE appname=? AND groupname=? AND type=?";
+        jdbcTemplate.update(sql1, appname, groupname, type);
+
+        // 清理groupname_info_mysql表相应信息
+        String sql2 = "DELETE FROM groupname_info_mysql WHERE appname=? AND groupname=?";
+        jdbcTemplate.update(sql2, appname, groupname);
+
+        // 清理config_info表相应信息
+        String sql3 = "DELETE FROM config_info WHERE data_id=? AND group_id=?";
+        jdbcTemplate.update(sql3, appname, groupname);
+
     }
 
     @Override

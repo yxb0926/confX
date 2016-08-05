@@ -33,15 +33,18 @@
                         <tr>
                             <td th:text="${listx.key}"></td>
                             <td>Master</td>
-                            <span th:each="master : ${listx.value.content.dbkey.master}">
-                                <td th:text="${master.ip}+':'+${master.port}"></td>
-                            </span>
+                            <td>
+                                <span th:each="master : ${listx.value.content.dbkey.master}">
+                                    <div th:text="${master.ip}+':'+${master.port}"></div>
+                                </span>
+                            </td>
                             <td th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
                             <td th:text="${listx.value.content.dbkey.attach.timeout}"></td>
                             <td>
-                                <a>检查</a>
+                                <a href="javascript:void(0)">检查</a>
                                 <a>修改</a>
-                                <a>删除</a>
+                                <a href="javascript:void(0)"
+                                   th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\')'">删除</a>
                             </td>
                         </tr>
                     </span>
@@ -50,5 +53,32 @@
         </div>
     </div>
 
+<script>
+    function del(appname, groupname, type) {
+        $.ajax({
+            url:"http://127.0.0.1:8080/manager/project/confdel",
+            dataType:"json",
+            async:true,
+            data:{
+                "appname":appname,
+                "groupname":groupname,
+                "type":type
+            },
+            type:"POST",
+            beforeSend:function(){
+            },
+            success:function(req) {
+                console.log(req);
+            },
+            complete:function(){
+                window.location.reload();
+            },
+            error:function () {
+                alert("操作出错,请检查!");
+            }
+        });
+
+    }
+</script>
 </body>
 </html>

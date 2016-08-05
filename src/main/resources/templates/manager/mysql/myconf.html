@@ -43,9 +43,12 @@
                                 </td>
                             </span>
                             <td rowspan="2">
-                                <a>检测</a>
-                                <a>修改</a>
-                                <a>删除</a>
+                                <a href="javascript:void(0)"
+                                   th:onclick="'javascript:check(\''+${pcode}+'\',\''+${listx.key}+'\');'">检测</a>
+                                <a href="javascript:void(0)"
+                                   onclick="modify()">修改</a>
+                                <a href="javascript:void(0)"
+                                   th:onclick="'javascript:del(\''+${pcode}+'\',\''+${listx.key}+'\',\'MySQL\');'">删除</a>
                             </td>
                         </tr>
                         <tr>
@@ -61,5 +64,42 @@
             </div>
         </div>
     </div>
+
+<script type="application/javascript" th:inline="javascript">
+    function check(appname, groupname) {
+        alert(appname);
+        alert(groupname);
+        //alert(/*[[${pcode}]]*/);
+
+
+    }
+
+
+    function del (appname, groupname,type) {
+        $.ajax({
+            url:"http://127.0.0.1:8080/manager/project/confdel",
+            dataType:"json",
+            async:true,
+            data:{
+                "appname":appname,
+                "groupname":groupname,
+                "type":type
+            },
+            type:"POST",
+            beforeSend:function(){
+            },
+            success:function(req) {
+                console.log(req);
+            },
+            complete:function(){
+                window.location.reload();
+            },
+            error:function () {
+                alert("操作出错,请检查!");
+            }
+        });
+
+    }
+</script>
 </body>
 </html>

@@ -88,6 +88,26 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/project/confdel", method = RequestMethod.POST)
+    @ResponseBody
+    public Map delconf(HttpServletRequest httpServletRequest){
+        Map map = new HashMap();
+        map.put("code", 200);
+        map.put("msg", "ok");
+        String type        = httpServletRequest.getParameter("type");
+        String appname     = httpServletRequest.getParameter("appname");
+        String groupname   = httpServletRequest.getParameter("groupname");
+        MngService service = dataSourceFactory.getService(type);
+
+        try {
+            service.delConf(appname, groupname, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code",201);
+            map.put("msg", "failed");
+        }
+        return map;
+    }
 
     @RequestMapping("/project/ngxconf")
     public ModelAndView ngxconf() {

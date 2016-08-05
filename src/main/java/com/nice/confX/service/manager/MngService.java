@@ -23,7 +23,7 @@ public interface MngService {
     /**
      * 删除一个mysql的配置
      * */
-    Integer delConf();
+    void delConf(String appname, String groupname, String type) throws Exception;
 
     /**
      * 修改一个mysql的配置

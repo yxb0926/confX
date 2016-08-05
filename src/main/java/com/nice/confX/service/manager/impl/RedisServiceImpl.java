@@ -44,9 +44,22 @@ public class RedisServiceImpl implements MngService{
         String readtimeout = request.getParameter("preadtimeout");
         String ipport      = request.getParameter("pmiport");
 
+        String[] iportx = ipport.trim().split(",");
+
+
         String[] iport = ipport.trim().split(":");
         String ip   = iport[0];
         String port = iport[1];
+
+        List masterList = new ArrayList();
+        for (int i=0; i<iportx.length; i++){
+            String[] strarr = iportx[i].trim().split(":");
+            Map tmpMap = new HashMap();
+            tmpMap.put("ip",   strarr[0].trim());
+            tmpMap.put("port", strarr[1].trim());
+
+            masterList.add(tmpMap);
+        }
 
         Map map = new HashMap();
         map.put("dataid",  dataid);
@@ -54,12 +67,11 @@ public class RedisServiceImpl implements MngService{
 
         List dbkey = new ArrayList();
         Map dbkeyMap = new HashMap();
-        List masterList = new ArrayList();
 
-        Map masterMap = new HashMap();
-        masterMap.put("ip", ip);
-        masterMap.put("port", port);
-        masterList.add(masterMap);
+//      Map masterMap = new HashMap();
+//        masterMap.put("ip", ip);
+//        masterMap.put("port", port);
+//        masterList.add(masterMap);
 
         Map attachMap = new HashMap();
         attachMap.put("timeout", timeout);
@@ -80,24 +92,48 @@ public class RedisServiceImpl implements MngService{
         String gmt_modified = gmt_create;
 
         // 更新表appname_info
-        jdbcTemplate.update("INSERT INTO appname_info(appname, groupname, type, created_time, modified_time) " +
-                "VALUE (?,?,?,?,?)", dataid,groupid,type,gmt_create,gmt_create);
+        jdbcTemplate.update("INSERT INTO appname_info(" +
+                "appname, groupname, type, created_time, modified_time) " +
+                "VALUE (?,?,?,?,?)",
+                dataid,groupid,type,gmt_create,gmt_create);
 
         // 更新groupname_info_redis
-        jdbcTemplate.update("INSERT INTO groupname_info_redis (groupname, timeout, read_timeout, " +
-                "role, ip, port, created_time, modified_time) " +
-                "VALUES(?,?,?,?,?,?,?,?)",
-                groupid,timeout,readtimeout,"Master",ip, port, gmt_create, gmt_modified);
+        String sql2 = "INSERT INTO " +
+                "groupname_info_redis(" +
+                "appname, groupname, timeout, read_timeout," +
+                "role, ip, port, created_time, modified_time)" +
+                " VALUES(?,?,?,?,?,?,?,?,?)";
+        for (int j=0; j<masterList.size(); j++){
+            String ipx   = (String) ((Map)masterList.get(j)).get("ip");
+            String portx = (String) ((Map)masterList.get(j)).get("port");
+            jdbcTemplate.update(
+                    sql2,dataid,groupid,timeout,
+                    readtimeout,"Master",ipx, portx,
+                    gmt_create, gmt_modified);
+
+        }
 
         // 更新config_info 表
-        String sql = "INSERT INTO config_info (data_id,group_id,content,md5,gmt_create,gmt_modified)" +
+        String sql3 = "INSERT INTO config_info(" +
+                "data_id,group_id,content,md5,gmt_create,gmt_modified)" +
                 "VALUES(?,?,?,?,?,?)";
-        jdbcTemplate.update(sql,dataid,groupid,content,md5,gmt_create,gmt_modified);
+        jdbcTemplate.update(sql3,dataid,groupid,content,md5,gmt_create,gmt_modified);
     }
 
     @Override
-    public Integer delConf() {
-        return null;
+    @Transactional
+    public void delConf(String appname, String groupname, String type) throws Exception {
+        // 清理appname_info表相关信息
+        String sql1 = "DELETE FROM appname_info WHERE appname=? AND groupname=? AND type=?";
+        jdbcTemplate.update(sql1, appname, groupname, type);
+
+        // 清理groupname_info_redis表相关信息
+        String sql2 = "DELETE FROM groupname_info_redis WHERE appname=? AND groupname=?";
+        jdbcTemplate.update(sql2, appname, groupname);
+
+        // 清理config_info表相关信息
+        String sql3 = "DELETE FROM config_info WHERE data_id=? AND group_id=?";
+        jdbcTemplate.update(sql3, appname, groupname);
     }
 
     @Override
