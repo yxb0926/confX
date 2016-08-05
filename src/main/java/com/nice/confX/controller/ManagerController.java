@@ -109,6 +109,26 @@ public class ManagerController {
         return map;
     }
 
+
+    /**
+    * TODO: 修改接口
+    * */
+    @RequestMapping(value = "/project/confmodify", method = RequestMethod.POST)
+    public Map modifyconf(HttpServletRequest httpServletRequest){
+        Map map = new HashMap();
+        String type        = httpServletRequest.getParameter("type");
+        String appname     = httpServletRequest.getParameter("appname");
+        String groupname   = httpServletRequest.getParameter("groupname");
+        MngService service = dataSourceFactory.getService(type);
+
+        try {
+            service.modifyConf();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return map;
+    }
+
     @RequestMapping("/project/ngxconf")
     public ModelAndView ngxconf() {
         return new ModelAndView("manager/nginx/ngxconf");

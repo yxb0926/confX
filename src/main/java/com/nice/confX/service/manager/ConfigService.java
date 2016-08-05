@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class ConfigService {
                 "FROM config_info " +
                 "WHERE data_id=? AND group_id in (" + group_id + ")";
 
-            logger.info(sql);
+        logger.info(sql);
 
         return getData(sql, dataid);
     }
@@ -56,7 +57,7 @@ public class ConfigService {
             return jdbcTemplate.queryForList(sql, dataid);
         }catch (DataAccessException e){
             logger.error(e);
-            return null;
+            return new ArrayList();
         }
     }
 

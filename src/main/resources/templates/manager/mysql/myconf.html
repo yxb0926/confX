@@ -16,7 +16,9 @@
 <body>
     <div class="container">
         <hr/>
-        <a type="button" class="btn btn-success" th:href="@{myconfnew(pcode=${pcode})}" target="_blank"> 新增配置 </a>
+        <a type="button" class="btn btn-success"
+           th:href="@{myconfnew(pcode=${pcode})}"
+           target="_blank"> 新增组 </a>
 
         <div class="row">
             <div class="col-md-12" role="main">
@@ -45,8 +47,7 @@
                             <td rowspan="2">
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:check(\''+${pcode}+'\',\''+${listx.key}+'\');'">检测</a>
-                                <a href="javascript:void(0)"
-                                   onclick="modify()">修改</a>
+                                <a th:href="@{myconfmodify(pcode=${pcode}, pgroupname = ${listx.key})}">修改</a>
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:del(\''+${pcode}+'\',\''+${listx.key}+'\',\'MySQL\');'">删除</a>
                             </td>
@@ -70,8 +71,6 @@
         alert(appname);
         alert(groupname);
         //alert(/*[[${pcode}]]*/);
-
-
     }
 
 

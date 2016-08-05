@@ -18,7 +18,11 @@
         <div class="row">
             <hr/>
             <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
-            <form class="form-horizontal" th:action="@{confadd}" method="post" autocomplete="off">
+            <span th:each="dbkey : ${pcontent}">
+                <a th:text="${dbkey}"></a>
+                <a th:text="${dbkey.key}"></a>
+                <a th:text="${dbkey.value.content}"></a>
+            <form class="form-horizontal" th:action="@{confmodify}" method="post" autocomplete="off">
                 <div class="form-group">
                     <label for="type" class="col-sm-2 control-label">Type</label>
                     <div class="col-sm-3">
@@ -39,7 +43,7 @@
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="pgroupname"
                                id="groupname" placeholder="不能为空,且唯一!"
-                        />
+                               th:value="${dbkey.key}" readonly="readonly"/>
                     </div>
                 </div>
 
@@ -48,12 +52,16 @@
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="pdbname"
                                id="dbname" placeholder="不能为空!"
+                               th:value="${dbkey.value.content.dbname}"
+
                         />
                     </div>
                     <label for="tbprefix" class="col-sm-1 control-label">表前缀</label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="ptbprefix"
-                               id="tbprefix" placeholder="" />
+                               id="tbprefix" placeholder=""
+                               th:value="${dbkey.value.content.dbkey.attach.tbprefix}"
+                        />
                     </div>
                 </div>
 
@@ -61,11 +69,14 @@
                     <label for="user" class="col-sm-2 control-label">用户名</label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="puser"
-                               id="user" placeholder="" autocomplete="off" />
+                               id="user" placeholder="" autocomplete="off"
+                               th:value="${dbkey.value.content.dbkey.attach.user}"
+                        />
                     </div>
                     <label for="charsetx" class="col-sm-1 control-label">字符集</label>
                     <div class="col-sm-3">
-                        <select class="form-control" name="pcharsetx" id="charsetx">
+                        <select class="form-control" name="pcharsetx" id="charsetx"
+                               th:value="${dbkey.value.content.dbkey.attach.charset}">
                             <option>utf8mb4</option>
                             <option>utf8</option>
                             <option>gbk</option>
@@ -76,25 +87,39 @@
                 <div class="form-group">
                     <label for="pass" class="col-sm-2 control-label">密码</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="ppass" id="pass" placeholder="" autocomplete="off" />
+                        <input type="text" class="form-control" name="ppass"
+                               id="pass" placeholder="" autocomplete="off"
+                               th:value="${dbkey.value.content.dbkey.attach.passwd}"
+                        />
                     </div>
                     <label for="timeoutx" class="col-sm-1 control-label">超时时间</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="ptimeoutx" id="timeoutx" placeholder="" value="1"/>
+                        <input type="text" class="form-control" name="ptimeoutx"
+                               id="timeoutx" placeholder="" value="1"
+                               th:value="${dbkey.value.content.dbkey.attach.timeout}"
+                        />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="miport" class="col-sm-2 control-label">Master Host</label>
-                    <div class="col-sm-7">
-                        <textarea class="form-control" rows="3" name="pmiport" id="miport" placeholder="ip:port #master只能有一个"></textarea>
+                    <div class="col-sm-7" >
+                        <textarea class="form-control" rows="3" name="pmiport"
+                                  id="miport" placeholder="ip:port #master只能有一个"
+                                  th:text="${pmasterstr}"
+                        >
+                        </textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="siport" class="col-sm-2 control-label">Slave Host</label>
                     <div class="col-sm-7">
-                        <textarea class="form-control" rows="3" name="psiport" id="siport" placeholder="ip:port,ip:port # 可以包含多个机器,多个机器以逗号隔开!"></textarea>
+                        <textarea class="form-control" rows="3" name="psiport"
+                                  id="siport" placeholder="ip:port,ip:port # 可以包含多个机器,多个机器以逗号隔开!"
+                                  th:text="${pslavestr}"
+                        >
+                        </textarea>
                     </div>
                 </div>
 
@@ -105,6 +130,7 @@
                 </div>
 
             </form>
+            </span>
         </div>
     </div>
 </body>

@@ -18,7 +18,7 @@ public class ListToMap {
                 Map myMap = (Map) list.get(i);
 
                 String groupname = myMap.get("group_id").toString();
-                String myConent = myMap.get("content").toString();
+                String myConent  = myMap.get("content").toString();
                 tmpMap.put("content", jsonUtil.myContentToMap(myConent));
                 tmpMap.put("md5",     myMap.get("md5").toString());
 

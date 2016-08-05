@@ -179,33 +179,34 @@ public class MySQLServiceImpl implements MngService {
 
     @Override
     public Map getConf(String dataid) {
-        Map map = new HashMap();
-        Map myMap = new HashMap();
         List myList = configService.getConf(dataid);
         logger.info(myList);
 
-        myMap = listToMap.mylistToMap(myList);
-
-
-        if (myList.size()>0){
-            map.put("status",        200);
-            map.put("msg",           "ok");
-            map.put("item_content",  myMap);
-        }else{
-            map.put("status",       202);
-            map.put("msg",          "未查到该记录");
-            map.put("item_content", myMap);
-        }
-
-        return map;
+        return this.genResMap(myList);
     }
 
     @Override
     public Map getConf(String dataid, String groupid) {
         List myList = configService.getConf(dataid, groupid);
         logger.info(myList);
+        return this.genResMap(myList);
+    }
 
-        return listToMap.mylistToMap(myList);
+    private Map genResMap(List myList){
+        Map map   = new HashMap();
+        Map myMap = new HashMap();
+        map.put("status",       200);
+        map.put("msg",          "ok");
+        map.put("item_content", myMap);
+
+        if (myList.size()>0){
+            myMap = listToMap.mylistToMap(myList);
+            map.put("item_content",  myMap);
+        }else {
+            map.put("status",       202);
+            map.put("msg",          "未查到该记录");
+        }
+        return map;
     }
 }
 
