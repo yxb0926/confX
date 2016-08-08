@@ -42,7 +42,7 @@
                             <td th:text="${listx.value.content.dbkey.attach.timeout}"></td>
                             <td>
                                 <a href="javascript:void(0)">检查</a>
-                                <a>修改</a>
+                                <a th:href="@{rdsconfmodify(pcode=${pcode}, pgroupname = ${listx.key})}">修改</a>
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\')'">删除</a>
                             </td>

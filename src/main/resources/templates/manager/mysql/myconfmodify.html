@@ -19,9 +19,6 @@
             <hr/>
             <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
             <span th:each="dbkey : ${pcontent}">
-                <a th:text="${dbkey}"></a>
-                <a th:text="${dbkey.key}"></a>
-                <a th:text="${dbkey.value.content}"></a>
             <form class="form-horizontal" th:action="@{confmodify}" method="post" autocomplete="off">
                 <div class="form-group">
                     <label for="type" class="col-sm-2 control-label">Type</label>
@@ -52,8 +49,7 @@
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="pdbname"
                                id="dbname" placeholder="不能为空!"
-                               th:value="${dbkey.value.content.dbname}"
-
+                               th:value="${dbkey.value.content.dbname}" readonly="readonly"
                         />
                     </div>
                     <label for="tbprefix" class="col-sm-1 control-label">表前缀</label>

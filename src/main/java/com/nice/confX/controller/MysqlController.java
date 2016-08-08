@@ -41,7 +41,7 @@ public class MysqlController {
     public ModelAndView myconfmodify(String pcode, String pgroupname){
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconfmodify");
         Map map = mySQLService.getConf(pcode, pgroupname);
-        modelAndView.addObject("pcode",     pcode);
+        modelAndView.addObject("pcode",    pcode);
         modelAndView.addObject("pcontent", map.get("item_content"));
 
         Map dbkeymap = (Map) ((Map) ((Map) ((Map)map.get("item_content")).

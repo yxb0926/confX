@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.nice.confX.service.manager.ConfigService;
 import com.nice.confX.service.manager.MngService;
 import com.nice.confX.utils.ListToMap;
+import com.nice.confX.utils.OtherUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,45 +43,9 @@ public class RedisServiceImpl implements MngService{
         String groupid     = request.getParameter("pgroupname");
         String timeout     = request.getParameter("ptimeout");
         String readtimeout = request.getParameter("preadtimeout");
-        String ipport      = request.getParameter("pmiport");
 
-        String[] iportx = ipport.trim().split(",");
-
-
-        String[] iport = ipport.trim().split(":");
-        String ip   = iport[0];
-        String port = iport[1];
-
-        List masterList = new ArrayList();
-        for (int i=0; i<iportx.length; i++){
-            String[] strarr = iportx[i].trim().split(":");
-            Map tmpMap = new HashMap();
-            tmpMap.put("ip",   strarr[0].trim());
-            tmpMap.put("port", strarr[1].trim());
-
-            masterList.add(tmpMap);
-        }
-
-        Map map = new HashMap();
-        map.put("dataid",  dataid);
-        map.put("groupid", groupid);
-
-        List dbkey = new ArrayList();
-        Map dbkeyMap = new HashMap();
-
-//      Map masterMap = new HashMap();
-//        masterMap.put("ip", ip);
-//        masterMap.put("port", port);
-//        masterList.add(masterMap);
-
-        Map attachMap = new HashMap();
-        attachMap.put("timeout", timeout);
-        attachMap.put("read_timeout", readtimeout);
-
-        dbkeyMap.put("master", masterList);
-        dbkeyMap.put("attach", attachMap);
-
-        map.put("dbkey",dbkeyMap);
+        OtherUtil util = new OtherUtil();
+        Map map = util.setRedisInfo(request);
 
         String content = JSON.toJSONString(map);
         String md5     = DigestUtils.md5Hex(content);
@@ -98,6 +63,7 @@ public class RedisServiceImpl implements MngService{
                 dataid,groupid,type,gmt_create,gmt_create);
 
         // 更新groupname_info_redis
+        List masterList = (List) ((Map) map.get("dbkey")).get("master");
         String sql2 = "INSERT INTO " +
                 "groupname_info_redis(" +
                 "appname, groupname, timeout, read_timeout," +
@@ -136,9 +102,55 @@ public class RedisServiceImpl implements MngService{
         jdbcTemplate.update(sql3, appname, groupname);
     }
 
+    @Transactional
     @Override
-    public Integer modifyConf() {
-        return null;
+    public void modifyConf(HttpServletRequest request) throws Exception {
+        String appname     = request.getParameter("pappname");
+        String groupname   = request.getParameter("pgroupname");
+        String timeout     = request.getParameter("ptimeout");
+        String readtimeout = request.getParameter("preadtimeout");
+
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String gmt_create   = simpleDateFormat.format(date);
+        String gmt_modified = gmt_create;
+
+        //清理groupname_info_redis表
+        String sql1 = "DELETE FROM groupname_info_redis " +
+                "WHERE appname=? AND groupname=?";
+        jdbcTemplate.update(sql1, appname, groupname);
+
+        //清理config_info表
+        String sql2 = "DELETE FROM config_info " +
+                "WHERE data_id=? AND group_id=?";
+        jdbcTemplate.update(sql2, appname, groupname);
+
+        //新增groupname_info_redis表相关信息
+        OtherUtil util = new OtherUtil();
+        Map map = util.setRedisInfo(request);
+
+        List masterList = (List) ((Map) map.get("dbkey")).get("master");
+        String sql3 = "INSERT INTO " +
+                "groupname_info_redis(" +
+                "appname, groupname, timeout, read_timeout," +
+                "role, ip, port, created_time, modified_time)" +
+                " VALUES(?,?,?,?,?,?,?,?,?)";
+        for (int j=0; j<masterList.size(); j++){
+            String ipx   = (String) ((Map)masterList.get(j)).get("ip");
+            String portx = (String) ((Map)masterList.get(j)).get("port");
+            jdbcTemplate.update(
+                    sql3,appname,groupname,timeout,
+                    readtimeout,"Master",ipx, portx,
+                    gmt_create, gmt_modified);
+        }
+
+        //新增config_info表相关信息
+        String content = JSON.toJSONString(map);
+        String md5     = DigestUtils.md5Hex(content);
+        String sql4 = "INSERT INTO config_info(" +
+                "data_id,group_id,content,md5,gmt_create,gmt_modified)" +
+                "VALUES(?,?,?,?,?,?)";
+        jdbcTemplate.update(sql4,appname,groupname,content,md5,gmt_create,gmt_modified);
     }
 
     @Override
@@ -148,31 +160,18 @@ public class RedisServiceImpl implements MngService{
 
     @Override
     public Map getConf(String dataid) {
-        Map map = new HashMap();
         List redisList = configService.getConf(dataid);
         logger.info(redisList);
-        Map tmpMap = listToMap.redisListToMap(redisList);
-        logger.info(tmpMap);
 
-
-        if (redisList.size()>0){
-            map.put("status",        200);
-            map.put("msg",           "ok");
-            map.put("item_content",  tmpMap);
-        }else{
-            map.put("status",       202);
-            map.put("msg",          "未查到该记录");
-            map.put("item_content", tmpMap);
-        }
-
-        return map;
+        OtherUtil util = new OtherUtil();
+        return util.genRedisResMap(redisList);
     }
 
     @Override
     public Map getConf(String dataid, String groupid) {
-        Map map = new HashMap();
-        List redisList = configService.getConf(dataid);
+        List redisList = configService.getConf(dataid, groupid);
         logger.info(redisList);
-        return map;
+        OtherUtil util = new OtherUtil();
+        return util.genRedisResMap(redisList);
     }
 }

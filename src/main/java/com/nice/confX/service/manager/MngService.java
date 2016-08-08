@@ -21,17 +21,17 @@ public interface MngService {
     void addConf(HttpServletRequest request) throws Exception;
 
     /**
-     * 删除一个mysql的配置
+     * 删除一个mysql|redis的配置
      * */
     void delConf(String appname, String groupname, String type) throws Exception;
 
     /**
-     * 修改一个mysql的配置
+     * 修改一个mysql|redis的配置
      * */
-    Integer modifyConf();
+    void modifyConf(HttpServletRequest httpServletRequest) throws Exception;
 
     /**
-     * 检测一个mysql的配置
+     * 检测一个mysql|redis的配置
      * */
     Integer checkConf();
 

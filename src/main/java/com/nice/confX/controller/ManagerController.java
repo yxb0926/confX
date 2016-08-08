@@ -111,22 +111,26 @@ public class ManagerController {
 
 
     /**
-    * TODO: 修改接口
+    * 修改接口
     * */
     @RequestMapping(value = "/project/confmodify", method = RequestMethod.POST)
-    public Map modifyconf(HttpServletRequest httpServletRequest){
+    public String modifyconf(HttpServletRequest httpServletRequest,
+                             RedirectAttributes redirectAttributes){
         Map map = new HashMap();
-        String type        = httpServletRequest.getParameter("type");
-        String appname     = httpServletRequest.getParameter("appname");
-        String groupname   = httpServletRequest.getParameter("groupname");
+        String type        = httpServletRequest.getParameter("ptype");
+        String appname     = httpServletRequest.getParameter("pappname");
         MngService service = dataSourceFactory.getService(type);
+        Map         urlMap = dataSourceFactory.getUrl(type, appname);
 
         try {
-            service.modifyConf();
+            service.modifyConf(httpServletRequest);
+            return "redirect:"+urlMap.get("okurl");
         }catch (Exception e){
             e.printStackTrace();
+            redirectAttributes.addAttribute("errmsg", "修改失败,请检查后重新修改!");
+
+            return "redirect:"+urlMap.get("errurl");
         }
-        return map;
     }
 
     @RequestMapping("/project/ngxconf")

@@ -1,0 +1,91 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <hr/>
+            <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
+            <p th:text="${pcontent}"></p>
+
+            <span th:each="dbkey : ${pcontent}">
+            <form class="form-horizontal" th:action="@{confmodify}" method="post" autocomplete="off">
+                <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">Type</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="ptype"
+                               id="type" placeholder="" th:value="Redis"
+                               readonly="readonly"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="appname" class="col-sm-2 control-label">AppName</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="pappname"
+                               id="appname" placeholder="" th:value="${pcode}"
+                               readonly="readonly"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="groupname" class="col-sm-2 control-label">GroupName</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="pgroupname"
+                               id="groupname" placeholder="不能为空,且唯一!"
+                               th:value="${dbkey.key}" readonly="readonly"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="timeout" class="col-sm-2 control-label">timeout</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="ptimeout"
+                               id="timeout" placeholder="" autocomplete="off"
+                               th:value="${dbkey.value.content.dbkey.attach.timeout}"
+                        />
+                    </div>
+                    <label for="read_timeout" class="col-sm-1 control-label">read_timeout</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="preadtimeout"
+                               id="read_timeout" placeholder="" value="1"
+                               th:value="${dbkey.value.content.dbkey.attach.read_timeout}"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="miport" class="col-sm-2 control-label">Master Host</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" rows="3" name="pmiport"
+                                  id="miport" placeholder="ip:port #可以配置多个,用逗号隔开!"
+                                  th:text="${pmasterstr}"
+                        >
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-5 col-sm-10">
+                        <button type="submit" class="btn btn-default">提交</button>
+                    </div>
+                </div>
+            </form>
+            </span>
+        </div>
+    </div>
+</body>
+</html>

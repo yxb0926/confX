@@ -1,8 +1,10 @@
 package com.nice.confX.service.manager.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.nice.confX.service.manager.ConfigService;
 import com.nice.confX.service.manager.MngService;
 import com.nice.confX.utils.ListToMap;
+import com.nice.confX.utils.OtherUtil;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,66 +53,13 @@ public class MySQLServiceImpl implements MngService {
         String passwd   = request.getParameter("ppass").trim();
         String charset  = request.getParameter("pcharsetx").trim();
         String timeout  = request.getParameter("ptimeoutx").trim();
-        String masterx  = request.getParameter("pmiport").trim();
-        String slaverx  = request.getParameter("psiport").trim();
         String type     = request.getParameter("ptype");
-        String[] master = masterx.split(",");
-        String[] slaver = slaverx.split(",");
 
-        JSONObject jsonObject = new JSONObject();
-        JSONArray  masterarr  = new JSONArray();
-        JSONArray  slavearr   = new JSONArray();
-        JSONArray  hostarr    = new JSONArray();
+        OtherUtil util = new OtherUtil();
+        Map map = util.setMysqlInfo(request);
 
-        /**
-         *  Master  只允许1个,不允许多个
-         * */
-
-        if ( master.length !=  1 ){
-            throw new Exception("Master 只能有一个!");
-        }
-
-        /**
-         *  解析Master信息
-         * */
-        String[] mip_port = master[0].trim().split(":");
-        JSONObject mobj = new JSONObject();
-        mobj.put("ip",   mip_port[0].trim());
-        mobj.put("port", mip_port[1].trim());
-
-        masterarr.put(mobj);
-
-        /**
-         *  解析Slave信息
-         * */
-        for (int j=0; j< slaver.length; j++){
-            String[] sip_port = slaver[j].trim().split(":");
-
-            JSONObject sobj = new JSONObject();
-            sobj.put("ip",     sip_port[0].trim());
-            sobj.put("port",   sip_port[1].trim());
-            slavearr.put(sobj);
-        }
-
-        JSONObject attachObj  = new JSONObject();
-        attachObj.put("tbprefix", tbprefix);
-        attachObj.put("charset",  charset);
-        attachObj.put("timeout",  timeout);
-        attachObj.put("user",     username);
-        attachObj.put("passwd",   passwd);
-
-        JSONObject hostObj  = new JSONObject();
-        hostObj.put("master", masterarr);
-        hostObj.put("slave",  slavearr);
-        hostObj.put("attach", attachObj);
-
-
-        jsonObject.put("dbname",  dbname);
-        jsonObject.put("dbkey",   hostObj);
-        jsonObject.put("groupid", groupid);
-        jsonObject.put("dataid",  dataid);
-
-        String md5 = DigestUtils.md5Hex(jsonObject.toString());
+        String content = JSON.toJSONString(map);
+        String md5 = DigestUtils.md5Hex(content);
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -123,23 +72,29 @@ public class MySQLServiceImpl implements MngService {
                 dataid,groupid,type,gmt_create,gmt_create);
 
         // 新增master
+        Map mmap = (Map) ((List) ((Map) map.get("dbkey")).get("master")).get(0);
+        String mip   = mmap.get("ip").toString();
+        String mport = mmap.get("port").toString();
         jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
                 "appname,groupname,dbname,role,ip,port," +
                 "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
                 "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 dataid, groupid, dbname, "master",
-                mobj.get("ip"),mobj.get("port"),username,passwd,charset,
+                mip,mport,username,passwd,charset,
                 tbprefix,timeout,gmt_create,gmt_create);
 
         // 新增slave
-        for (int i=0; i<slavearr.length(); i++){
-            JSONObject tmpobj = (JSONObject) slavearr.get(i);
+        List slavearr = (List) ((Map) map.get("dbkey")).get("slave");
+        for (int i=0; i<slavearr.size(); i++){
+            Map smap = (Map) slavearr.get(i);
+            String sip   = smap.get("ip").toString();
+            String sport = smap.get("port").toString();
             jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
                     "appname,groupname,dbname,role,ip,port," +
                     "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
                     "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     dataid, groupid, dbname, "slave",
-                    tmpobj.get("ip"), tmpobj.get("port"),username,passwd,charset,
+                    sip, sport, username,passwd,charset,
                     tbprefix, timeout, gmt_create, gmt_create);
         }
 
@@ -147,7 +102,7 @@ public class MySQLServiceImpl implements MngService {
         jdbcTemplate.update("INSERT INTO config_info(" +
                 "data_id,group_id,content,md5,gmt_create,gmt_modified) " +
                 "VALUE (?,?,?,?,?,?)",
-                dataid, groupid, jsonObject.toString(), md5, gmt_create, gmt_create);
+                dataid, groupid, content, md5, gmt_create, gmt_create);
     }
 
     @Override
@@ -168,8 +123,85 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Integer modifyConf() {
-        return null;
+    @Transactional
+    public void modifyConf(HttpServletRequest request) throws Exception {
+        /**
+         *  修改逻辑:
+         *  1. appname、groupname和dbname是不能修改的;
+         *  2. 修改部分主要是dbkey部分,即ip端口、密码、超时时间等;
+         *  3. 保证事务,修改前要清除掉老的数据,然后添加新的数据;
+         *  4. 清理表
+         *     a) groupname_info_mysql;
+         *     b) config_info
+         *
+         *  5. 添加
+         *     a) groupname_info_mysql;
+         *     b) config_info
+         * */
+
+        String dataid    = request.getParameter("pappname").trim(); // pcode, appname
+        String groupid   = request.getParameter("pgroupname").trim();
+        String dbname    = request.getParameter("pdbname").trim();
+        String tbprefix  = request.getParameter("ptbprefix").trim();
+        String username  = request.getParameter("puser").trim();
+        String passwd    = request.getParameter("ppass").trim();
+        String charset   = request.getParameter("pcharsetx").trim();
+        String timeout   = request.getParameter("ptimeoutx").trim();
+        String appname   = request.getParameter("pappname").trim();
+        String groupname = request.getParameter("pgroupname").trim();
+
+        OtherUtil util = new OtherUtil();
+        Map map = util.setMysqlInfo(request);
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String gmt_create = simpleDateFormat.format(date);
+
+        // 清理groupname_info_mysql表相应数据
+        String sql1 = "DELETE FROM groupname_info_mysql " +
+                "WHERE appname=? AND groupname=? AND dbname=?";
+        jdbcTemplate.update(sql1, appname, groupname, dbname);
+
+        // 清理config_info表相应数据
+        String sql2 = "DELETE FROM config_info " +
+                "WHERE data_id=? AND group_id=?";
+        jdbcTemplate.update(sql2, appname, groupname);
+
+        // 增加groupname_info_mysql表相应数据
+        // 新增master
+        Map mmap = (Map) ((List) ((Map) map.get("dbkey")).get("master")).get(0);
+        String mip   = mmap.get("ip").toString();
+        String mport = mmap.get("port").toString();
+        jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
+                        "appname,groupname,dbname,role,ip,port," +
+                        "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
+                        "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                dataid, groupid, dbname, "master",
+                mip,mport,username,passwd,charset,
+                tbprefix,timeout,gmt_create,gmt_create);
+
+        // 新增slave
+        List slavearr = (List) ((Map) map.get("dbkey")).get("slave");
+        for (int i=0; i<slavearr.size(); i++){
+            Map smap = (Map) slavearr.get(i);
+            String sip   = smap.get("ip").toString();
+            String sport = smap.get("port").toString();
+            jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
+                            "appname,groupname,dbname,role,ip,port," +
+                            "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
+                            "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    dataid, groupid, dbname, "slave",
+                    sip, sport, username,passwd,charset,
+                    tbprefix, timeout, gmt_create, gmt_create);
+        }
+
+        String content = JSON.toJSONString(map);
+        String md5 = DigestUtils.md5Hex(content);
+
+        // 增加config_info表相应数据
+        jdbcTemplate.update("INSERT INTO config_info(" +
+                        "data_id,group_id,content,md5,gmt_create,gmt_modified) " +
+                        "VALUE (?,?,?,?,?,?)",
+                dataid, groupid, content, md5, gmt_create, gmt_create);
     }
 
     @Override
@@ -181,32 +213,20 @@ public class MySQLServiceImpl implements MngService {
     public Map getConf(String dataid) {
         List myList = configService.getConf(dataid);
         logger.info(myList);
+        OtherUtil util = new OtherUtil();
 
-        return this.genResMap(myList);
+        return util.genResMap(myList);
+
     }
 
     @Override
     public Map getConf(String dataid, String groupid) {
         List myList = configService.getConf(dataid, groupid);
         logger.info(myList);
-        return this.genResMap(myList);
+        OtherUtil util = new OtherUtil();
+
+        return util.genResMap(myList);
     }
 
-    private Map genResMap(List myList){
-        Map map   = new HashMap();
-        Map myMap = new HashMap();
-        map.put("status",       200);
-        map.put("msg",          "ok");
-        map.put("item_content", myMap);
-
-        if (myList.size()>0){
-            myMap = listToMap.mylistToMap(myList);
-            map.put("item_content",  myMap);
-        }else {
-            map.put("status",       202);
-            map.put("msg",          "未查到该记录");
-        }
-        return map;
-    }
 }
 
