@@ -147,7 +147,7 @@ public class ManagerController {
         String groupname = httpServletRequest.getParameter("groupname");
 
         MngService service = dataSourceFactory.getService(type);
-        Map map = null;
+        Map map = new HashMap();
         try {
             map = service.checkConf(appname, groupname);
         } catch (Exception e) {
