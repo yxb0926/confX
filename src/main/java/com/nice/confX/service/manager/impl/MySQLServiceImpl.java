@@ -206,6 +206,7 @@ public class MySQLServiceImpl implements MngService {
     @Override
     public Map checkConf(String appname, String groupname) throws Exception {
         Map map = new HashMap();
+        Map resMap = new HashMap();
         List myList = configService.getConf(appname, groupname);
 
         OtherUtil util = new OtherUtil();
@@ -223,10 +224,17 @@ public class MySQLServiceImpl implements MngService {
             String username = attachMap.get("user").toString();
             String passwd   = attachMap.get("passwd").toString();
 
-            Map map1 = util.pingMysql(masterList,username,passwd,dbname);
-            Map map2 = util.pingMysql(slaveList, username,passwd,dbname);
+            Map mMap = util.pingMysql(masterList,username,passwd,dbname);
+            Map sMap = util.pingMysql(slaveList, username,passwd,dbname);
+            Map msMap = new HashMap();
+            msMap.put("master", mMap);
+            msMap.put("slave",  sMap);
+
+            resMap.put(groupname, msMap);
         }
 
+        map.put("status",  200);
+        map.put("data", resMap);
         return map;
     }
 

@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,38 +167,44 @@ public class OtherUtil {
 
     public Map pingMysql(List list, String username, String passwd, String dbname){
         Map map = new HashMap();
-        List resList = new ArrayList();
+
+        List okList     = new ArrayList();
+        List failedList = new ArrayList();
 
         String checkSql = "SELECT 1";
         for(int i=0; i< list.size(); i++){
-            Map masterMap = (Map) list.get(i);
-            String mip    = (String) masterMap.get("ip");
-            String mport  = (String) masterMap.get("port");
+            Map xMap = (Map) list.get(i);
+            String xip    = (String) xMap.get("ip");
+            String xport  = (String) xMap.get("port");
 
             try {
                 MySQLThruDataSource dataSource =
-                        new MySQLThruDataSource(mip, mport, username, passwd, dbname);
+                        new MySQLThruDataSource(xip, xport, username, passwd, dbname);
 
                 Connection conn = dataSource.getConnection();
                 Statement stmt = conn.createStatement();
                 if (stmt.execute(checkSql)){
-                    logger.info("check ok!");
+                    logger.info(xip+":"+xport+" check ok!");
+                    okList.add(xip+":"+xport+" ---- Ping OK!");
                 }else {
-                    logger.error("check failed!");
+                    logger.error(xip+":"+xport+" check failed!");
+                    failedList.add(xip+":"+xport+" ---- Ping Failed!");
                 }
                 conn.close();
-            }catch (Exception e){
+            }catch (SQLException e){
                 e.printStackTrace();
-                logger.error("check failed!");
+                logger.error(xip+":"+xport+" check failed!");
+                failedList.add(xip+":"+xport+" ---- Ping Failed!");
             }
         }
+        map.put("ok", okList);
+        map.put("failed", failedList);
 
         return map;
     }
 
     public Map pingRedis(){
         Map map = new HashMap();
-
 
         return map;
     }

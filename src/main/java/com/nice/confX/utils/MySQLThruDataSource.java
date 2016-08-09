@@ -31,6 +31,7 @@ public class MySQLThruDataSource {
         dataSource.setURL(this.url);
         dataSource.setUser(this.username);
         dataSource.setPassword(this.passwd);
+        dataSource.setConnectTimeout(100);
 
         return dataSource.getConnection();
     }
