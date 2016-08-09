@@ -3,11 +3,9 @@ package com.nice.confX.service.manager.impl;
 import com.alibaba.fastjson.JSON;
 import com.nice.confX.service.manager.ConfigService;
 import com.nice.confX.service.manager.MngService;
-import com.nice.confX.utils.ListToMap;
+import com.nice.confX.utils.MySQLThruDataSource;
 import com.nice.confX.utils.OtherUtil;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,7 +34,6 @@ public class MySQLServiceImpl implements MngService {
     @Autowired
     private ConfigService configService;
 
-    ListToMap listToMap = new ListToMap();
     /**
      * 2016-7-14
      * 3 个表都增加成功才算成功, 这里有事务请注意
@@ -205,8 +204,30 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Integer checkConf() {
-        return null;
+    public Map checkConf(String appname, String groupname) throws Exception {
+        Map map = new HashMap();
+        List myList = configService.getConf(appname, groupname);
+
+        OtherUtil util = new OtherUtil();
+        Map itemMap = (Map) util.genResMap(myList).get("item_content");
+        itemMap.values();
+        for ( Object tmpMap : itemMap.values()){
+            Map mmap = (Map) tmpMap;
+            Map contentMap = (Map) mmap.get("content");
+            Map dbkeyMap   = (Map) contentMap.get("dbkey");
+            List masterList  = (List) dbkeyMap.get("master");
+            List slaveList   = (List) dbkeyMap.get("slave");
+            Map  attachMap   = (Map) dbkeyMap.get("attach");
+
+            String dbname   = contentMap.get("dbname").toString();
+            String username = attachMap.get("user").toString();
+            String passwd   = attachMap.get("passwd").toString();
+
+            Map map1 = util.pingMysql(masterList,username,passwd,dbname);
+            Map map2 = util.pingMysql(slaveList, username,passwd,dbname);
+        }
+
+        return map;
     }
 
     @Override

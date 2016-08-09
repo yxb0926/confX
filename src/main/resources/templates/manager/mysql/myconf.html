@@ -68,15 +68,25 @@
 
 <script type="application/javascript" th:inline="javascript">
     function check(appname, groupname) {
-        alert(appname);
-        alert(groupname);
         //alert(/*[[${pcode}]]*/);
+
+        $.ajax({
+            url:"/manager/project/confcheck",
+            dataType:"json",
+            async:true,
+            data:{
+                "appname": appname,
+                "groupname": groupname,
+                "type": "MySQL"
+            },
+            type:"POST"
+        });
     }
 
 
     function del (appname, groupname,type) {
         $.ajax({
-            url:"http://127.0.0.1:8080/manager/project/confdel",
+            url:"/manager/project/confdel",
             dataType:"json",
             async:true,
             data:{
@@ -97,7 +107,6 @@
                 alert("操作出错,请检查!");
             }
         });
-
     }
 </script>
 </body>

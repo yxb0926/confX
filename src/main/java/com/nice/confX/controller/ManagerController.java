@@ -116,7 +116,6 @@ public class ManagerController {
     @RequestMapping(value = "/project/confmodify", method = RequestMethod.POST)
     public String modifyconf(HttpServletRequest httpServletRequest,
                              RedirectAttributes redirectAttributes){
-        Map map = new HashMap();
         String type        = httpServletRequest.getParameter("ptype");
         String appname     = httpServletRequest.getParameter("pappname");
         MngService service = dataSourceFactory.getService(type);
@@ -131,6 +130,30 @@ public class ManagerController {
 
             return "redirect:"+urlMap.get("errurl");
         }
+    }
+
+    /**
+     *  check接口
+     *
+     * */
+
+    @RequestMapping(value = "/project/confcheck", method = RequestMethod.POST)
+    @ResponseBody
+    public Map checkconf(HttpServletRequest httpServletRequest,
+                            RedirectAttributes redirectAttributes){
+
+        String type =  httpServletRequest.getParameter("type");
+        String appname = httpServletRequest.getParameter("appname");
+        String groupname = httpServletRequest.getParameter("groupname");
+
+        MngService service = dataSourceFactory.getService(type);
+        Map map = null;
+        try {
+            map = service.checkConf(appname, groupname);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
     @RequestMapping("/project/ngxconf")

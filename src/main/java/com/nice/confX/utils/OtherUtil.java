@@ -1,7 +1,11 @@
 package com.nice.confX.utils;
 
 
+import org.apache.log4j.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +15,8 @@ import java.util.Map;
  * Created by yxb on 16/8/5.
  */
 public class OtherUtil {
+    private Logger logger = Logger.getLogger(OtherUtil.class);
+
     public String listToString(List list){
         String ipstr = "";
         for (int i=0; i<list.size(); i++){
@@ -156,5 +162,43 @@ public class OtherUtil {
             list.add(tmpMap);
         }
         return list;
+    }
+
+    public Map pingMysql(List list, String username, String passwd, String dbname){
+        Map map = new HashMap();
+        List resList = new ArrayList();
+
+        String checkSql = "SELECT 1";
+        for(int i=0; i< list.size(); i++){
+            Map masterMap = (Map) list.get(i);
+            String mip    = (String) masterMap.get("ip");
+            String mport  = (String) masterMap.get("port");
+
+            try {
+                MySQLThruDataSource dataSource =
+                        new MySQLThruDataSource(mip, mport, username, passwd, dbname);
+
+                Connection conn = dataSource.getConnection();
+                Statement stmt = conn.createStatement();
+                if (stmt.execute(checkSql)){
+                    logger.info("check ok!");
+                }else {
+                    logger.error("check failed!");
+                }
+                conn.close();
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.error("check failed!");
+            }
+        }
+
+        return map;
+    }
+
+    public Map pingRedis(){
+        Map map = new HashMap();
+
+
+        return map;
     }
 }

@@ -154,7 +154,7 @@ public class RedisServiceImpl implements MngService{
     }
 
     @Override
-    public Integer checkConf() {
+    public Map checkConf(String appname, String groupname) throws Exception {
         return null;
     }
 
