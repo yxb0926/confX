@@ -2,6 +2,9 @@ package com.nice.confX.utils;
 
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.pattern.IntegerPatternConverter;
+import org.springframework.data.redis.connection.jedis.JedisConnection;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -203,9 +206,46 @@ public class OtherUtil {
         return map;
     }
 
-    public Map pingRedis(){
+    public Map pingRedis(List list){
         Map map = new HashMap();
 
+        List okList     = new ArrayList();
+        List failedList = new ArrayList();
+
+        for (int i=0;i<list.size();i++){
+            Map xMap = (Map) list.get(i);
+            String xip    = (String) xMap.get("ip");
+            int xport = Integer.parseInt(xMap.get("port").toString());
+
+            try {
+                JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+                jedisConnectionFactory.setHostName(xip);
+                jedisConnectionFactory.setPort(xport);
+                jedisConnectionFactory.setTimeout(500);
+                jedisConnectionFactory.afterPropertiesSet();
+
+                JedisConnection connection = jedisConnectionFactory.getConnection();
+                String ping = connection.ping();
+
+                if(ping.equalsIgnoreCase("PONG")){
+                    logger.info(xip+":"+xport+" check ok!");
+                    okList.add(xip+":"+xport+" ---- Ping OK!");
+                }else {
+                    logger.error(xip+":"+xport+" check failed!");
+                    failedList.add(xip+":"+xport+" ---- Ping Failed!");
+                }
+
+                connection.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.error(xip+":"+xport+" check failed!");
+                failedList.add(xip+":"+xport+" ---- Ping Failed!");
+            }
+        }
+
+        map.put("ok", okList);
+        map.put("failed", failedList);
         return map;
     }
 }

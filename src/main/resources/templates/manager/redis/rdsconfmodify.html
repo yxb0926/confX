@@ -18,7 +18,6 @@
         <div class="row">
             <hr/>
             <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
-            <p th:text="${pcontent}"></p>
 
             <span th:each="dbkey : ${pcontent}">
             <form class="form-horizontal" th:action="@{confmodify}" method="post" autocomplete="off">

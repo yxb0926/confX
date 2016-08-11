@@ -3,7 +3,6 @@ package com.nice.confX.service.manager.impl;
 import com.alibaba.fastjson.JSON;
 import com.nice.confX.service.manager.ConfigService;
 import com.nice.confX.service.manager.MngService;
-import com.nice.confX.utils.MySQLThruDataSource;
 import com.nice.confX.utils.OtherUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -211,7 +208,6 @@ public class MySQLServiceImpl implements MngService {
 
         OtherUtil util = new OtherUtil();
         Map itemMap = (Map) util.genResMap(myList).get("item_content");
-        itemMap.values();
         for ( Object tmpMap : itemMap.values()){
             Map mmap = (Map) tmpMap;
             Map contentMap = (Map) mmap.get("content");

@@ -41,7 +41,8 @@
                             <td th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
                             <td th:text="${listx.value.content.dbkey.attach.timeout}"></td>
                             <td>
-                                <a href="javascript:void(0)">检查</a>
+                                <a href="javascript:void(0)"
+                                   th:onclick="'javascript:check(\''+${pcode}+'\', \''+${listx.key}+'\')'">检查</a>
                                 <a th:href="@{rdsconfmodify(pcode=${pcode}, pgroupname = ${listx.key})}">修改</a>
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\')'">删除</a>
@@ -53,7 +54,80 @@
         </div>
     </div>
 
+    <div class="modal fade" id="myModal" tabindex="-1"
+         role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Check Ping 结果</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="mgname" class="control-label" >GroupName:</label>
+                        <label id="mgname"  class="control-label" ></label>
+                    </div>
+
+                    <div id="pingMaster" class="form-group">
+                    </div>
+                    <div id="pingSlave" class="form-group"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
+    function check(appname, groupname) {
+        $.ajax({
+            url:"/manager/project/confcheck",
+            dataType:"json",
+            async:true,
+            data:{
+                "appname": appname,
+                "groupname": groupname,
+                "type": "Redis"
+            },
+            type:"POST",
+            beforeSend:function(){
+
+            },
+            success:function (req) {
+                $.each(req.data, function(gname, resdata) {
+                    $('#mgname').text(gname);
+                    $('#mok').text(resdata.master.ok);
+                    $('#mfailed').text(resdata.master.failed);
+
+                    var masterlabel = "<div>结果:</div>"
+                    var masterok = "";
+                    $.each(resdata.master.ok, function (a, b) {
+                        masterok += "<div>";
+                        masterok += b;
+                        masterok += "</div>";
+                    });
+                    $('#pingMaster').empty();
+                    $('#pingMaster').append(masterlabel);
+                    $('#pingMaster').append(masterok);
+
+                    var masterfailed = "";
+                    $.each(resdata.master.failed, function (a, b) {
+                        masterfailed += "<div>";
+                        masterfailed += b;
+                        masterfailed += "</div>";
+                    });
+                    $('#pingMaster').append(masterfailed);
+                });
+                $('#myModal').modal('show');
+            }
+        });
+        
+    }
+    
+    
+    
     function del(appname, groupname, type) {
         $.ajax({
             url:"http://127.0.0.1:8080/manager/project/confdel",

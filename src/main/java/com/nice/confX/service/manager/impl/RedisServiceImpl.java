@@ -8,16 +8,18 @@ import com.nice.confX.utils.OtherUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.jedis.JedisConnection;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created by yxb on 16/7/28.
@@ -30,6 +32,7 @@ public class RedisServiceImpl implements MngService{
 
     @Autowired
     private ConfigService configService;
+
 
     ListToMap listToMap = new ListToMap();
 
@@ -155,7 +158,32 @@ public class RedisServiceImpl implements MngService{
 
     @Override
     public Map checkConf(String appname, String groupname) throws Exception {
-        return null;
+        Map map = new HashMap();
+        Map resMap = new HashMap();
+
+        String hostname = "10.10.30.202";
+        int    port     = 6301;
+
+        List redisList = configService.getConf(appname, groupname);
+        OtherUtil util = new OtherUtil();
+        Map redisContetMap = (Map) util.genRedisResMap(redisList).get("item_content");
+
+        for ( Object tmpMap : redisContetMap.values()){
+            Map mmap = (Map) tmpMap;
+            Map contentMap = (Map) mmap.get("content");
+            Map dbkeyMap   = (Map) contentMap.get("dbkey");
+            List masterList  = (List) dbkeyMap.get("master");
+
+            Map mMap = util.pingRedis(masterList);
+            Map msMap = new HashMap();
+            msMap.put("master", mMap);
+
+            resMap.put(groupname, msMap);
+        }
+
+        map.put("status",  200);
+        map.put("data", resMap);
+        return map;
     }
 
     @Override
