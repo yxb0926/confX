@@ -24,7 +24,6 @@
                         <th>项目类型</th>
                         <th>项目负责人</th>
                         <th>项目描述</th>
-                        <th>Client管理</th>
                     </tr>
                     <tr th:each="list:${plist}">
                         <td th:text="${list.pname}">program name</td>
@@ -32,7 +31,6 @@
                         <td th:text="${list.ptype}">project type</td>
                         <td th:text="${list.powner}">project owner</td>
                         <td th:text="${list.pdesc}">project desc</td>
-                        <td><a th:href="@{clientconf(ptype=${list.ptype}, pcode=${list.pcode})}"> 管理 </a></td>
                     </tr>
                 </table>
             </div>
