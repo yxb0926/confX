@@ -15,7 +15,7 @@ public class BaseController {
 
     @RequestMapping("/")
     public ModelAndView indexroot(){
-        ModelAndView modelAndView = new ModelAndView("redirect:manager/project/index");
+        ModelAndView modelAndView = new ModelAndView("redirect:manager/project/program");
         return modelAndView;
     }
 

@@ -19,16 +19,16 @@
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <tr>
+                        <th>工程名称</th>
                         <th>项目编码</th>
-                        <th>项目名称</th>
                         <th>项目类型</th>
                         <th>项目负责人</th>
                         <th>项目描述</th>
                         <th>Client管理</th>
                     </tr>
                     <tr th:each="list:${plist}">
+                        <td th:text="${list.pname}">program name</td>
                         <td><a target="_blank" th:text="${list.pcode}" th:href="@{pconf(ptype=${list.ptype}, pcode=${list.pcode})}">project code</a></td>
-                        <td th:text="${list.pname}">project name</td>
                         <td th:text="${list.ptype}">project type</td>
                         <td th:text="${list.powner}">project owner</td>
                         <td th:text="${list.pdesc}">project desc</td>
@@ -37,7 +37,7 @@
                 </table>
             </div>
             <div class="col-md-5 col-md-offset-5">
-                <a class="btn btn-primary" href="new" role="button" target="_blank">新建项目</a>
+                <a class="btn btn-primary" th:href="@{new(pname=${pname})}" role="button" target="_blank">新建项目</a>
             </div>
         </div>
     </div>

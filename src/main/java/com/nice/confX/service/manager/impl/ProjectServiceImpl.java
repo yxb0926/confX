@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,11 +64,18 @@ public class ProjectServiceImpl implements ProjectService {
         List pAllList = new ArrayList();
         try{
             pAllList = jdbcTemplate.queryForList("SELECT * FROM project_info");
-        }catch (DataAccessException dae){
-            System.out.println(dae);
-            return pAllList;
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return pAllList;
+    }
+
+    @Override
+    public List queryProject(String pname) {
+        String sql = "SELECT * FROM project_info WHERE pname=?";
+        List list = jdbcTemplate.queryForList(sql, pname);
+
+        return list;
     }
 
     @Override
@@ -86,5 +97,49 @@ public class ProjectServiceImpl implements ProjectService {
             System.out.println(e);
             return true;
         }
+    }
+
+    @Override
+    public Integer addProgram(HttpServletRequest request) {
+        String pname  = request.getParameter("pname");
+        String pdesc  = request.getParameter("pdesc");
+        String powner = request.getParameter("powner");
+        String ppath  = request.getParameter("ppath");
+
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String gmt_created = simpleDateFormat.format(date);
+
+        int rt = 1;
+
+        try {
+            String sql = "INSERT INTO project_project (pname, pdesc, owner, path, gmt_created) " +
+                    "VALUES(?,?,?,?,?)";
+            int rs = jdbcTemplate.update(sql,pname, pdesc, powner, ppath, gmt_created);
+
+            if (rs>0){
+                rt = 1;
+            }
+
+        }catch (DataAccessException e){
+            e.printStackTrace();
+            rt = 0;
+        }
+
+        return rt;
+    }
+
+    @Override
+    public List queryAllProgram() {
+        List pList = new ArrayList();
+        try {
+            String sql = "SELECT pname, pdesc, owner, path, gmt_created " +
+                    "FROM project_project";
+            pList = jdbcTemplate.queryForList(sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return pList;
     }
 }

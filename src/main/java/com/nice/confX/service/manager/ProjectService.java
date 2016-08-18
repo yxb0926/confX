@@ -2,6 +2,7 @@ package com.nice.confX.service.manager;
 
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -30,10 +31,28 @@ public interface ProjectService {
      * */
     List queryAllProject();
 
+
+    /**
+     *  查询某个工程的项目信息
+     * */
+    List queryProject(String pname);
+
     /**
      *  检查groupname是否已经存在
      * */
     Boolean checkExist(String dataid,String groupid);
+
+    /**
+     *  添加工程
+     * */
+    Integer addProgram(HttpServletRequest request);
+
+    /**
+     *  查询全部工程
+     * */
+
+    List queryAllProgram();
+
 
 }
 

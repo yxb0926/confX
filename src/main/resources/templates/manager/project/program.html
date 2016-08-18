@@ -1,0 +1,45 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <br/>
+            <table class="table table-bordered">
+                <tr>
+                    <th>工程名称</th>
+                    <th>工程描述</th>
+                    <th>负责人</th>
+                    <th>配置路径</th>
+                    <th>创建时间</th>
+                </tr>
+                <tr th:each="key : ${pList}">
+                    <td><a target="_blank"  th:text="${key.pname}"
+                           th:href="@{index(pname=${key.pname})}"></a>
+                    </td>
+                    <td th:text="${key.pdesc}"></td>
+                    <td th:text="${key.owner}"></td>
+                    <td th:text="${key.path}"></td>
+                    <td th:text="${key.gmt_created}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-5 col-md-offset-5">
+            <a class="btn btn-primary" href="newprogram" role="button" target="_blank">新建项目</a>
+        </div>
+    </div>
+
+</body>
+</html>
