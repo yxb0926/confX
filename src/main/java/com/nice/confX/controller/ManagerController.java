@@ -215,22 +215,21 @@ public class ManagerController {
     }
 
     @RequestMapping("/project/clientadd")
-    public ModelAndView cltConf(String ptype, String pcode) {
+    public ModelAndView cltConf(String pname) {
         ModelAndView modelAndView = new ModelAndView("manager/project/clientadd");
-        String ipstr = clientService.getClientIps(pcode, ptype);
+        String ipstr = clientService.getClientIps(pname);
 
         modelAndView.addObject("ipstr", ipstr);
-        modelAndView.addObject("ptype", ptype);
-        modelAndView.addObject("pcode", pcode);
+        modelAndView.addObject("pcode", pname);
 
         return modelAndView;
     }
 
     @RequestMapping("/project/clientreplace")
     @ResponseBody
-    public Object clientReplace(String pappname, String ptype, String pclientlist) {
+    public Object clientReplace(String pappname, String pclientlist) {
         if (pclientlist.length() > 0 && pclientlist != "") {
-            Object res = clientService.clientReplace(pappname, ptype, pclientlist);
+            Object res = clientService.clientReplace(pappname, pclientlist);
             return res;
         } else {
             logger.error("Client List Is Null, Add Client Info Failed!");
@@ -240,14 +239,13 @@ public class ManagerController {
     }
 
     @RequestMapping(value = "/project/clientconf", method = RequestMethod.GET)
-    public Object clientInfo(String pcode, String ptype) {
+    public Object clientInfo(String pname) {
         ModelAndView modelAndView = new ModelAndView("manager/project/clientconf");
 
         List myList = new ArrayList();
-        myList = clientService.getClientInfo(pcode, ptype);
+        myList = clientService.getClientInfo(pname);
         modelAndView.addObject("clientinfo", myList);
-        modelAndView.addObject("pcode", pcode);
-        modelAndView.addObject("ptype", ptype);
+        modelAndView.addObject("pname", pname);
         return modelAndView;
     }
 }

@@ -23,6 +23,7 @@
                     <th>负责人</th>
                     <th>配置路径</th>
                     <th>创建时间</th>
+                    <th>Client管理</th>
                 </tr>
                 <tr th:each="key : ${pList}">
                     <td><a target="_blank"  th:text="${key.pname}"
@@ -32,6 +33,7 @@
                     <td th:text="${key.owner}"></td>
                     <td th:text="${key.path}"></td>
                     <td th:text="${key.gmt_created}"></td>
+                    <td><a th:href="@{clientconf(pname=${key.pname})}"> 管理 </a></td>
                 </tr>
             </table>
         </div>

@@ -16,21 +16,19 @@
     <div class="container">
         <div class="row">
             <hr/>
-            <a type="button" class="btn btn-success" target="_blank" th:href="@{clientadd(pcode=${pcode}, ptype=${ptype})}"> 新增 | 修改</a>
+            <a type="button" class="btn btn-success" target="_blank" th:href="@{clientadd(pname=${pname})}"> 新增 | 修改</a>
             <hr/>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <tr>
-                        <th>AppName</th>
-                        <th>Type</th>
+                        <th>工程名称</th>
                         <th>ip</th>
                         <th>创建时间</th>
                         <th>最后修改时间</th>
                         <th>操作</th>
                     </tr>
                     <tr th:each="list:${clientinfo}">
-                        <td th:text="${list.pcode}"></td>
-                        <td th:text="${list.ptype}"></td>
+                        <td th:text="${list.pname}"></td>
                         <td th:text="${list.client_ip}"></td>
                         <td th:text="${list.gmt_created}"></td>
                         <td th:text="${list.gmt_modified}"></td>

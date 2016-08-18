@@ -10,11 +10,11 @@ import java.util.Map;
  */
 @Service
 public interface ClientService {
-    public Object clientReplace(String appname, String type, String iplist);
+    public Object clientReplace(String appname, String iplist);
 
-    public List getClientInfo(String appname, String type);
+    public List getClientInfo(String appname);
 
-    public String getClientIps(String appname, String type);
+    public String getClientIps(String appname);
 
     public Map ClientHeartBeat(String ip);
 

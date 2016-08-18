@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class ClientServiceImpl implements ClientService{
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public Object clientReplace(String appname, String type, String iplist) {
+    public Object clientReplace(String appname, String iplist) {
         java.util.Date date = new java.util.Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String gmt_created = simpleDateFormat.format(date);
@@ -33,8 +34,8 @@ public class ClientServiceImpl implements ClientService{
         String[] ips = iplist.trim().split(",");
 
         try {
-            String sql_del = "DELETE FROM client_list WHERE pcode=? AND ptype=?";
-            jdbcTemplate.update(sql_del,appname, type);
+            String sql_del = "DELETE FROM client_list WHERE pname=?";
+            jdbcTemplate.update(sql_del,appname);
             logger.info("del old info from table client_list.");
         }catch (DataAccessException e){
             logger.error(e);
@@ -43,9 +44,9 @@ public class ClientServiceImpl implements ClientService{
         for (int i=0; i< ips.length; i++){
             try {
                 String sql = "REPLACE INTO " +
-                        "client_list (pcode, ptype, client_ip, gmt_created, gmt_modified) " +
-                        "VALUES(?,?,?,?,?)";
-                jdbcTemplate.update(sql, appname, type, ips[i].trim(), gmt_created, gmt_modified);
+                        "client_list (pname, client_ip, gmt_created, gmt_modified) " +
+                        "VALUES(?,?,?,?)";
+                jdbcTemplate.update(sql, appname, ips[i].trim(), gmt_created, gmt_modified);
                 logger.info("client ip 添加成功!");
             }catch (DataAccessException e){
                 logger.error(e);
@@ -56,13 +57,13 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public List getClientInfo(String appname, String type) {
+    public List getClientInfo(String appname) {
         List myList = new ArrayList();
         try{
-            String sql = "SELECT pcode, ptype, client_ip, gmt_created, gmt_modified" +
+            String sql = "SELECT *" +
                     " FROM client_list" +
-                    " WHERE pcode=? AND ptype=?";
-            myList = jdbcTemplate.queryForList(sql,appname,type);
+                    " WHERE pname=?";
+            myList = jdbcTemplate.queryForList(sql,appname);
 
         }catch (DataAccessException e){
             logger.error(e);
@@ -72,14 +73,14 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public String getClientIps(String appname, String type) {
+    public String getClientIps(String appname) {
         String ipstr = "";
         try {
             List myList = new ArrayList();
             String sql = "SELECT client_ip" +
                     " FROM client_list" +
-                    " WHERE pcode=? AND ptype=?";
-            myList = jdbcTemplate.queryForList(sql, appname, type);
+                    " WHERE pname=?";
+            myList = jdbcTemplate.queryForList(sql, appname);
             for (int i=0; i< myList.size(); i++){
                 Map map = (Map) myList.get(i);
                 ipstr += map.get("client_ip");
@@ -94,6 +95,7 @@ public class ClientServiceImpl implements ClientService{
         return ipstr;
     }
 
+    @Transactional
     @Override
     public Map ClientHeartBeat(String ip) {
         Map map = new HashMap();
@@ -126,10 +128,15 @@ public class ClientServiceImpl implements ClientService{
 
         try {
             List myList = new ArrayList();
+            String sql = "SELECT p.pcode AS item,p.ptype AS type, pp.path AS path, c.pname AS pname " +
+                    "FROM project_info p,client_list c, project_project pp " +
+                    "WHERE c.pname=p.pname AND c.client_ip=? AND pp.pname=c.pname";
+            /**
             String sql = "SELECT pcode AS item, ptype AS type " +
                     " FROM client_list " +
                     " WHERE client_ip = ? " +
-                    " GROUP BY pcode,ptype;";
+                    " GROUP BY pcode,ptype";
+            **/
             myList = jdbcTemplate.queryForList(sql, ip);
 
             map.put("status", 200);
