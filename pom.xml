@@ -14,6 +14,15 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.2.5.RELEASE</version>
     </parent>
+
+    <developers>
+        <developer>
+            <name>yuanxiaobin</name>
+            <email>yxb0926@163.com</email>
+            <timezone>8</timezone>
+        </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

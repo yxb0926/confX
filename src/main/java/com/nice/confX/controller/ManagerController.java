@@ -225,6 +225,22 @@ public class ManagerController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/project/clientdel", method = RequestMethod.POST)
+    @ResponseBody
+    public Map clientDel(String groupname, String ip){
+        Map map = new HashMap();
+        map.put("code", 200);
+        map.put("msg",  "ok");
+        try {
+            clientService.clientDel(groupname, ip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", 201);
+            map.put("msg",  "failed");
+        }
+        return map;
+    }
+
     @RequestMapping("/project/clientreplace")
     @ResponseBody
     public Object clientReplace(String pappname, String pclientlist) {

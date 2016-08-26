@@ -18,5 +18,6 @@ public interface ClientService {
 
     public Map ClientHeartBeat(String ip);
 
+    public void clientDel(String groupname, String ip) throws Exception;
 
 }

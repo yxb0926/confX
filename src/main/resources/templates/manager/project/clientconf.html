@@ -32,13 +32,40 @@
                         <td th:text="${list.client_ip}"></td>
                         <td th:text="${list.gmt_created}"></td>
                         <td th:text="${list.gmt_modified}"></td>
-                        <td> <a>删除</a> </td>
+                        <td> <a href="javascript:void(0)" th:onclick="'javascript:clientdel(\''+${list.pname}+'\', \''+${list.client_ip}+'\');'">删除</a> </td>
                     </tr>
                 </table>
             </div>
         </div>
-
-
     </div>
+
+<script type="application/javascript" th:inline="javascript">
+    function clientdel(program, ip) {
+        $.ajax({
+            url:"/manager/project/clientdel",
+            dataType:"json",
+            async:true,
+            data:{
+                "groupname": program,
+                "ip": ip
+            },
+            type:"POST",
+            beforeSend:function(){
+
+            },
+            success:function(req){
+                console.log(req);
+            },
+            complete:function(){
+                window.location.reload();
+            },
+            error:function () {
+                alert("操作出错,请检查!");
+            }
+
+        })
+    };
+
+</script>
 </body>
 </html>

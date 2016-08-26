@@ -62,8 +62,8 @@ public class ClientServiceImpl implements ClientService{
         try{
             String sql = "SELECT *" +
                     " FROM client_list" +
-                    " WHERE pname=?";
-            myList = jdbcTemplate.queryForList(sql,appname);
+                    " WHERE pname=? AND isdel=?";
+            myList = jdbcTemplate.queryForList(sql,appname,0);
 
         }catch (DataAccessException e){
             logger.error(e);
@@ -79,8 +79,8 @@ public class ClientServiceImpl implements ClientService{
             List myList = new ArrayList();
             String sql = "SELECT client_ip" +
                     " FROM client_list" +
-                    " WHERE pname=?";
-            myList = jdbcTemplate.queryForList(sql, appname);
+                    " WHERE pname=? AND isdel=?";
+            myList = jdbcTemplate.queryForList(sql, appname, 0);
             for (int i=0; i< myList.size(); i++){
                 Map map = (Map) myList.get(i);
                 ipstr += map.get("client_ip");
@@ -153,5 +153,18 @@ public class ClientServiceImpl implements ClientService{
 
             return map;
         }
+    }
+
+    @Override
+    @Transactional
+    public void clientDel(String program, String ip) throws Exception {
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String gmt_modified = simpleDateFormat.format(date);
+
+        String sql =
+                "UPDATE client_list " +
+                "SET isdel=?,gmt_modified=? " + "WHERE pname=? AND client_ip=?";
+        jdbcTemplate.update(sql, 1,gmt_modified, program, ip);
     }
 }
