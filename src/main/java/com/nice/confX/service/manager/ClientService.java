@@ -16,7 +16,7 @@ public interface ClientService {
 
     public String getClientIps(String appname);
 
-    public Map ClientHeartBeat(String ip);
+    public Map clientHeartBeat(String ip);
 
     public void clientDel(String groupname, String ip) throws Exception;
 

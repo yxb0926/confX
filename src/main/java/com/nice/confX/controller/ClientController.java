@@ -24,6 +24,6 @@ public class ClientController {
     @RequestMapping(value = "/heartbeat", method = RequestMethod.POST)
     @ResponseBody
     public Map heartBeat(String ip){
-        return clientService.ClientHeartBeat(ip);
+        return clientService.clientHeartBeat(ip);
     }
 }

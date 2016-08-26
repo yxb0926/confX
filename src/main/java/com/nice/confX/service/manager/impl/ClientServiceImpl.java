@@ -97,7 +97,7 @@ public class ClientServiceImpl implements ClientService{
 
     @Transactional
     @Override
-    public Map ClientHeartBeat(String ip) {
+    public Map clientHeartBeat(String ip) {
         Map map = new HashMap();
 
         map.put("status", 202); // 200 表示ok, 201表示更新失败, 202表示查询失败, 203表示ip未注册;
@@ -110,7 +110,8 @@ public class ClientServiceImpl implements ClientService{
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String gmt_modified = simpleDateFormat.format(date);
 
-            String sql = "UPDATE client_list SET gmt_modified=? WHERE client_ip=?";
+            String sql = "UPDATE client_list SET gmt_modified=? " +
+                    "WHERE client_ip=?";
             int rows = jdbcTemplate.update(sql,gmt_modified,ip);
             if(rows == 0){
                 map.put("status",203);
@@ -128,9 +129,11 @@ public class ClientServiceImpl implements ClientService{
 
         try {
             List myList = new ArrayList();
-            String sql = "SELECT p.pcode AS item,p.ptype AS type, pp.path AS path, c.pname AS pname " +
+            String sql = "SELECT p.pcode AS item,p.ptype AS type, " +
+                    "pp.path AS path, c.pname AS pname, c.isdel AS isdel " +
                     "FROM project_info p,client_list c, project_project pp " +
-                    "WHERE c.pname=p.pname AND c.client_ip=? AND pp.pname=c.pname";
+                    "WHERE c.pname=p.pname AND c.client_ip=? " +
+                    "AND pp.pname=c.pname";
             /**
             String sql = "SELECT pcode AS item, ptype AS type " +
                     " FROM client_list " +
