@@ -22,6 +22,8 @@
                     <th>工程描述</th>
                     <th>负责人</th>
                     <th>配置路径</th>
+                    <th>Reload命令</th>
+                    <th>系统用户</th>
                     <th>创建时间</th>
                     <th>Client管理</th>
                 </tr>
@@ -32,6 +34,8 @@
                     <td th:text="${key.pdesc}"></td>
                     <td th:text="${key.owner}"></td>
                     <td th:text="${key.path}"></td>
+                    <td th:text="${key.pcmd}"></td>
+                    <td th:text="${key.psysuser}"></td>
                     <td th:text="${key.gmt_created}"></td>
                     <td><a th:href="@{clientconf(pname=${key.pname})}"> 管理 </a></td>
                 </tr>

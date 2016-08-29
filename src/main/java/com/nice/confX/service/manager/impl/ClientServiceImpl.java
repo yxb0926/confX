@@ -130,7 +130,8 @@ public class ClientServiceImpl implements ClientService{
         try {
             List myList = new ArrayList();
             String sql = "SELECT p.pcode AS item,p.ptype AS type, " +
-                    "pp.path AS path, c.pname AS pname, c.isdel AS isdel " +
+                    "pp.path AS path, c.pname AS pname, c.isdel AS isdel, " +
+                    "pp.pcmd AS cmd, pp.psysuser AS sysuser " +
                     "FROM project_info p,client_list c, project_project pp " +
                     "WHERE c.pname=p.pname AND c.client_ip=? " +
                     "AND pp.pname=c.pname";
