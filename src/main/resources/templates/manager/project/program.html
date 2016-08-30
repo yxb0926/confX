@@ -29,7 +29,7 @@
                     <th>Client管理</th>
                 </tr>
                 <tr th:each="key : ${pList}">
-                    <td><a target="_blank"  th:text="${key.pname}"
+                    <td><a th:text="${key.pname}"
                            th:href="@{index(pname=${key.pname})}"></a>
                     </td>
                     <td th:text="${key.pdesc}"></td>
