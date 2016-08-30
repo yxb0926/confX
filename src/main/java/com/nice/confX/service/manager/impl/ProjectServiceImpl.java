@@ -102,12 +102,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public Integer addProgram(HttpServletRequest request) {
-        String pname  = request.getParameter("pname");
-        String pdesc  = request.getParameter("pdesc");
-        String powner = request.getParameter("powner");
-        String ppath  = request.getParameter("ppath");
-        String pcmd   = request.getParameter("pcmd");
-        String psysuser = request.getParameter("psysuser");
+        String pname     = request.getParameter("pname");
+        String pdesc     = request.getParameter("pdesc");
+        String powner    = request.getParameter("powner");
+        String ppath     = request.getParameter("ppath");
+        String pcmd      = request.getParameter("pcmd");
+        String psysuser  = request.getParameter("psysuser");
+        String pcodetype = request.getParameter("pcodetype");
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -117,9 +118,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         try {
             String sql = "INSERT INTO project_project " +
-                    "(pname, pdesc, owner, path, pcmd, psysuser, gmt_created) " +
-                    "VALUES(?,?,?,?,?,?,?)";
-            int rs = jdbcTemplate.update(sql, pname, pdesc, powner, ppath, pcmd, psysuser, gmt_created);
+                    "(pname, pdesc, owner, path, pcmd, psysuser, pcodetype, gmt_created) " +
+                    "VALUES(?,?,?,?,?,?,?,?)";
+            int rs = jdbcTemplate.update(sql, pname, pdesc, powner, ppath, pcmd, psysuser, pcodetype, gmt_created);
 
             if (rs>0){
                 rt = 1;
@@ -137,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List queryAllProgram() {
         List pList = new ArrayList();
         try {
-            String sql = "SELECT pname, pdesc, owner, path, pcmd, psysuser, gmt_created " +
+            String sql = "SELECT pname, pdesc, owner, path, pcmd, psysuser, pcodetype, gmt_created " +
                     "FROM project_project";
             pList = jdbcTemplate.queryForList(sql);
         }catch (Exception e){
