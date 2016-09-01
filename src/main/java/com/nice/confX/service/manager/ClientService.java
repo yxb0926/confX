@@ -10,7 +10,7 @@ import java.util.Map;
  */
 @Service
 public interface ClientService {
-    public Object clientReplace(String appname, String iplist);
+    public void clientReplace(String appname, String iplist) throws Exception;
 
     public List getClientInfo(String appname);
 

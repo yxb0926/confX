@@ -25,7 +25,8 @@ public class ClientServiceImpl implements ClientService{
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public Object clientReplace(String appname, String iplist) {
+    @Transactional
+    public void clientReplace(String appname, String iplist) throws Exception {
         java.util.Date date = new java.util.Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String gmt_created = simpleDateFormat.format(date);
@@ -52,8 +53,6 @@ public class ClientServiceImpl implements ClientService{
                 logger.error(e);
             }
         }
-
-        return null;
     }
 
     @Override
@@ -90,8 +89,6 @@ public class ClientServiceImpl implements ClientService{
         }catch (DataAccessException e){
             logger.error(e);
         }
-        logger.info(ipstr);
-
         return ipstr;
     }
 

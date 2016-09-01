@@ -242,16 +242,24 @@ public class ManagerController {
     }
 
     @RequestMapping("/project/clientreplace")
-    @ResponseBody
-    public Object clientReplace(String pappname, String pclientlist) {
+    public ModelAndView clientReplace(String pappname, String pclientlist) {
         if (pclientlist.length() > 0 && pclientlist != "") {
-            Object res = clientService.clientReplace(pappname, pclientlist);
-            return res;
+            try {
+                ModelAndView modelAndView = new ModelAndView("redirect:clientconf?pname="+pappname);
+                clientService.clientReplace(pappname, pclientlist);
+                return modelAndView;
+            } catch (Exception e) {
+                ModelAndView modelAndView = new ModelAndView("redirect:clientadd?pname="+pappname);
+                modelAndView.addObject("errmsg","添加失败!");
+                e.printStackTrace();
+                return modelAndView;
+            }
         } else {
+            ModelAndView modelAndView = new ModelAndView("redirect:clientadd?pname="+pappname);
+            modelAndView.addObject("errmsg", "添加失败,Client List 不能为空!");
             logger.error("Client List Is Null, Add Client Info Failed!");
-            return null;
+            return modelAndView;
         }
-
     }
 
     @RequestMapping(value = "/project/clientconf", method = RequestMethod.GET)
