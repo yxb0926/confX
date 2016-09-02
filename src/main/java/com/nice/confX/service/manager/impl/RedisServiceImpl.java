@@ -67,6 +67,7 @@ public class RedisServiceImpl implements MngService{
 
         // 更新groupname_info_redis
         List masterList = (List) ((Map) map.get("dbkey")).get("master");
+        List slaveList = (List) ((Map) map.get("dbkey")).get("slave");
         String sql2 = "INSERT INTO " +
                 "groupname_info_redis(" +
                 "appname, groupname, timeout, read_timeout," +
@@ -79,7 +80,14 @@ public class RedisServiceImpl implements MngService{
                     sql2,dataid,groupid,timeout,
                     readtimeout,"Master",ipx, portx,
                     gmt_create, gmt_modified);
+        }
+        for (int k=0; k<slaveList.size(); k++){
+            String ips   = (String) ((Map)slaveList.get(k)).get("ip");
+            String ports = (String) ((Map)slaveList.get(k)).get("port");
 
+            jdbcTemplate.update(sql2, dataid, groupid, timeout,
+                    readtimeout, "Slave", ips, ports,
+                    gmt_create,gmt_modified);
         }
 
         // 更新config_info 表
@@ -161,9 +169,6 @@ public class RedisServiceImpl implements MngService{
         Map map = new HashMap();
         Map resMap = new HashMap();
 
-        String hostname = "10.10.30.202";
-        int    port     = 6301;
-
         List redisList = configService.getConf(appname, groupname);
         OtherUtil util = new OtherUtil();
         Map redisContetMap = (Map) util.genRedisResMap(redisList).get("item_content");
@@ -173,10 +178,13 @@ public class RedisServiceImpl implements MngService{
             Map contentMap = (Map) mmap.get("content");
             Map dbkeyMap   = (Map) contentMap.get("dbkey");
             List masterList  = (List) dbkeyMap.get("master");
+            List slaveList   = (List) dbkeyMap.get("slave");
 
             Map mMap = util.pingRedis(masterList);
+            Map sMap = util.pingRedis(slaveList);
             Map msMap = new HashMap();
             msMap.put("master", mMap);
+            msMap.put("slave",  sMap);
 
             resMap.put(groupname, msMap);
         }

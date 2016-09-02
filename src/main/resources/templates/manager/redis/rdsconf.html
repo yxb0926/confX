@@ -16,7 +16,7 @@
     <div class="container">
         <div class="row">
             <hr/>
-            <a type="button" class="btn btn-success" th:href="@{rdsconfnew(pcode=${pcode})}" target="_blank"> 新增配置 </a>
+            <a type="button" class="btn btn-success" th:href="@{rdsconfnew(pcode=${pcode})}"> 新增配置 </a>
             <hr/>
             <div class="col-md-12" role="main">
                 <p th:text="'项目编码:'+${pcode}"></p>
@@ -31,22 +31,32 @@
                     </tr>
                     <span th:each="listx : ${pmap.item_content}">
                         <tr>
-                            <td th:text="${listx.key}"></td>
-                            <td>Master</td>
+                            <td rowspan="2" th:text="${listx.key}"></td>
+                            <td >Master</td>
                             <td>
                                 <span th:each="master : ${listx.value.content.dbkey.master}">
                                     <div th:text="${master.ip}+':'+${master.port}"></div>
                                 </span>
                             </td>
-                            <td th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
-                            <td th:text="${listx.value.content.dbkey.attach.timeout}"></td>
-                            <td>
+                            <td rowspan="2" th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
+                            <td rowspan="2" th:text="${listx.value.content.dbkey.attach.timeout}"></td>
+                            <td rowspan="2">
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:check(\''+${pcode}+'\', \''+${listx.key}+'\')'">检查</a>
                                 <a th:href="@{rdsconfmodify(pcode=${pcode}, pgroupname = ${listx.key})}">修改</a>
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\')'">删除</a>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Slave</td>
+                            <td>
+                                <span th:each="slave : ${listx.value.content.dbkey.slave}">
+                                    <div th:text="${slave.ip}+':'+${slave.port}"></div>
+                                </span>
+
+                            </td>
+
                         </tr>
                     </span>
                 </table>
@@ -101,7 +111,7 @@
                     $('#mok').text(resdata.master.ok);
                     $('#mfailed').text(resdata.master.failed);
 
-                    var masterlabel = "<div>结果:</div>"
+                    var masterlabel = "<div>Master结果:</div>"
                     var masterok = "";
                     $.each(resdata.master.ok, function (a, b) {
                         masterok += "<div>";
@@ -119,6 +129,25 @@
                         masterfailed += "</div>";
                     });
                     $('#pingMaster').append(masterfailed);
+
+                    var slavelabel = "<div>Slave结果:</div>"
+                    var slaveok = "";
+                    $.each(resdata.slave.ok, function (a, b) {
+                        slaveok += "<div>";
+                        slaveok += b;
+                        slaveok += "</div>";
+                    });
+                    $('#pingSlave').empty();
+                    $('#pingSlave').append(slavelabel);
+                    $('#pingSlave').append(slaveok);
+
+                    var slavefailed = "";
+                    $.each(resdata.slave.failed, function (a, b) {
+                        slavefailed += "<div>";
+                        slavefailed += b;
+                        slavefailed += "</div>";
+                    });
+                    $('#pingSlave').append(slavefailed);
                 });
                 $('#myModal').modal('show');
             }

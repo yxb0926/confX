@@ -20,15 +20,17 @@ public class JsonUtil {
         String dbname = contentModel.getDbname();
         String dataid = contentModel.getDataid();
         JSONObject dbkey = contentModel.getDbkey();
-        com.alibaba.fastjson.JSONArray masterArr = (com.alibaba.fastjson.JSONArray) dbkey.get("master");
-        com.alibaba.fastjson.JSONArray slaveArr = (com.alibaba.fastjson.JSONArray) dbkey.get("slave");
+        com.alibaba.fastjson.JSONArray masterArr
+                = (com.alibaba.fastjson.JSONArray) dbkey.get("master");
+        com.alibaba.fastjson.JSONArray slaveArr
+                = (com.alibaba.fastjson.JSONArray) dbkey.get("slave");
         Attach attach = JSON.parseObject(dbkey.get("attach").toString(), Attach.class);
 
 
         HashMap clusterMap = new HashMap();
-        List masterList = new ArrayList();
-        List slaveList = new ArrayList();
-        Map attachMap = new HashMap();
+        List masterList    = new ArrayList();
+        List slaveList     = new ArrayList();
+        Map attachMap      = new HashMap();
 
         /** Master */
         masterList = genClusterList(masterArr);
@@ -115,6 +117,9 @@ public class JsonUtil {
         com.alibaba.fastjson.JSONArray masterArr =
                 (com.alibaba.fastjson.JSONArray) dbkey.get("master");
 
+        com.alibaba.fastjson.JSONArray slaveArr  =
+                (com.alibaba.fastjson.JSONArray) dbkey.get("slave");
+
         RedisAttach redisAttach =
                 JSON.parseObject(dbkey.get("attach").toString(), RedisAttach.class);
 
@@ -124,9 +129,11 @@ public class JsonUtil {
 
         /** Master */
         List masterList = genClusterList(masterArr);
+        List slaveList  = genClusterList(slaveArr);
 
         Map dbkeyMap = new HashMap();
         dbkeyMap.put("master", masterList);
+        dbkeyMap.put("slave",  slaveList);
         dbkeyMap.put("attach", attachMap);
 
         HashMap clusterMap = new HashMap();

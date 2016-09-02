@@ -101,13 +101,16 @@ public class OtherUtil {
         String readtimeout = request.getParameter("preadtimeout");
 
         String[] masterArr = request.getParameter("pmiport").trim().split(",");
+        String[] slaveArr  = request.getParameter("psiport").trim().split(",");
 
         List masterList = this.getipportList(masterArr);
+        List slaveList  = this.getipportList(slaveArr);
 
         Map dbkeyMap = new HashMap();
         Map attachMap = new HashMap();
 
         dbkeyMap.put("master", masterList);
+        dbkeyMap.put("slave",  slaveList);
         dbkeyMap.put("attach", attachMap);
 
         attachMap.put("timeout", timeout);
