@@ -28,10 +28,12 @@ public class ProjectServiceImpl implements ProjectService {
      *  返回值: 1 => success, 0 => failed
     * */
     @Override
-    public Integer addProject(String pcode, String pname, String powner, String pdesc, String ptype){
+    public Integer addProject(String pcode,  String pname,
+                              String powner, String pdesc,
+                              String ptype,  String pfilename){
         try {
-            jdbcTemplate.update("INSERT INTO project_info(pcode, pname, powner, pdesc, ptype) " +
-                    "VALUE (?,?,?,?,?)", pcode, pname, powner, pdesc, ptype);
+            jdbcTemplate.update("INSERT INTO project_info(pcode, pname, powner, pdesc, ptype, pfilename) " +
+                    "VALUE (?,?,?,?,?,?)", pcode, pname, powner, pdesc, ptype, pfilename);
             return 1;
         }catch (DataAccessException dataAccessException){
             return 0;

@@ -93,8 +93,10 @@ public class ManagerController {
     }
 
     @RequestMapping("/project/add")
-    public ModelAndView addproject(String pcode, String pname, String powner, String pdesc, String ptype) {
-        Integer success = projectService.addProject(pcode, pname, powner, pdesc, ptype);
+    public ModelAndView addproject(String pcode,  String pname,
+                                   String powner, String pdesc,
+                                   String ptype,  String pfilename) {
+        Integer success = projectService.addProject(pcode, pname, powner, pdesc, ptype, pfilename);
         if (success == 1) {
             return new ModelAndView("redirect:index?pname="+pname);
         } else {

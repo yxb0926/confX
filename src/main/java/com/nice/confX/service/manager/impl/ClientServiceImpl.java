@@ -126,7 +126,7 @@ public class ClientServiceImpl implements ClientService{
 
         try {
             List myList = new ArrayList();
-            String sql = "SELECT p.pcode AS item,p.ptype AS type, " +
+            String sql = "SELECT p.pcode AS item,p.ptype AS type, p.pfilename AS filename, " +
                     "pp.path AS path, c.pname AS pname, c.isdel AS isdel, " +
                     "pp.pcmd AS cmd, pp.psysuser AS sysuser, pp.pcodetype AS codetype " +
                     "FROM project_info p,client_list c, project_project pp " +
