@@ -43,6 +43,7 @@ public class RedisServiceImpl implements MngService{
     public void addConf(HttpServletRequest request) throws Exception {
         String type        = request.getParameter("ptype");
         String dataid      = request.getParameter("pappname");
+        String pname       = request.getParameter("pname");
         String groupid     = request.getParameter("pgroupname");
         String timeout     = request.getParameter("ptimeout");
         String readtimeout = request.getParameter("preadtimeout");
@@ -61,23 +62,23 @@ public class RedisServiceImpl implements MngService{
 
         // 更新表appname_info
         jdbcTemplate.update("INSERT INTO appname_info(" +
-                "appname, groupname, type, created_time, modified_time) " +
-                "VALUE (?,?,?,?,?)",
-                dataid,groupid,type,gmt_create,gmt_create);
+                "appname, pname, groupname, type, created_time, modified_time) " +
+                "VALUE (?,?,?,?,?,?)",
+                dataid,pname,groupid,type,gmt_create,gmt_create);
 
         // 更新groupname_info_redis
         List masterList = (List) ((Map) map.get("dbkey")).get("master");
         List slaveList = (List) ((Map) map.get("dbkey")).get("slave");
         String sql2 = "INSERT INTO " +
                 "groupname_info_redis(" +
-                "appname, groupname, timeout, read_timeout," +
+                "appname, pname, groupname, timeout, read_timeout," +
                 "role, ip, port, created_time, modified_time)" +
-                " VALUES(?,?,?,?,?,?,?,?,?)";
+                " VALUES(?,?,?,?,?,?,?,?,?,?)";
         for (int j=0; j<masterList.size(); j++){
             String ipx   = (String) ((Map)masterList.get(j)).get("ip");
             String portx = (String) ((Map)masterList.get(j)).get("port");
             jdbcTemplate.update(
-                    sql2,dataid,groupid,timeout,
+                    sql2,dataid,pname,groupid,timeout,
                     readtimeout,"Master",ipx, portx,
                     gmt_create, gmt_modified);
         }
@@ -85,38 +86,39 @@ public class RedisServiceImpl implements MngService{
             String ips   = (String) ((Map)slaveList.get(k)).get("ip");
             String ports = (String) ((Map)slaveList.get(k)).get("port");
 
-            jdbcTemplate.update(sql2, dataid, groupid, timeout,
+            jdbcTemplate.update(sql2, dataid, pname, groupid, timeout,
                     readtimeout, "Slave", ips, ports,
                     gmt_create,gmt_modified);
         }
 
         // 更新config_info 表
         String sql3 = "INSERT INTO config_info(" +
-                "data_id,group_id,content,md5,gmt_create,gmt_modified)" +
-                "VALUES(?,?,?,?,?,?)";
-        jdbcTemplate.update(sql3,dataid,groupid,content,md5,gmt_create,gmt_modified);
+                "program_id,data_id,group_id,content,md5,gmt_create,gmt_modified)" +
+                "VALUES(?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql3,pname,dataid,groupid,content,md5,gmt_create,gmt_modified);
     }
 
     @Override
     @Transactional
-    public void delConf(String appname, String groupname, String type) throws Exception {
+    public void delConf(String appname, String pname, String groupname, String type) throws Exception {
         // 清理appname_info表相关信息
-        String sql1 = "DELETE FROM appname_info WHERE appname=? AND groupname=? AND type=?";
-        jdbcTemplate.update(sql1, appname, groupname, type);
+        String sql1 = "DELETE FROM appname_info WHERE pname=? AND appname=? AND groupname=? AND type=?";
+        jdbcTemplate.update(sql1, pname, appname, groupname, type);
 
         // 清理groupname_info_redis表相关信息
-        String sql2 = "DELETE FROM groupname_info_redis WHERE appname=? AND groupname=?";
-        jdbcTemplate.update(sql2, appname, groupname);
+        String sql2 = "DELETE FROM groupname_info_redis WHERE pname=? AND appname=? AND groupname=?";
+        jdbcTemplate.update(sql2, pname, appname, groupname);
 
         // 清理config_info表相关信息
-        String sql3 = "DELETE FROM config_info WHERE data_id=? AND group_id=?";
-        jdbcTemplate.update(sql3, appname, groupname);
+        String sql3 = "DELETE FROM config_info WHERE program_id=? AND data_id=? AND group_id=?";
+        jdbcTemplate.update(sql3, pname, appname, groupname);
     }
 
     @Transactional
     @Override
     public void modifyConf(HttpServletRequest request) throws Exception {
         String appname     = request.getParameter("pappname");
+        String pname       = request.getParameter("pname");
         String groupname   = request.getParameter("pgroupname");
         String timeout     = request.getParameter("ptimeout");
         String readtimeout = request.getParameter("preadtimeout");
@@ -128,13 +130,13 @@ public class RedisServiceImpl implements MngService{
 
         //清理groupname_info_redis表
         String sql1 = "DELETE FROM groupname_info_redis " +
-                "WHERE appname=? AND groupname=?";
-        jdbcTemplate.update(sql1, appname, groupname);
+                "WHERE pname=? AND appname=? AND groupname=?";
+        jdbcTemplate.update(sql1, pname, appname, groupname);
 
         //清理config_info表
         String sql2 = "DELETE FROM config_info " +
-                "WHERE data_id=? AND group_id=?";
-        jdbcTemplate.update(sql2, appname, groupname);
+                "WHERE program_id=? AND data_id=? AND group_id=?";
+        jdbcTemplate.update(sql2, pname, appname, groupname);
 
         //新增groupname_info_redis表相关信息
         OtherUtil util = new OtherUtil();
@@ -143,14 +145,14 @@ public class RedisServiceImpl implements MngService{
         List masterList = (List) ((Map) map.get("dbkey")).get("master");
         String sql3 = "INSERT INTO " +
                 "groupname_info_redis(" +
-                "appname, groupname, timeout, read_timeout," +
+                "appname, pname, groupname, timeout, read_timeout," +
                 "role, ip, port, created_time, modified_time)" +
-                " VALUES(?,?,?,?,?,?,?,?,?)";
+                " VALUES(?,?,?,?,?,?,?,?,?,?)";
         for (int j=0; j<masterList.size(); j++){
             String ipx   = (String) ((Map)masterList.get(j)).get("ip");
             String portx = (String) ((Map)masterList.get(j)).get("port");
             jdbcTemplate.update(
-                    sql3,appname,groupname,timeout,
+                    sql3,appname,pname,groupname,timeout,
                     readtimeout,"Master",ipx, portx,
                     gmt_create, gmt_modified);
         }
@@ -159,17 +161,17 @@ public class RedisServiceImpl implements MngService{
         String content = JSON.toJSONString(map);
         String md5     = DigestUtils.md5Hex(content);
         String sql4 = "INSERT INTO config_info(" +
-                "data_id,group_id,content,md5,gmt_create,gmt_modified)" +
-                "VALUES(?,?,?,?,?,?)";
-        jdbcTemplate.update(sql4,appname,groupname,content,md5,gmt_create,gmt_modified);
+                "program_id,data_id,group_id,content,md5,gmt_create,gmt_modified)" +
+                "VALUES(?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql4,pname,appname,groupname,content,md5,gmt_create,gmt_modified);
     }
 
     @Override
-    public Map checkConf(String appname, String groupname) throws Exception {
+    public Map checkConf(String appname, String pname, String groupname) throws Exception {
         Map map = new HashMap();
         Map resMap = new HashMap();
 
-        List redisList = configService.getConf(appname, groupname);
+        List redisList = configService.getConf(appname, pname, groupname);
         OtherUtil util = new OtherUtil();
         Map redisContetMap = (Map) util.genRedisResMap(redisList).get("item_content");
 
@@ -195,8 +197,8 @@ public class RedisServiceImpl implements MngService{
     }
 
     @Override
-    public Map getConf(String dataid) {
-        List redisList = configService.getConf(dataid);
+    public Map getConf(String dataid, String pname) {
+        List redisList = configService.getConf(dataid, pname);
         logger.info(redisList);
 
         OtherUtil util = new OtherUtil();
@@ -204,8 +206,8 @@ public class RedisServiceImpl implements MngService{
     }
 
     @Override
-    public Map getConf(String dataid, String groupid) {
-        List redisList = configService.getConf(dataid, groupid);
+    public Map getConf(String dataid, String pname, String groupid) {
+        List redisList = configService.getConf(dataid, pname, groupid);
         logger.info(redisList);
         OtherUtil util = new OtherUtil();
         return util.genRedisResMap(redisList);

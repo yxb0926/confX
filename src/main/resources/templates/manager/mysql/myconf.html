@@ -17,12 +17,12 @@
     <div class="container">
         <hr/>
         <a type="button" class="btn btn-success"
-           th:href="@{myconfnew(pcode=${pcode})}"> 新增组 </a>
+           th:href="@{myconfnew(pcode=${pcode}, pname=${pname})}"> 新增组 </a>
 
         <div class="row">
             <div class="col-md-12" role="main">
                 <hr/>
-                <p th:text="'项目编码:'+${pcode}"></p>
+                <p th:text="'工程名称:'+${pname}+'    项目编码:'+${pcode}"></p>
 
                 <table class="table table-bordered">
                     <tr>
@@ -45,10 +45,10 @@
                             </span>
                             <td rowspan="2">
                                 <a href="javascript:void(0)"
-                                   th:onclick="'javascript:check(\''+${pcode}+'\',\''+${listx.key}+'\');'">检测</a>
-                                <a th:href="@{myconfmodify(pcode=${pcode}, pgroupname = ${listx.key})}">修改</a>
+                                   th:onclick="'javascript:check(\''+${pcode}+'\',\''+${listx.key}+'\', \''+${pname}+'\');'">检测</a>
+                                <a th:href="@{myconfmodify(pcode=${pcode}, pgroupname = ${listx.key}, pname=${pname})}">修改</a>
                                 <a href="javascript:void(0)"
-                                   th:onclick="'javascript:del(\''+${pcode}+'\',\''+${listx.key}+'\',\'MySQL\');'">删除</a>
+                                   th:onclick="'javascript:del(\''+${pcode}+'\',\''+${listx.key}+'\',\'MySQL\', \''+${pname}+'\');'">删除</a>
                             </td>
                         </tr>
                         <tr>
@@ -92,7 +92,7 @@
     </div>
 
     <script type="application/javascript" th:inline="javascript">
-    function check(appname, groupname) {
+    function check(appname, groupname, pname) {
         //alert(/*[[${pcode}]]*/);
 
         $.ajax({
@@ -101,6 +101,7 @@
             async:true,
             data:{
                 "appname": appname,
+                "pname":   pname,
                 "groupname": groupname,
                 "type": "MySQL"
             },
@@ -158,13 +159,14 @@
     }
 
 
-    function del (appname, groupname,type) {
+    function del (appname, groupname, type, pname) {
         $.ajax({
             url:"/manager/project/confdel",
             dataType:"json",
             async:true,
             data:{
                 "appname":appname,
+                "pname":pname,
                 "groupname":groupname,
                 "type":type
             },

@@ -23,7 +23,7 @@ public interface MngService {
     /**
      * 删除一个mysql|redis的配置
      * */
-    void delConf(String appname, String groupname, String type) throws Exception;
+    void delConf(String appname, String pname, String groupname, String type) throws Exception;
 
     /**
      * 修改一个mysql|redis的配置
@@ -33,9 +33,9 @@ public interface MngService {
     /**
      * 检测一个mysql|redis的配置
      * */
-    Map checkConf(String appname, String groupname) throws Exception;
+    Map checkConf(String appname, String pname, String groupname) throws Exception;
 
-    Map getConf(String dataid);
-    Map getConf(String dataid, String groupid);
+    Map getConf(String dataid, String pname);
+    Map getConf(String dataid, String pname, String groupid);
 
 }

@@ -21,16 +21,16 @@ public class ConfigService {
     private JdbcTemplate jdbcTemplate;
 
 
-    public List getConf(String dataid){
+    public List getConf(String dataid, String pname){
         String sql = "";
-        sql = "SELECT data_id, group_id, content, md5 " +
-                "FROM config_info WHERE data_id=?";
+        sql = "SELECT program_id, data_id, group_id, content, md5 " +
+                "FROM config_info WHERE data_id=? AND program_id=?";
 
-        return getData(sql, dataid);
+        return getData(sql, dataid, pname);
     }
 
 
-    public List getConf(String dataid, String groupid){
+    public List getConf(String dataid, String pname, String groupid){
         String sql = "";
         String[] groupidx = groupid.split("\\|");
         String group_id = "";
@@ -44,17 +44,17 @@ public class ConfigService {
 
         sql = "SELECT data_id, group_id, content, md5 " +
                 "FROM config_info " +
-                "WHERE data_id=? AND group_id in (" + group_id + ")";
+                "WHERE data_id=? AND program_id=? AND group_id in (" + group_id + ")";
 
         logger.info(sql);
 
-        return getData(sql, dataid);
+        return getData(sql, dataid, pname);
     }
 
 
-    protected List getData(String sql, String dataid){
+    protected List getData(String sql, String dataid, String pname){
         try {
-            return jdbcTemplate.queryForList(sql, dataid);
+            return jdbcTemplate.queryForList(sql, dataid, pname);
         }catch (DataAccessException e){
             logger.error(e);
             return new ArrayList();

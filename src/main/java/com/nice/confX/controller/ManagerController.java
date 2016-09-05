@@ -39,9 +39,11 @@ public class ManagerController {
     @Autowired
     private ClientService clientService;
 
+    /*
     @Autowired
     @Qualifier("mysql")
     private MngService mysqlService;
+    */
 
 
     @RequestMapping("/project/program")
@@ -109,8 +111,9 @@ public class ManagerController {
                           RedirectAttributes redirectAttributes) {
         String ptype = httpServletRequest.getParameter("ptype");
         String pcode = httpServletRequest.getParameter("pappname");
+        String pname = httpServletRequest.getParameter("pname");
         MngService service = dataSourceFactory.getService(ptype);
-        Map urlMap = dataSourceFactory.getUrl(ptype, pcode);
+        Map urlMap = dataSourceFactory.getUrl(ptype, pcode, pname);
 
         try {
             service.addConf(httpServletRequest);
@@ -133,11 +136,12 @@ public class ManagerController {
         map.put("msg", "ok");
         String type        = httpServletRequest.getParameter("type");
         String appname     = httpServletRequest.getParameter("appname");
+        String pname       = httpServletRequest.getParameter("pname");
         String groupname   = httpServletRequest.getParameter("groupname");
         MngService service = dataSourceFactory.getService(type);
 
         try {
-            service.delConf(appname, groupname, type);
+            service.delConf(appname, pname, groupname, type);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("code",201);
@@ -155,8 +159,9 @@ public class ManagerController {
                              RedirectAttributes redirectAttributes){
         String type        = httpServletRequest.getParameter("ptype");
         String appname     = httpServletRequest.getParameter("pappname");
+        String pname       = httpServletRequest.getParameter("pname");
         MngService service = dataSourceFactory.getService(type);
-        Map         urlMap = dataSourceFactory.getUrl(type, appname);
+        Map         urlMap = dataSourceFactory.getUrl(type, appname, pname);
 
         try {
             service.modifyConf(httpServletRequest);
@@ -179,14 +184,15 @@ public class ManagerController {
     public Map checkconf(HttpServletRequest httpServletRequest,
                             RedirectAttributes redirectAttributes){
 
-        String type =  httpServletRequest.getParameter("type");
-        String appname = httpServletRequest.getParameter("appname");
+        String type      = httpServletRequest.getParameter("type");
+        String appname   = httpServletRequest.getParameter("appname");
+        String pname     = httpServletRequest.getParameter("pname") ;
         String groupname = httpServletRequest.getParameter("groupname");
 
         MngService service = dataSourceFactory.getService(type);
         Map map = new HashMap();
         try {
-            map = service.checkConf(appname, groupname);
+            map = service.checkConf(appname, pname, groupname);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,11 +210,11 @@ public class ManagerController {
     }
 
     @RequestMapping("/project/pconf")
-    public ModelAndView pconf(String pcode, String ptype) {
+    public ModelAndView pconf(String pcode, String ptype, String pname) {
         if (ptype.equals("MySQL")) {
-            return new ModelAndView("redirect:myconf?pcode=" + pcode);
+            return new ModelAndView("redirect:myconf?pcode="  + pcode + "&pname=" + pname);
         } else if (ptype.equals("Redis")) {
-            return new ModelAndView("redirect:rdsconf?pcode=" + pcode);
+            return new ModelAndView("redirect:rdsconf?pcode=" + pcode + "&pname=" + pname);
         } else if (ptype.equals("Nginx")) {
             return new ModelAndView("redirect:ngxconf");
         } else {

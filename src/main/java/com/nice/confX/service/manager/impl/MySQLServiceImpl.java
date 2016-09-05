@@ -42,6 +42,7 @@ public class MySQLServiceImpl implements MngService {
     @Override
     public void addConf(HttpServletRequest request) throws Exception {
         String dataid   = request.getParameter("pappname").trim(); // pcode, appname
+        String pname    = request.getParameter("pname").trim();     // program name
         String groupid  = request.getParameter("pgroupname").trim();
         String dbname   = request.getParameter("pdbname").trim();
         String tbprefix = request.getParameter("ptbprefix").trim();
@@ -62,20 +63,20 @@ public class MySQLServiceImpl implements MngService {
         String gmt_create = simpleDateFormat.format(date);
 
         // 更新表appname_info
-        jdbcTemplate.update("INSERT INTO appname_info(" +
-                "appname, groupname, type, created_time, modified_time) " +
-                "VALUE (?,?,?,?,?)",
-                dataid,groupid,type,gmt_create,gmt_create);
+        String sql = "INSERT INTO appname_info " +
+                "(appname, pname, groupname, type, created_time, modified_time) " +
+                "VALUE (?,?,?,?,?,?)";
+        jdbcTemplate.update(sql,dataid,pname,groupid,type,gmt_create,gmt_create);
 
         // 新增master
         Map mmap = (Map) ((List) ((Map) map.get("dbkey")).get("master")).get(0);
         String mip   = mmap.get("ip").toString();
         String mport = mmap.get("port").toString();
         jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
-                "appname,groupname,dbname,role,ip,port," +
+                "appname,pname,groupname,dbname,role,ip,port," +
                 "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
-                "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                dataid, groupid, dbname, "master",
+                "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                dataid, pname, groupid, dbname, "master",
                 mip,mport,username,passwd,charset,
                 tbprefix,timeout,gmt_create,gmt_create);
 
@@ -86,35 +87,35 @@ public class MySQLServiceImpl implements MngService {
             String sip   = smap.get("ip").toString();
             String sport = smap.get("port").toString();
             jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
-                    "appname,groupname,dbname,role,ip,port," +
+                    "appname,pname,groupname,dbname,role,ip,port," +
                     "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
-                    "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    dataid, groupid, dbname, "slave",
+                    "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    dataid, pname, groupid, dbname, "slave",
                     sip, sport, username,passwd,charset,
                     tbprefix, timeout, gmt_create, gmt_create);
         }
 
         // 更新表config_info
         jdbcTemplate.update("INSERT INTO config_info(" +
-                "data_id,group_id,content,md5,gmt_create,gmt_modified) " +
-                "VALUE (?,?,?,?,?,?)",
-                dataid, groupid, content, md5, gmt_create, gmt_create);
+                "program_id, data_id,group_id,content,md5,gmt_create,gmt_modified) " +
+                "VALUE (?,?,?,?,?,?,?)",
+                pname, dataid, groupid, content, md5, gmt_create, gmt_create);
     }
 
     @Override
     @Transactional
-    public void delConf(String appname, String groupname, String type) throws Exception{
+    public void delConf(String appname, String pname, String groupname, String type) throws Exception{
         // 清理appname_info表相应信息
-        String sql1 = "DELETE FROM appname_info WHERE appname=? AND groupname=? AND type=?";
-        jdbcTemplate.update(sql1, appname, groupname, type);
+        String sql1 = "DELETE FROM appname_info WHERE pname=? AND appname=? AND groupname=? AND type=?";
+        jdbcTemplate.update(sql1, pname, appname, groupname, type);
 
         // 清理groupname_info_mysql表相应信息
-        String sql2 = "DELETE FROM groupname_info_mysql WHERE appname=? AND groupname=?";
-        jdbcTemplate.update(sql2, appname, groupname);
+        String sql2 = "DELETE FROM groupname_info_mysql WHERE pname=? AND appname=? AND groupname=?";
+        jdbcTemplate.update(sql2, pname, appname, groupname);
 
         // 清理config_info表相应信息
-        String sql3 = "DELETE FROM config_info WHERE data_id=? AND group_id=?";
-        jdbcTemplate.update(sql3, appname, groupname);
+        String sql3 = "DELETE FROM config_info WHERE program_id=? AND data_id=? AND group_id=?";
+        jdbcTemplate.update(sql3, pname, appname, groupname);
 
     }
 
@@ -136,6 +137,7 @@ public class MySQLServiceImpl implements MngService {
          * */
 
         String dataid    = request.getParameter("pappname").trim(); // pcode, appname
+        String pname     = request.getParameter("pname").trim();    // program name
         String groupid   = request.getParameter("pgroupname").trim();
         String dbname    = request.getParameter("pdbname").trim();
         String tbprefix  = request.getParameter("ptbprefix").trim();
@@ -154,13 +156,13 @@ public class MySQLServiceImpl implements MngService {
 
         // 清理groupname_info_mysql表相应数据
         String sql1 = "DELETE FROM groupname_info_mysql " +
-                "WHERE appname=? AND groupname=? AND dbname=?";
-        jdbcTemplate.update(sql1, appname, groupname, dbname);
+                "WHERE appname=? AND pname=? AND groupname=? AND dbname=?";
+        jdbcTemplate.update(sql1, appname, pname, groupname, dbname);
 
         // 清理config_info表相应数据
         String sql2 = "DELETE FROM config_info " +
-                "WHERE data_id=? AND group_id=?";
-        jdbcTemplate.update(sql2, appname, groupname);
+                "WHERE program_id=? AND  data_id=? AND group_id=?";
+        jdbcTemplate.update(sql2, pname, appname, groupname);
 
         // 增加groupname_info_mysql表相应数据
         // 新增master
@@ -168,10 +170,10 @@ public class MySQLServiceImpl implements MngService {
         String mip   = mmap.get("ip").toString();
         String mport = mmap.get("port").toString();
         jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
-                        "appname,groupname,dbname,role,ip,port," +
+                        "pname, appname,groupname,dbname,role,ip,port," +
                         "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
-                        "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                dataid, groupid, dbname, "master",
+                        "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                pname, dataid, groupid, dbname, "master",
                 mip,mport,username,passwd,charset,
                 tbprefix,timeout,gmt_create,gmt_create);
 
@@ -182,10 +184,10 @@ public class MySQLServiceImpl implements MngService {
             String sip   = smap.get("ip").toString();
             String sport = smap.get("port").toString();
             jdbcTemplate.update("INSERT INTO groupname_info_mysql(" +
-                            "appname,groupname,dbname,role,ip,port," +
+                            "pname,appname,groupname,dbname,role,ip,port," +
                             "user, passwd, charset, tbprefix, timeout,created_time, modified_time) " +
-                            "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    dataid, groupid, dbname, "slave",
+                            "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    pname, dataid, groupid, dbname, "slave",
                     sip, sport, username,passwd,charset,
                     tbprefix, timeout, gmt_create, gmt_create);
         }
@@ -195,16 +197,16 @@ public class MySQLServiceImpl implements MngService {
 
         // 增加config_info表相应数据
         jdbcTemplate.update("INSERT INTO config_info(" +
-                        "data_id,group_id,content,md5,gmt_create,gmt_modified) " +
-                        "VALUE (?,?,?,?,?,?)",
-                dataid, groupid, content, md5, gmt_create, gmt_create);
+                        "program_id,data_id,group_id,content,md5,gmt_create,gmt_modified) " +
+                        "VALUE (?,?,?,?,?,?,?)",
+                pname, dataid, groupid, content, md5, gmt_create, gmt_create);
     }
 
     @Override
-    public Map checkConf(String appname, String groupname) throws Exception {
+    public Map checkConf(String appname, String pname, String groupname) throws Exception {
         Map map = new HashMap();
         Map resMap = new HashMap();
-        List myList = configService.getConf(appname, groupname);
+        List myList = configService.getConf(appname, pname, groupname);
 
         OtherUtil util = new OtherUtil();
         Map itemMap = (Map) util.genResMap(myList).get("item_content");
@@ -235,8 +237,8 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Map getConf(String dataid) {
-        List myList = configService.getConf(dataid);
+    public Map getConf(String dataid, String pname) {
+        List myList = configService.getConf(dataid, pname);
         logger.info(myList);
         OtherUtil util = new OtherUtil();
 
@@ -245,13 +247,12 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Map getConf(String dataid, String groupid) {
-        List myList = configService.getConf(dataid, groupid);
+    public Map getConf(String dataid, String pname, String groupid) {
+        List myList = configService.getConf(dataid, pname, groupid);
         logger.info(myList);
         OtherUtil util = new OtherUtil();
 
         return util.genResMap(myList);
     }
-
 }
 

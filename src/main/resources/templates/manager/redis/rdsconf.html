@@ -16,10 +16,10 @@
     <div class="container">
         <div class="row">
             <hr/>
-            <a type="button" class="btn btn-success" th:href="@{rdsconfnew(pcode=${pcode})}"> 新增配置 </a>
+            <a type="button" class="btn btn-success" th:href="@{rdsconfnew(pcode=${pcode}, pname=${pname})}"> 新增配置 </a>
             <hr/>
             <div class="col-md-12" role="main">
-                <p th:text="'项目编码:'+${pcode}"></p>
+                <p th:text="'工程名称:'+${pname}+'    项目编码:'+${pcode}"></p>
                 <table  class="table table-bordered">
                     <tr>
                         <th>GroupName</th>
@@ -42,10 +42,10 @@
                             <td rowspan="2" th:text="${listx.value.content.dbkey.attach.timeout}"></td>
                             <td rowspan="2">
                                 <a href="javascript:void(0)"
-                                   th:onclick="'javascript:check(\''+${pcode}+'\', \''+${listx.key}+'\')'">检查</a>
-                                <a th:href="@{rdsconfmodify(pcode=${pcode}, pgroupname = ${listx.key})}">修改</a>
+                                   th:onclick="'javascript:check(\''+${pcode}+'\', \''+${listx.key}+'\', \''+${pname}+'\')'">检查</a>
+                                <a th:href="@{rdsconfmodify(pcode=${pcode}, pname=${pname}, pgroupname = ${listx.key})}">修改</a>
                                 <a href="javascript:void(0)"
-                                   th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\')'">删除</a>
+                                   th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\', \''+${pname}+'\')'">删除</a>
                             </td>
                         </tr>
                         <tr>
@@ -91,13 +91,14 @@
     </div>
 
 <script>
-    function check(appname, groupname) {
+    function check(appname, groupname, pname) {
         $.ajax({
             url:"/manager/project/confcheck",
             dataType:"json",
             async:true,
             data:{
                 "appname": appname,
+                "pname": pname,
                 "groupname": groupname,
                 "type": "Redis"
             },
@@ -157,14 +158,15 @@
     
     
     
-    function del(appname, groupname, type) {
+    function del(appname, groupname, type, pname) {
         $.ajax({
-            url:"http://127.0.0.1:8080/manager/project/confdel",
+            url:"/manager/project/confdel",
             dataType:"json",
             async:true,
             data:{
                 "appname":appname,
                 "groupname":groupname,
+                "pname":pname,
                 "type":type
             },
             type:"POST",

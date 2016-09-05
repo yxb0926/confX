@@ -30,18 +30,20 @@ public class MysqlController {
     private MngService mySQLService;
 
     @RequestMapping("/project/myconfnew")
-    public ModelAndView myconfnew(String pcode, String errmsg) {
+    public ModelAndView myconfnew(String pcode, String pname, String errmsg) {
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconfnew");
         modelAndView.addObject("pcode",     pcode);
+        modelAndView.addObject("pname",     pname);
         modelAndView.addObject("errmsg",    errmsg);
         return modelAndView;
     }
 
     @RequestMapping("/project/myconfmodify")
-    public ModelAndView myconfmodify(String pcode, String pgroupname){
+    public ModelAndView myconfmodify(String pcode, String pgroupname, String pname){
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconfmodify");
-        Map map = mySQLService.getConf(pcode, pgroupname);
+        Map map = mySQLService.getConf(pcode, pname, pgroupname);
         modelAndView.addObject("pcode",    pcode);
+        modelAndView.addObject("pname",    pname);
         modelAndView.addObject("pcontent", map.get("item_content"));
 
         Map dbkeymap = (Map) ((Map) ((Map) ((Map)map.get("item_content")).
@@ -61,7 +63,7 @@ public class MysqlController {
     }
 
     @RequestMapping("/project/myconf")
-    public ModelAndView myconf(String pcode, String groupid) {
+    public ModelAndView myconf(String pcode, String pname, String groupid) {
         /**
          *  pcode为项目编码不能为空,如果为空则返回错误页面;
          *  groupid为空,表示查找该pcode下的所有groupid的信息;
@@ -72,13 +74,14 @@ public class MysqlController {
         if (pcode == null || pcode.length() <= 0) {
             return null;
         } else if (groupid == null || groupid.length() <= 0) {
-            myMap = mySQLService.getConf(pcode);
+            myMap = mySQLService.getConf(pcode, pname);
         } else {
-            myMap = mySQLService.getConf(pcode, groupid);
+            myMap = mySQLService.getConf(pcode, pname, groupid);
         }
 
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconf");
         modelAndView.addObject("pcode", pcode);
+        modelAndView.addObject("pname", pname);
         modelAndView.addObject("pmymap", myMap);
 
         return modelAndView;

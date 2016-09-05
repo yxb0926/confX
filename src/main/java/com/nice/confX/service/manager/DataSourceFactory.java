@@ -38,17 +38,17 @@ public class DataSourceFactory {
         return service;
     }
 
-    public Map getUrl(String type, String pcode){
+    public Map getUrl(String type, String pcode, String pname){
         Map map = new HashMap() ;
         String okURL  = "";
         String errURL = "";
 
         if (type.equals("MySQL")){
-            map.put("okurl",  "/manager/project/myconf?pcode="+pcode);
-            map.put("errurl", "/manager/project/myconfnew?pcode="+pcode);
+            map.put("okurl",  "/manager/project/myconf?pcode="+pcode+"&pname="+pname);
+            map.put("errurl", "/manager/project/myconfnew?pcode="+pcode+"&pname="+pname);
         }else if (type.equals("Redis")){
-            map.put("okurl",  "/manager/project/rdsconf?pcode="+pcode);
-            map.put("errurl", "/manager/project/rdsconfnew?pcode="+pcode);
+            map.put("okurl",  "/manager/project/rdsconf?pcode="+pcode+"&pname="+pname);
+            map.put("errurl", "/manager/project/rdsconfnew?pcode="+pcode+"&pname="+pname);
         }
 
         return map;

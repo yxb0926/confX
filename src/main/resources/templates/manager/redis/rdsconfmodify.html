@@ -40,6 +40,15 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="pname" class="col-sm-2 control-label">Program Name</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="pname"
+                               id="pname" placeholder="" th:value="${pname}"
+                               readonly="readonly"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="groupname" class="col-sm-2 control-label">GroupName</label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="pgroupname"
@@ -72,6 +81,17 @@
                         <textarea class="form-control" rows="3" name="pmiport"
                                   id="miport" placeholder="ip:port #可以配置多个,用逗号隔开!"
                                   th:text="${pmasterstr}"
+                        >
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="siport" class="col-sm-2 control-label">Slave Host</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" rows="3" name="psiport"
+                                  id="siport" placeholder="ip:port #可以配置多个,用逗号隔开!"
+                                  th:text="${pslavestr}"
                         >
                         </textarea>
                     </div>
