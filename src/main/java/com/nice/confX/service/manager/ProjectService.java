@@ -53,6 +53,11 @@ public interface ProjectService {
 
     List queryAllProgram();
 
+    /**
+     * 删除工程
+     * */
+    void delProgram(String pname) throws Exception;
+
 
 }
 

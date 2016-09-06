@@ -34,77 +34,7 @@ public class ManagerController {
     DataSourceFactory dataSourceFactory;
 
     @Autowired
-    private ProjectService projectService;
-
-    @Autowired
     private ClientService clientService;
-
-    /*
-    @Autowired
-    @Qualifier("mysql")
-    private MngService mysqlService;
-    */
-
-
-    @RequestMapping("/project/program")
-    public ModelAndView project(){
-        ModelAndView modelAndView = new ModelAndView("manager/project/program");
-        List pList = projectService.queryAllProgram();
-        modelAndView.addObject("pList", pList);
-
-        return modelAndView;
-    }
-
-    @RequestMapping("/project/newprogram")
-    public ModelAndView newprogram() {
-        return new ModelAndView("manager/project/newprogram");
-    }
-
-    @RequestMapping("/project/addprogram")
-    public ModelAndView addprogram(HttpServletRequest request) {
-        Integer success = projectService.addProgram(request);
-        if (success == 1){
-            return new ModelAndView("redirect:program");
-        } else {
-
-            return new ModelAndView("redirect:newprogram");
-        }
-    }
-
-    @RequestMapping("/project/index")
-    public ModelAndView index(String pname) {
-        ModelAndView modelAndView = new ModelAndView("manager/project/index");
-        List list = new ArrayList();
-        if (pname != null && pname !=""){
-            list = projectService.queryProject(pname);
-        } else {
-            list = projectService.queryAllProject();
-        }
-        modelAndView.addObject("plist", list);
-        modelAndView.addObject("pname", pname);
-        return modelAndView;
-
-    }
-
-    @RequestMapping("/project/new")
-    public ModelAndView newproject(String pname) {
-        ModelAndView modelAndView = new ModelAndView("manager/project/new");
-        modelAndView.addObject("pname", pname);
-
-        return modelAndView;
-    }
-
-    @RequestMapping("/project/add")
-    public ModelAndView addproject(String pcode,  String pname,
-                                   String powner, String pdesc,
-                                   String ptype,  String pfilename) {
-        Integer success = projectService.addProject(pcode, pname, powner, pdesc, ptype, pfilename);
-        if (success == 1) {
-            return new ModelAndView("redirect:index?pname="+pname);
-        } else {
-            return new ModelAndView("redirect:new?pname="+pname);
-        }
-    }
 
     @RequestMapping(value = "/project/confadd", method = RequestMethod.POST)
     public String addconf(HttpServletRequest httpServletRequest,

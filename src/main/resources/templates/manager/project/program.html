@@ -26,7 +26,8 @@
                     <th>系统用户</th>
                     <th>codeType</th>
                     <th>创建时间</th>
-                    <th>Client管理</th>
+                    <th>Client</th>
+                    <th></th>
                 </tr>
                 <tr th:each="key : ${pList}">
                     <td><a th:text="${key.pname}"
@@ -40,6 +41,7 @@
                     <td th:text="${key.pcodetype}"></td>
                     <td th:text="${key.gmt_created}"></td>
                     <td><a th:href="@{clientconf(pname=${key.pname})}"> 管理 </a></td>
+                    <td><a th:onclick="'javascript:del(\''+${key.pname}+'\')'">删除</a></td>
                 </tr>
             </table>
         </div>
@@ -48,6 +50,39 @@
             <a class="btn btn-primary" href="newprogram" role="button" target="_blank">新建项目</a>
         </div>
     </div>
+
+<script  type = "text/javascript" >
+    function del (pname) {
+        var r=confirm("删除不能恢复,确认删除?")
+        if (r==true)
+        {
+            $.ajax({
+                url:"/manager/project/delprogram",
+                dataType:"json",
+                async:true,
+                data:{
+                    "pname": pname,
+                },
+                type:"POST",
+                beforeSend:function(){
+                },
+                success:function(req) {
+                    console.log(req);
+                },
+                complete:function(){
+                    window.location.reload();
+                },
+                error:function () {
+                    alert("操作出错,请检查!");
+                }
+            });
+        }
+        else
+        {
+            // Do nothing!
+        }
+    }
+</script>
 
 </body>
 </html>

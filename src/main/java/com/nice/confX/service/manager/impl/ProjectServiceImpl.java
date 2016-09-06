@@ -149,4 +149,30 @@ public class ProjectServiceImpl implements ProjectService {
 
         return pList;
     }
+
+    @Override
+    @Transactional
+    public void delProgram(String pname) throws Exception {
+        String sql_1 = "DELETE FROM project_project WHERE pname=?";
+        jdbcTemplate.update(sql_1, pname);
+
+        String sql_2 = "DELETE FROM project_info WHERE pname=?";
+        jdbcTemplate.update(sql_2, pname);
+
+        String sql_3 = "DELETE FROM groupname_info_mysql WHERE pname=?";
+        jdbcTemplate.update(sql_3, pname);
+
+        String sql_4 = "DELETE FROM groupname_info_redis WHERE pname=?";
+        jdbcTemplate.update(sql_4, pname);
+
+        String sql_5 = "DELETE FROM config_info WHERE program_id=?";
+        jdbcTemplate.update(sql_5, pname);
+
+        String sql_6 = "DELETE FROM client_list WHERE pname=?";
+        jdbcTemplate.update(sql_6, pname);
+
+        String sql_7 = "DELETE FROM appname_info WHERE pname=?";
+        jdbcTemplate.update(sql_7, pname);
+
+    }
 }
