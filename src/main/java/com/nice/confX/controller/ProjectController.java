@@ -4,10 +4,14 @@ import com.nice.confX.service.manager.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yxb on 16/9/6.
@@ -53,4 +57,20 @@ public class ProjectController {
         }
     }
 
+    @RequestMapping(value = "/project/del", method = RequestMethod.POST)
+    @ResponseBody
+    public Map delProject(String programName, String projectName, String type){
+        Map map = new HashMap();
+        map.put("status", 200);
+        map.put("msg", "Del Sucess!");
+
+        try {
+            projectService.delProject(programName, projectName, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", 201);
+            map.put("msg", "Del Failed!");
+        }
+        return map;
+    }
 }

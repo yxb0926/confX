@@ -19,7 +19,7 @@ public interface ProjectService {
     /**
      *  删除项目
      * */
-    Integer delProject();
+    void delProject(String programName, String projectName, String type) throws Exception;
 
     /**
      *  查询项目信息

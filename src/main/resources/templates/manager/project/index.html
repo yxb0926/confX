@@ -25,6 +25,7 @@
                         <th>项目负责人</th>
                         <th>项目描述</th>
                         <th>文件名</th>
+                        <th>管理</th>
                     </tr>
                     <tr th:each="list:${plist}">
                         <td th:text="${list.pname}">program name</td>
@@ -33,6 +34,7 @@
                         <td th:text="${list.powner}">project owner</td>
                         <td th:text="${list.pdesc}">project desc</td>
                         <td th:text="${list.pfilename}">conf file name</td>
+                        <td><a th:onclick="'javascript:del(\''+${list.pname}+'\', \''+${list.pcode}+'\', \''+${list.ptype}+'\')'">删除</a></td>
                     </tr>
                 </table>
             </div>
@@ -41,5 +43,41 @@
             </div>
         </div>
     </div>
+
+<script type = "text/javascript" >
+    function del (programname, projectname, type) {
+        var r=confirm("删除不能恢复,确认删除?")
+        if (r==true)
+        {
+            $.ajax({
+                url:"/manager/project/del",
+                dataType:"json",
+                async:true,
+                data:{
+                    "programName": programname,
+                    "projectName": projectname,
+                    "type": type
+
+                },
+                type:"POST",
+                beforeSend:function(){
+                },
+                success:function(req) {
+                    console.log(req);
+                },
+                complete:function(){
+                    window.location.reload();
+                },
+                error:function () {
+                    alert("操作出错,请检查!");
+                }
+            });
+        }
+        else
+        {
+            // Do nothing!
+        }
+    }
+</script>
 </body>
 </html>

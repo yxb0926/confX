@@ -45,8 +45,25 @@ public class ProjectServiceImpl implements ProjectService {
      *  删除项目
      * */
     @Override
-    public Integer delProject(){
-        return 0;
+    @Transactional
+    public void delProject(String programName, String projectName, String type) throws Exception{
+        String sql_1 = "DELETE FROM project_info WHERE pname=? AND pcode=? AND ptype=?";
+        jdbcTemplate.update(sql_1, programName, projectName, type);
+
+        String sql_2 = "DELETE FROM appname_info WHERE appname=? AND pname=? AND type=?";
+        jdbcTemplate.update(sql_2, projectName, programName, type);
+
+        String sql_3 = "DELETE FROM config_info WHERE program_id=? AND data_id=?";
+        jdbcTemplate.update(sql_3, programName, projectName);
+
+        String sql_4 = "";
+        if (type.equals("MySQL")){
+            sql_4 = "DELETE FROM groupname_info_mysql WHERE appname=? AND pname=?";
+        } else if(type.equals("Redis")){
+            sql_4 = "DELETE FROM groupname_info_redis WHERE appname=? AND pname=?";
+        }
+
+        jdbcTemplate.update(sql_4, projectName, programName);
     }
 
     /**
