@@ -17,7 +17,6 @@ public interface MngService {
      *
      *
      * @param request*/
-    @Transactional
     void addConf(HttpServletRequest request) throws Exception;
 
     /**

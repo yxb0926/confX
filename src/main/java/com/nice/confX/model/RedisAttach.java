@@ -5,13 +5,13 @@ package com.nice.confX.model;
  */
 public class RedisAttach {
     int read_timeout;
-    int timeout;
+    String timeout;
 
     public int getRead_timeout() {
         return read_timeout;
     }
 
-    public int getTimeout() {
+    public String getTimeout() {
         return timeout;
     }
 
@@ -19,7 +19,7 @@ public class RedisAttach {
         this.read_timeout = read_timeout;
     }
 
-    public void setTimeout(int timeout) {
+    public void setTimeout(String timeout) {
         this.timeout = timeout;
     }
 }
