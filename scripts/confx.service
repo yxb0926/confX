@@ -1,0 +1,9 @@
+[Unit]
+Description=Spring Boot Application
+
+[Service]
+ExecStart=/usr/local/jdk1.8/bin/java -jar /home/confX/bin/confx.jar
+User=nice
+
+[Install]
+WantedBy=multi-user.target
