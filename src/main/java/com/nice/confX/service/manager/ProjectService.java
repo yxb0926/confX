@@ -14,7 +14,7 @@ public interface ProjectService {
     /**
     *  增加项目情况
     * */
-    Integer addProject(String pcode, String pname, String powner, String pdesc, String ptype, String pfilename);
+    Integer addProject(String pcode, String pname, String pdesc, String ptype, String pfilename);
 
     /**
      *  删除项目

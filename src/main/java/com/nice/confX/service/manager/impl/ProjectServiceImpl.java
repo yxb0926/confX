@@ -29,17 +29,16 @@ public class ProjectServiceImpl implements ProjectService {
     * */
     @Override
     public Integer addProject(String pcode,  String pname,
-                              String powner, String pdesc,
+                              String pdesc,
                               String ptype,  String pfilename){
         try {
-            jdbcTemplate.update("INSERT INTO project_info(pcode, pname, powner, pdesc, ptype, pfilename) " +
-                    "VALUE (?,?,?,?,?,?)", pcode, pname, powner, pdesc, ptype, pfilename);
+            jdbcTemplate.update("INSERT INTO project_info(pcode, pname, pdesc, ptype, pfilename) " +
+                    "VALUE (?,?,?,?,?)", pcode, pname, pdesc, ptype, pfilename);
             return 1;
         }catch (DataAccessException dataAccessException){
             return 0;
         }
     }
-
 
     /**
      *  删除项目
@@ -123,6 +122,8 @@ public class ProjectServiceImpl implements ProjectService {
     public Integer addProgram(HttpServletRequest request) {
         String pname     = request.getParameter("pname");
         String pdesc     = request.getParameter("pdesc");
+        String prange    = request.getParameter("prange");
+        String pstatus   = request.getParameter("pstatus");
         String powner    = request.getParameter("powner");
         String ppath     = request.getParameter("ppath");
         String pcmd      = request.getParameter("pcmd");
@@ -137,9 +138,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         try {
             String sql = "INSERT INTO project_project " +
-                    "(pname, pdesc, owner, path, pcmd, psysuser, pcodetype, gmt_created) " +
-                    "VALUES(?,?,?,?,?,?,?,?)";
-            int rs = jdbcTemplate.update(sql, pname, pdesc, powner, ppath, pcmd, psysuser, pcodetype, gmt_created);
+                    "(pname, pstatus, pdesc, prange, owner, path, pcmd, psysuser, pcodetype, gmt_created) " +
+                    "VALUES(?,?,?,?,?,?,?,?,?,?)";
+            int rs = jdbcTemplate.update(sql, pname, pstatus, pdesc, prange, powner, ppath, pcmd, psysuser, pcodetype, gmt_created);
 
             if (rs>0){
                 rt = 1;
@@ -157,7 +158,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List queryAllProgram() {
         List pList = new ArrayList();
         try {
-            String sql = "SELECT pname, pdesc, owner, path, pcmd, psysuser, pcodetype, gmt_created " +
+            String sql = "SELECT pname, pstatus, pdesc, prange, owner, path, pcmd, psysuser, pcodetype, gmt_created " +
                     "FROM project_project";
             pList = jdbcTemplate.queryForList(sql);
         }catch (Exception e){

@@ -17,13 +17,15 @@
         <div class="row">
             <br/>
             <div class="table-responsive">
+                <hr/>
+                <a>拷贝配置</a>
+                <hr/>
                 <table class="table table-bordered">
                     <tr>
                         <th>工程名称</th>
                         <th>项目编码</th>
-                        <th>项目类型</th>
-                        <th>项目负责人</th>
-                        <th>项目描述</th>
+                        <th>类型</th>
+                        <th>描述</th>
                         <th>文件名</th>
                         <th>管理</th>
                     </tr>
@@ -31,10 +33,11 @@
                         <td th:text="${list.pname}">program name</td>
                         <td><a th:text="${list.pcode}" th:href="@{pconf(ptype=${list.ptype}, pcode=${list.pcode}, pname=${list.pname})}">project code</a></td>
                         <td th:text="${list.ptype}">project type</td>
-                        <td th:text="${list.powner}">project owner</td>
                         <td th:text="${list.pdesc}">project desc</td>
                         <td th:text="${list.pfilename}">conf file name</td>
-                        <td><a th:onclick="'javascript:del(\''+${list.pname}+'\', \''+${list.pcode}+'\', \''+${list.ptype}+'\')'">删除</a></td>
+                        <td><a th:onclick="'javascript:del(\''+${list.pname}+'\', \''+${list.pcode}+'\', \''+${list.ptype}+'\')'">删除</a>
+                            <a>修改</a>
+                        </td>
                     </tr>
                 </table>
             </div>

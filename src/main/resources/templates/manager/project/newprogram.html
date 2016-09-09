@@ -33,6 +33,28 @@
             </div>
 
             <div class="form-group">
+                <label for="p_range" class="col-sm-2 control-label">机房</label>
+                <div class="col-sm-3">
+                    <select class="form-control" name="prange" id="p_range">
+                        <option>鹏博士</option>
+                        <option>首铭</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label for="p_status" class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-3">
+                    <select class="form-control" name="pstatus" id="p_status">
+                        <option>offline</option>
+                        <option>online</option>
+                        <option>pre</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label for="p_owner" class="col-sm-2 control-label">负责人</label>
                 <div class="col-sm-3">
                     <input type="text" class="form-control" name="powner" id="p_owner" placeholder="" />
@@ -49,14 +71,18 @@
             <div class="form-group">
                 <label for="p_cmd" class="col-sm-2 control-label">reload命令</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" name="pcmd" id="p_cmd" placeholder="" />
+                    <select class="form-control" name="pcmd" id="p_cmd">
+                        <option>systemctl reload php-fpm</option>
+                    </select>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="p_sysuser" class="col-sm-2 control-label">系统user</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" name="psysuser" id="p_sysuser" placeholder="" />
+                    <select class="form-control" name="psysuser" id="p_sysuser">
+                        <option>nice</option>
+                    </select>
                 </div>
             </div>
 

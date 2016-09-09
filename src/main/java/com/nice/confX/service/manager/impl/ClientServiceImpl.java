@@ -131,14 +131,14 @@ public class ClientServiceImpl implements ClientService{
                     "pp.pcmd AS cmd, pp.psysuser AS sysuser, pp.pcodetype AS codetype " +
                     "FROM project_info p,client_list c, project_project pp " +
                     "WHERE c.pname=p.pname AND c.client_ip=? " +
-                    "AND pp.pname=c.pname";
+                    "AND pp.pname=c.pname  AND pp.pstatus=?";
             /**
             String sql = "SELECT pcode AS item, ptype AS type " +
                     " FROM client_list " +
                     " WHERE client_ip = ? " +
                     " GROUP BY pcode,ptype";
             **/
-            myList = jdbcTemplate.queryForList(sql, ip);
+            myList = jdbcTemplate.queryForList(sql, ip, "online");
 
             map.put("status", 200);
             map.put("msg", "ok");

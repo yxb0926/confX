@@ -47,9 +47,9 @@ public class ProjectController {
 
     @RequestMapping("/project/add")
     public ModelAndView addproject(String pcode,  String pname,
-                                   String powner, String pdesc,
+                                   String pdesc,
                                    String ptype,  String pfilename) {
-        Integer success = projectService.addProject(pcode, pname, powner, pdesc, ptype, pfilename);
+        Integer success = projectService.addProject(pcode, pname, pdesc, ptype, pfilename);
         if (success == 1) {
             return new ModelAndView("redirect:index?pname="+pname);
         } else {

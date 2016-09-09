@@ -20,28 +20,31 @@
                 <tr>
                     <th>工程名称</th>
                     <th>工程描述</th>
-                    <th>负责人</th>
+                    <th>机房</th>
+                    <th>codeType</th>
+                    <th>状态</th>
                     <th>配置路径</th>
                     <th>Reload命令</th>
                     <th>系统用户</th>
-                    <th>codeType</th>
-                    <th>创建时间</th>
                     <th>Client</th>
-                    <th></th>
+                    <th>管理</th>
                 </tr>
                 <tr th:each="key : ${pList}">
                     <td><a th:text="${key.pname}"
                            th:href="@{index(pname=${key.pname})}"></a>
                     </td>
                     <td th:text="${key.pdesc}"></td>
-                    <td th:text="${key.owner}"></td>
+                    <td th:text="${key.prange}"></td>
+                    <td th:text="${key.pcodetype}"></td>
+                    <td th:text="${key.pstatus}"></td>
                     <td th:text="${key.path}"></td>
                     <td th:text="${key.pcmd}"></td>
                     <td th:text="${key.psysuser}"></td>
-                    <td th:text="${key.pcodetype}"></td>
-                    <td th:text="${key.gmt_created}"></td>
                     <td><a th:href="@{clientconf(pname=${key.pname})}"> 管理 </a></td>
-                    <td><a th:onclick="'javascript:del(\''+${key.pname}+'\')'">删除</a></td>
+                    <td>
+                        <a th:onclick="'javascript:del(\''+${key.pname}+'\')'">删除</a>
+                        <a>修改</a>
+                    </td>
                 </tr>
             </table>
         </div>

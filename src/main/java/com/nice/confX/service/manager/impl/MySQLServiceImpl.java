@@ -50,7 +50,7 @@ public class MySQLServiceImpl implements MngService {
         String passwd   = request.getParameter("ppass").trim();
         String charset  = request.getParameter("pcharsetx").trim();
         String timeout  = request.getParameter("ptimeoutx").trim();
-        String type     = request.getParameter("ptype");
+        String type     = request.getParameter("ptype").trim();
 
         OtherUtil util = new OtherUtil();
         Map map = util.setMysqlInfo(request);
@@ -97,9 +97,9 @@ public class MySQLServiceImpl implements MngService {
 
         // 更新表config_info
         jdbcTemplate.update("INSERT INTO config_info(" +
-                "program_id, data_id,group_id,content,md5,gmt_create,gmt_modified) " +
-                "VALUE (?,?,?,?,?,?,?)",
-                pname, dataid, groupid, content, md5, gmt_create, gmt_create);
+                "program_id, data_id, type, group_id,content,md5,gmt_create,gmt_modified) " +
+                "VALUE (?,?,?,?,?,?,?,?)",
+                pname, dataid, type, groupid, content, md5, gmt_create, gmt_create);
     }
 
     @Override
@@ -114,8 +114,8 @@ public class MySQLServiceImpl implements MngService {
         jdbcTemplate.update(sql2, pname, appname, groupname);
 
         // 清理config_info表相应信息
-        String sql3 = "DELETE FROM config_info WHERE program_id=? AND data_id=? AND group_id=?";
-        jdbcTemplate.update(sql3, pname, appname, groupname);
+        String sql3 = "DELETE FROM config_info WHERE program_id=? AND data_id=? AND group_id=? AND type=?";
+        jdbcTemplate.update(sql3, pname, appname, groupname, type);
 
     }
 
