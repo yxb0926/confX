@@ -1,0 +1,145 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 工程修改 配置管理系统</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <br/>
+        <span th:each="listkey : ${plist}">
+        <form class="form-horizontal" action="addprogram" method="post" autocomplete="off">
+            <div class="form-group">
+                <label for="p_name" class="col-sm-2 control-label">工程名称</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="pname" id="p_name"
+                           th:value="${listkey.pname}" placeholder="" readonly="readonly"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_desc" class="col-sm-2 control-label">工程描述</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="pdesc" id="p_desc"
+                           th:value="${listkey.pdesc}" placeholder="" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_range" class="col-sm-2 control-label">机房</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="prange" id="p_range"
+                           placeholder=""  readonly="readonly"
+                           th:value="${listkey.prange}"
+                    />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label for="p_status" class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-3">
+                    <select class="form-control" name="pstatus" id="p_status"
+                            th:switch="${listkey.pstatus}"
+                    >
+                        <span th:case="'online'">
+                            <option>online</option>
+                            <option>offline</option>
+                            <option>pre</option>
+                        </span>
+
+                        <span th:case="'offline'">
+                            <option>offline</option>
+                            <option>online</option>
+                            <option>pre</option>
+                        </span>
+
+                        <span th:case="'pre'">
+                            <option>pre</option>
+                            <option>offline</option>
+                            <option>online</option>
+                        </span>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_owner" class="col-sm-2 control-label">负责人</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="powner" id="p_owner"
+                           th:value="${listkey.owner}" placeholder="" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_path" class="col-sm-2 control-label">配置路径</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="ppath" id="p_path"
+                           th:value="${listkey.path}" placeholder="" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_cmd" class="col-sm-2 control-label">reload命令</label>
+                <div class="col-sm-3">
+                    <select class="form-control" name="pcmd" id="p_cmd" th:value="${listkey.pcmd}">
+                        <option>systemctl reload php-fpm</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_sysuser" class="col-sm-2 control-label">系统user</label>
+                <div class="col-sm-3">
+                    <select class="form-control" name="psysuser" id="p_sysuser" th:value="${listkey.psysuser}">
+                        <option>nice</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="p_codetype" class="col-sm-2 control-label">codeType</label>
+                <div class="col-sm-3">
+                    <select class="form-control" name="pcodetype" id="p_codetype"
+                            th:switch="${listkey.pcodetype}"
+                    >
+                        <span th:case="'php-coolly'">
+                            <option>php-coolly</option>
+                            <option>php-ice</option>
+                            <option>python</option>
+                            <option>java</option>
+                        </span>
+
+                        <span th:case="'php-ice'">
+                            <option>php-ice</option>
+                            <option>php-coolly</option>
+                            <option>python</option>
+                            <option>java</option>
+
+                        </span>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">提交</button>
+                </div>
+            </div>
+        </form>
+        </span>
+    </div>
+</div>
+</body>
+</html>

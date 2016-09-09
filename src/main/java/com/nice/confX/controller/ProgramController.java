@@ -63,4 +63,15 @@ public class ProgramController {
         }
         return map;
     }
+
+
+    @RequestMapping("/project/modifyprogram")
+    public ModelAndView modifyProgram(String pname){
+        ModelAndView modelAndView = new ModelAndView("manager/project/programmodify");
+        List list = projectService.queryProgram(pname);
+
+        modelAndView.addObject("plist", list);
+
+        return modelAndView;
+    }
 }

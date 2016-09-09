@@ -137,7 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
         int rt = 1;
 
         try {
-            String sql = "INSERT INTO project_project " +
+            String sql = "REPLACE INTO project_project " +
                     "(pname, pstatus, pdesc, prange, owner, path, pcmd, psysuser, pcodetype, gmt_created) " +
                     "VALUES(?,?,?,?,?,?,?,?,?,?)";
             int rs = jdbcTemplate.update(sql, pname, pstatus, pdesc, prange, powner, ppath, pcmd, psysuser, pcodetype, gmt_created);
@@ -169,6 +169,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List queryProgram(String pname) {
+        String sql = "SELECT * FROM project_project WHERE pname=?";
+        List list = jdbcTemplate.queryForList(sql, pname);
+        return list;
+    }
+
+    @Override
     @Transactional
     public void delProgram(String pname) throws Exception {
         String sql_1 = "DELETE FROM project_project WHERE pname=?";
@@ -193,4 +200,5 @@ public class ProjectServiceImpl implements ProjectService {
         jdbcTemplate.update(sql_7, pname);
 
     }
+
 }

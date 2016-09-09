@@ -53,6 +53,8 @@ public interface ProjectService {
 
     List queryAllProgram();
 
+    List queryProgram(String pname);
+
     /**
      * 删除工程
      * */

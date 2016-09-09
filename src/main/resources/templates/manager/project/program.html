@@ -43,7 +43,7 @@
                     <td><a th:href="@{clientconf(pname=${key.pname})}"> 管理 </a></td>
                     <td>
                         <a th:onclick="'javascript:del(\''+${key.pname}+'\')'">删除</a>
-                        <a>修改</a>
+                        <a th:href="@{modifyprogram(pname=${key.pname})}">修改</a>
                     </td>
                 </tr>
             </table>
