@@ -16,6 +16,7 @@
 <body>
     <div class="container">
         <div class="row">
+            <span th:if="${role eq 'admin'}">
             <br/>
             <form class="form-horizontal" action="add" method="post" autocomplete="off">
                 <div class="form-group">
@@ -62,6 +63,11 @@
                     </div>
                 </div>
             </form>
+            </span>
+
+            <span th:if="${role ne 'admin'}">
+                <h3>用户权限不足!</h3>
+            </span>
         </div>
     </div>
 </body>

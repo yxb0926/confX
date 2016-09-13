@@ -20,6 +20,7 @@
                 <hr/>
                 <a>拷贝配置</a>
                 <hr/>
+                <h2 th:text="${role}"></h2>
                 <table class="table table-bordered">
                     <tr>
                         <th>工程名称</th>
@@ -27,7 +28,9 @@
                         <th>类型</th>
                         <th>描述</th>
                         <th>文件名</th>
-                        <th>管理</th>
+                        <span th:if="${role eq 'admin'}">
+                            <th>管理</th>
+                        </span>
                     </tr>
                     <tr th:each="list:${plist}">
                         <td th:text="${list.pname}">program name</td>
@@ -35,14 +38,18 @@
                         <td th:text="${list.ptype}">project type</td>
                         <td th:text="${list.pdesc}">project desc</td>
                         <td th:text="${list.pfilename}">conf file name</td>
+                        <span th:if="${role eq 'admin'}">
                         <td><a th:onclick="'javascript:del(\''+${list.pname}+'\', \''+${list.pcode}+'\', \''+${list.ptype}+'\')'">删除</a>
                             <a>修改</a>
                         </td>
+                        </span>
                     </tr>
                 </table>
             </div>
             <div class="col-md-5 col-md-offset-5">
-                <a class="btn btn-primary" th:href="@{new(pname=${pname})}" role="button">新建项目</a>
+                <span th:if="${role eq 'admin'}">
+                    <a class="btn btn-primary" th:href="@{new(pname=${pname})}" role="button">新建项目</a>
+                </span>
             </div>
         </div>
     </div>

@@ -23,6 +23,7 @@
                     <tr>
                         <th>工程名称</th>
                         <th>ip</th>
+                        <th>状态</th>
                         <th>创建时间</th>
                         <th>最后修改时间</th>
                         <th>操作</th>
@@ -30,6 +31,7 @@
                     <tr th:each="list:${clientinfo}">
                         <td th:text="${list.pname}"></td>
                         <td th:text="${list.client_ip}"></td>
+                        <td>状态</td>
                         <td th:text="${list.gmt_created}"></td>
                         <td th:text="${list.gmt_modified}"></td>
                         <td> <a href="javascript:void(0)" th:onclick="'javascript:clientdel(\''+${list.pname}+'\', \''+${list.client_ip}+'\');'">删除</a> </td>

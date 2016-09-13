@@ -160,29 +160,35 @@
 
 
     function del (appname, groupname, type, pname) {
-        $.ajax({
-            url:"/manager/project/confdel",
-            dataType:"json",
-            async:true,
-            data:{
-                "appname":appname,
-                "pname":pname,
-                "groupname":groupname,
-                "type":type
-            },
-            type:"POST",
-            beforeSend:function(){
-            },
-            success:function(req) {
-                console.log(req);
-            },
-            complete:function(){
-                window.location.reload();
-            },
-            error:function () {
-                alert("操作出错,请检查!");
-            }
-        });
+        var r=confirm("删除不能恢复,确认删除?")
+        if (r==true){
+            $.ajax({
+                url:"/manager/project/confdel",
+                dataType:"json",
+                async:true,
+                data:{
+                    "appname":appname,
+                    "pname":pname,
+                    "groupname":groupname,
+                    "type":type
+                },
+                type:"POST",
+                beforeSend:function(){
+                },
+                success:function(req) {
+                    console.log(req);
+                },
+                complete:function(){
+                    window.location.reload();
+                },
+                error:function () {
+                    alert("操作出错,请检查!");
+                }
+            });
+        }else {
+            // do nothing
+        }
+
     }
 </script>
 </body>

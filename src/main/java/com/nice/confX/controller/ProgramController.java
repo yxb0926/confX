@@ -1,5 +1,6 @@
 package com.nice.confX.controller;
 
+import com.nice.confX.model.User;
 import com.nice.confX.service.manager.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -18,16 +20,19 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/manager")
-public class ProgramController {
+public class ProgramController extends HandlerInterceptorAdapter {
     @Autowired
     private ProjectService projectService;
 
 
     @RequestMapping("/project/program")
-    public ModelAndView project(){
+    public ModelAndView project( HttpServletRequest request ){
+        User sessionUser = (User) request.getSession().getAttribute("sessionUser");
+
         ModelAndView modelAndView = new ModelAndView("manager/project/program");
         List pList = projectService.queryAllProgram();
         modelAndView.addObject("pList", pList);
+        modelAndView.addObject("role", sessionUser.getRole());
 
         return modelAndView;
     }
