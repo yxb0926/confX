@@ -16,8 +16,11 @@
 <body>
     <div class="container">
         <hr/>
+        <span th:if="${role eq 'admin'}">
         <a type="button" class="btn btn-success"
-           th:href="@{myconfnew(pcode=${pcode}, pname=${pname})}"> 新增组 </a>
+           th:href="@{myconfnew(pcode=${pcode}, pname=${pname})}"> 新增组
+        </a>
+        </span>
 
         <div class="row">
             <div class="col-md-12" role="main">

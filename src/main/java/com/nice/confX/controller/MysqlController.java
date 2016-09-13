@@ -1,5 +1,6 @@
 package com.nice.confX.controller;
 
+import com.nice.confX.model.User;
 import com.nice.confX.service.manager.MngService;
 import com.nice.confX.service.manager.impl.MySQLServiceImpl;
 import com.nice.confX.service.manager.impl.ProjectServiceImpl;
@@ -63,12 +64,14 @@ public class MysqlController {
     }
 
     @RequestMapping("/project/myconf")
-    public ModelAndView myconf(String pcode, String pname, String groupid) {
+    public ModelAndView myconf(HttpServletRequest request, String pcode, String pname, String groupid) {
         /**
          *  pcode为项目编码不能为空,如果为空则返回错误页面;
          *  groupid为空,表示查找该pcode下的所有groupid的信息;
          *  groupid可以为单个或多个id|id|id ...
          * */
+
+        User sessionUser = (User) request.getSession().getAttribute("sessionUser");
 
         Map myMap = new HashMap();
         if (pcode == null || pcode.length() <= 0) {
@@ -83,6 +86,7 @@ public class MysqlController {
         modelAndView.addObject("pcode", pcode);
         modelAndView.addObject("pname", pname);
         modelAndView.addObject("pmymap", myMap);
+        modelAndView.addObject("role", sessionUser.getRole());
 
         return modelAndView;
     }
