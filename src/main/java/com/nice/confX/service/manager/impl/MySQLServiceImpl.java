@@ -239,7 +239,7 @@ public class MySQLServiceImpl implements MngService {
     @Override
     public Map getConf(String dataid, String pname) {
         List myList = configService.getConf(dataid, pname);
-        logger.info(myList);
+        logger.debug(myList);
         OtherUtil util = new OtherUtil();
 
         return util.genResMap(myList);
@@ -249,7 +249,7 @@ public class MySQLServiceImpl implements MngService {
     @Override
     public Map getConf(String dataid, String pname, String groupid) {
         List myList = configService.getConf(dataid, pname, groupid);
-        logger.info(myList);
+        logger.debug(myList);
         OtherUtil util = new OtherUtil();
 
         return util.genResMap(myList);

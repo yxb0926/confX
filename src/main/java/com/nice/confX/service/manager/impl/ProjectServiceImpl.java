@@ -112,7 +112,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
         }catch (DataAccessException e){
-            System.out.println(e);
+            e.printStackTrace();
             return true;
         }
     }

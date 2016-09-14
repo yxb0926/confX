@@ -53,7 +53,7 @@ public class RedisServiceImpl implements MngService{
 
         String content = JSON.toJSONString(map);
         String md5     = DigestUtils.md5Hex(content);
-        logger.info(content);
+        logger.debug(content);
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -199,7 +199,7 @@ public class RedisServiceImpl implements MngService{
     @Override
     public Map getConf(String dataid, String pname) {
         List redisList = configService.getConf(dataid, pname);
-        logger.info(redisList);
+        logger.debug(redisList);
 
         OtherUtil util = new OtherUtil();
         return util.genRedisResMap(redisList);
@@ -208,7 +208,7 @@ public class RedisServiceImpl implements MngService{
     @Override
     public Map getConf(String dataid, String pname, String groupid) {
         List redisList = configService.getConf(dataid, pname, groupid);
-        logger.info(redisList);
+        logger.debug(redisList);
         OtherUtil util = new OtherUtil();
         return util.genRedisResMap(redisList);
     }

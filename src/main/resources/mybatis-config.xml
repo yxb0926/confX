@@ -2,16 +2,16 @@
 <!DOCTYPE configuration
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration>
+<configuration xmlns:tx="http://www.springframework.org/schema/tx">
     <!-- 对事务的管理和连接池的配置 -->
     <environments default="prod">
         <environment id="prod">
-            <transactionManager type="JDBC" />
+            <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
-                <property name="driver" value="oracle.jdbc.driver.OracleDriver" />
-                <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl" />
-                <property name="username" value="ibatis" />
-                <property name="password" value="ibatis" />
+                <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+                <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+                <property name="username" value="ibatis"/>
+                <property name="password" value="ibatis"/>
             </dataSource>
         </environment>
     </environments>
@@ -19,4 +19,5 @@
     <mappers>
         <mapper resource="sqlmap/ClientMapper.xml"/>
     </mappers>
+
 </configuration>
