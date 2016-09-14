@@ -30,7 +30,7 @@ public class UserSecurityController {
         if ( sessionUser != null){
             modelAndView.setViewName("redirect:project/program");
         } else {
-            modelAndView.setViewName("/manager/project/login");
+            modelAndView.setViewName("manager/project/login");
         }
 
         return modelAndView;
@@ -53,16 +53,16 @@ public class UserSecurityController {
         } else {
             //登陆失败
             logger.info(username + " " + result);
-            modelAndView.setViewName("/manager/project/login");
+            modelAndView.setViewName("manager/project/login");
             modelAndView.addObject("msg", result);
         }
 
         return modelAndView;
     }
 
-    @RequestMapping()
+    @RequestMapping(value = "/project/logout", method = RequestMethod.GET)
     public ModelAndView logout(){
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("manager/project/logout");
 
         return modelAndView;
     }
