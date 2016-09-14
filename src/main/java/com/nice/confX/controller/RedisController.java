@@ -1,5 +1,6 @@
 package com.nice.confX.controller;
 
+import com.nice.confX.model.User;
 import com.nice.confX.service.manager.MngService;
 import com.nice.confX.utils.OtherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,9 @@ public class RedisController {
     private MngService redisService;
 
     @RequestMapping("/project/rdsconf")
-    public ModelAndView rdsconf(String pcode, String pname, String groupid ){
+    public ModelAndView rdsconf(HttpServletRequest request, String pcode, String pname, String groupid ){
         Map map = new HashMap();
+        User sessionUser = (User) request.getSession().getAttribute("sessionUser");
 
         if ( pcode == null || pcode.length() <=0 ){
             return null;
@@ -39,6 +42,7 @@ public class RedisController {
         modelAndView.addObject("pcode", pcode);
         modelAndView.addObject("pname", pname);
         modelAndView.addObject("pmap", map);
+        modelAndView.addObject("role", sessionUser.getRole());
 
         return modelAndView;
     }

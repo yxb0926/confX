@@ -16,7 +16,9 @@
     <div class="container">
         <div class="row">
             <hr/>
+            <span th:if="${role eq 'admin'}">
             <a type="button" class="btn btn-success" th:href="@{rdsconfnew(pcode=${pcode}, pname=${pname})}"> 新增配置 </a>
+            </span>
             <hr/>
             <div class="col-md-12" role="main">
                 <p th:text="'工程名称:'+${pname}+'    项目编码:'+${pcode}"></p>
@@ -27,7 +29,9 @@
                         <th>ip:port</th>
                         <th>read_timeout</th>
                         <th>timeout</th>
+                        <span th:if="${role eq 'admin'}">
                         <td>管理</td>
+                        </span>
                     </tr>
                     <span th:each="listx : ${pmap.item_content}">
                         <tr>
@@ -40,6 +44,7 @@
                             </td>
                             <td rowspan="2" th:text="${listx.value.content.dbkey.attach.read_timeout}"></td>
                             <td rowspan="2" th:text="${listx.value.content.dbkey.attach.timeout}"></td>
+                            <span th:if="${role eq 'admin'}">
                             <td rowspan="2">
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:check(\''+${pcode}+'\', \''+${listx.key}+'\', \''+${pname}+'\')'">检查</a>
@@ -47,6 +52,7 @@
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:del(\''+${pcode}+'\', \''+${listx.key}+'\', \'Redis\', \''+${pname}+'\')'">删除</a>
                             </td>
+                            </span>
                         </tr>
                         <tr>
                             <td>Slave</td>

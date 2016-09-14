@@ -33,7 +33,9 @@
                         <th>dbname</th>
                         <th>role</th>
                         <th>ip:port</th>
-                        <th>管理</th>
+                        <span th:if="${role eq 'admin'}">
+                            <th>管理</th>
+                        </span>
                     </tr>
 
                     <span th:each="listx : ${pmymap.item_content}">
@@ -46,6 +48,7 @@
                                     <div th:text="${master.ip}+':'+${master.port}"></div>
                                 </td>
                             </span>
+                            <span th:if="${role eq 'admin'}">
                             <td rowspan="2">
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:check(\''+${pcode}+'\',\''+${listx.key}+'\', \''+${pname}+'\');'">检测</a>
@@ -53,6 +56,7 @@
                                 <a href="javascript:void(0)"
                                    th:onclick="'javascript:del(\''+${pcode}+'\',\''+${listx.key}+'\',\'MySQL\', \''+${pname}+'\');'">删除</a>
                             </td>
+                            </span>
                         </tr>
                         <tr>
                             <td>Slave</td>
