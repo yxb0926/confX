@@ -41,7 +41,7 @@ public class ConfXApp extends SpringBootServletInitializer {
                                          Object handler) throws Exception {
                     request.getContextPath();
 
-                    String loginUrl = "/manager/login";
+                    String loginUrl = "/manager/project/login";
                     User sessionUser = (User) request.getSession().getAttribute("sessionUser");
 
                     if(request.getServletPath().startsWith(loginUrl)) {

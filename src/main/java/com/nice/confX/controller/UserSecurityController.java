@@ -23,7 +23,7 @@ public class UserSecurityController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/project/login", method = RequestMethod.GET)
     public ModelAndView loginindex(HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
@@ -36,7 +36,7 @@ public class UserSecurityController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/project/login", method = RequestMethod.POST)
     public ModelAndView login (HttpServletRequest request, String username, String password){
         ModelAndView modelAndView = new ModelAndView();
 
@@ -48,12 +48,12 @@ public class UserSecurityController {
             request.getSession().setMaxInactiveInterval(60 * 60 * 24);  // 过期时间为1天
             request.getSession().setAttribute("sessionUser", result);
 
-            modelAndView.setViewName("redirect:project/program");
+            modelAndView.setViewName("redirect:program");
 
         } else {
             //登陆失败
             logger.info(username + " " + result);
-            modelAndView.setViewName("/project/login");
+            modelAndView.setViewName("/manager/project/login");
             modelAndView.addObject("msg", result);
         }
 

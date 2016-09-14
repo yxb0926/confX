@@ -28,14 +28,14 @@ public class BaseController {
     @RequestMapping("/")
     public ModelAndView indexroot(HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:manager/login");
+        modelAndView.setViewName("redirect:manager/project/login");
         //User sessionUser = (User) request.getSession().getAttribute("sessionUser");
         return modelAndView;
     }
 
     @RequestMapping("/index")
     public ModelAndView index(HttpServletRequest request){
-        ModelAndView modelAndView = new ModelAndView("redirect:manager/login");
+        ModelAndView modelAndView = new ModelAndView("redirect:manager/project/login");
         return modelAndView;
     }
 
