@@ -28,7 +28,7 @@ public class UserSecurityController {
         ModelAndView modelAndView = new ModelAndView();
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
         if ( sessionUser != null){
-            modelAndView.setViewName("redirect:project/program");
+            modelAndView.setViewName("redirect:program");
         } else {
             modelAndView.setViewName("manager/project/login");
         }
