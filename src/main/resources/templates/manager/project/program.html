@@ -19,7 +19,6 @@
             <table class="table table-bordered">
                 <tr>
                     <th>工程名称</th>
-                    <th>工程描述</th>
                     <th>机房</th>
                     <th>codeType</th>
                     <th>状态</th>
@@ -32,10 +31,9 @@
                     </span>
                 </tr>
                 <tr th:each="key : ${pList}">
-                    <td><a th:text="${key.pname}"
+                    <td th:title="${key.pdesc}"><a th:text="${key.pname}"
                            th:href="@{index(pname=${key.pname})}"></a>
                     </td>
-                    <td th:text="${key.pdesc}"></td>
                     <td th:text="${key.prange}"></td>
                     <td th:text="${key.pcodetype}"></td>
                     <td th:text="${key.pstatus}"></td>
