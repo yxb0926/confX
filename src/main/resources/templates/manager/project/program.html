@@ -36,7 +36,15 @@
                     </td>
                     <td th:text="${key.prange}"></td>
                     <td th:text="${key.pcodetype}"></td>
-                    <td th:text="${key.pstatus}"></td>
+                    <span th:if="${key.pstatus eq 'online'}">
+                    <td style="color: green;" th:text="${key.pstatus}"></td>
+                    </span>
+                    <span th:if="${key.pstatus eq 'offline'}">
+                    <td style="color: #F5DEB3;" th:text="${key.pstatus}"></td>
+                    </span>
+                    <span th:if="${key.pstatus eq 'pre'}">
+                    <td style="color: #A9A9A9 ;" th:text="${key.pstatus}"></td>
+                    </span>
                     <td th:text="${key.path}"></td>
                     <td th:text="${key.pcmd}"></td>
                     <td th:text="${key.psysuser}"></td>

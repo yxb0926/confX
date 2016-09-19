@@ -159,7 +159,7 @@ public class ProjectServiceImpl implements ProjectService {
         List pList = new ArrayList();
         try {
             String sql = "SELECT pname, pstatus, pdesc, prange, owner, path, pcmd, psysuser, pcodetype, gmt_created " +
-                    "FROM project_project";
+                    "FROM project_project ORDER BY pstatus DESC";
             pList = jdbcTemplate.queryForList(sql);
         }catch (Exception e){
             e.printStackTrace();
