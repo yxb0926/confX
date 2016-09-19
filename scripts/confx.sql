@@ -39,8 +39,8 @@ CREATE TABLE `appname_info` (
   `created_time` datetime NOT NULL DEFAULT '2016-07-13 00:00:00',
   `modified_time` datetime NOT NULL DEFAULT '2016-07-13 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk` (`appname`,`pname`,`groupname`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `uk` (`appname`,`pname`,`groupname`,`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,12 +54,19 @@ CREATE TABLE `client_list` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pname` varchar(200) NOT NULL DEFAULT '',
   `client_ip` varchar(20) NOT NULL DEFAULT '',
+  `client_port` int(11) DEFAULT NULL,
+  `hostname` varchar(100) DEFAULT NULL,
   `isdel` tinyint(4) DEFAULT '0' COMMENT '0-未删除，1-已删除',
+  `event_msg` varchar(200) DEFAULT NULL,
+  `event_code` int(11) DEFAULT NULL,
+  `client_launch_time` datetime DEFAULT NULL,
+  `uptime` bigint(20) DEFAULT NULL,
+  `data` text,
   `gmt_created` datetime NOT NULL DEFAULT '2016-07-25 00:00:00',
   `gmt_modified` datetime NOT NULL DEFAULT '2016-07-25 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk` (`pname`,`client_ip`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,14 +80,15 @@ CREATE TABLE `config_info` (
   `id` bigint(64) unsigned NOT NULL AUTO_INCREMENT,
   `program_id` varchar(100) DEFAULT NULL,
   `data_id` varchar(100) DEFAULT NULL,
+  `type` varchar(20) DEFAULT NULL,
   `group_id` varchar(100) DEFAULT NULL,
   `content` longtext NOT NULL,
   `md5` varchar(32) NOT NULL DEFAULT '',
   `gmt_create` datetime NOT NULL DEFAULT '2010-05-05 00:00:00',
   `gmt_modified` datetime NOT NULL DEFAULT '2010-05-05 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk` (`program_id`,`data_id`,`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `uk` (`program_id`,`data_id`,`group_id`,`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +115,7 @@ CREATE TABLE `groupname_info_mysql` (
   `created_time` datetime NOT NULL DEFAULT '2016-07-13 00:00:00',
   `modified_time` datetime NOT NULL DEFAULT '2016-07-13 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +130,7 @@ CREATE TABLE `groupname_info_redis` (
   `appname` varchar(255) NOT NULL DEFAULT '',
   `pname` varchar(100) DEFAULT NULL,
   `groupname` varchar(255) NOT NULL,
-  `timeout` int(11) NOT NULL,
+  `timeout` varchar(10) DEFAULT NULL,
   `read_timeout` int(11) NOT NULL,
   `role` varchar(20) NOT NULL,
   `ip` varchar(20) NOT NULL,
@@ -130,7 +138,7 @@ CREATE TABLE `groupname_info_redis` (
   `created_time` datetime NOT NULL DEFAULT '2016-07-13 00:00:00',
   `modified_time` datetime NOT NULL DEFAULT '2016-07-13 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,14 +153,13 @@ CREATE TABLE `project_info` (
   `pcode` varchar(255) NOT NULL DEFAULT '',
   `pname` varchar(100) DEFAULT NULL,
   `ptype` varchar(20) NOT NULL DEFAULT '',
-  `powner` varchar(256) NOT NULL DEFAULT '',
   `pdesc` varchar(256) NOT NULL DEFAULT '',
   `pfilename` varchar(200) DEFAULT NULL,
   `addtime` datetime DEFAULT '0000-00-00 00:00:00',
   `modifytime` datetime DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk` (`pcode`,`pname`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `uk` (`pcode`,`pname`,`ptype`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,7 +172,9 @@ DROP TABLE IF EXISTS `project_project`;
 CREATE TABLE `project_project` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pname` varchar(255) NOT NULL DEFAULT '',
+  `pstatus` varchar(20) DEFAULT NULL,
   `pdesc` varchar(200) NOT NULL DEFAULT '',
+  `prange` varchar(20) DEFAULT NULL,
   `owner` varchar(200) NOT NULL DEFAULT '',
   `path` varchar(200) DEFAULT NULL,
   `pcmd` varchar(200) NOT NULL,
@@ -174,7 +183,25 @@ CREATE TABLE `project_project` (
   `gmt_created` datetime NOT NULL DEFAULT '2016-01-01 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk` (`pname`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `userinfo`
+--
+
+DROP TABLE IF EXISTS `userinfo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `userinfo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(50) DEFAULT NULL,
+  `role` varchar(10) DEFAULT NULL,
+  `comment` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -186,4 +213,4 @@ CREATE TABLE `project_project` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-09-07 11:48:12
+-- Dump completed on 2016-09-19 16:28:22
