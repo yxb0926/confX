@@ -2,6 +2,7 @@ package com.nice.confX.service.manager;
 
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public interface ClientService {
 
     public String getClientIps(String appname);
 
-    public Map clientHeartBeat(String ip);
+    public Map clientHeartBeat(HttpServletRequest request);
 
     public void clientDel(String groupname, String ip) throws Exception;
 

@@ -1,5 +1,8 @@
 package com.nice.confX.service.manager.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.nice.confX.model.ClientEvent;
+import com.nice.confX.model.ClientProperties;
 import com.nice.confX.service.manager.ClientService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,9 +98,19 @@ public class ClientServiceImpl implements ClientService{
 
     @Transactional
     @Override
-    public Map clientHeartBeat(String ip) {
-        Map map = new HashMap();
+    public Map clientHeartBeat(HttpServletRequest request) {
+        String ip   = request.getParameter("ip");
+        String port = request.getParameter("port");
+        String hostname = request.getParameter("hostname");
 
+        String event  = request.getParameter("event");
+        String properties = request.getParameter("properties");
+
+        ClientEvent clientEvent = JSON.parseObject(event, ClientEvent.class);
+        ClientProperties clientProperties =
+                JSON.parseObject(properties, ClientProperties.class);
+
+        Map map = new HashMap();
         map.put("status", 202); // 200 表示ok, 201表示更新失败, 202表示查询失败, 203表示ip未注册;
         map.put("msg", "");
         map.put("heartbeat_interval", 10); // 检测周期,单位为秒;
@@ -107,15 +121,25 @@ public class ClientServiceImpl implements ClientService{
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String gmt_modified = simpleDateFormat.format(date);
 
-            String sql = "UPDATE client_list SET gmt_modified=? " +
+            String sql = "UPDATE client_list " +
+                    "SET gmt_modified=?, client_port=?, hostname=?, uptime=?, client_launch_time=?," +
+                    "event_msg=?, event_code=?, data=? " +
                     "WHERE client_ip=?";
-            int rows = jdbcTemplate.update(sql,gmt_modified,ip);
+            int rows = jdbcTemplate.update(sql,
+                    gmt_modified,
+                    port, hostname,
+                    clientProperties.getUptime(),
+                    clientProperties.getLaunch_time(),
+                    clientEvent.getEvent_defined().get("msg"),
+                    clientEvent.getEvent_defined().get("code"),
+                    clientEvent.getData(),
+                    ip);
+
             if(rows == 0){
                 map.put("status",203);
                 map.put("msg", "client ip:"+ip+"未注册");
                 return map;
             }
-
 
         }catch (DataAccessException e){
             map.put("status", 201);
