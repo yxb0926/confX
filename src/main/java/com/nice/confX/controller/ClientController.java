@@ -25,7 +25,7 @@ public class ClientController {
     @RequestMapping(value = "/heartbeat", method = RequestMethod.POST)
     @ResponseBody
     public Map heartBeat(HttpServletRequest request, String ip){
-        logger.info(request.getParameter("event"));
+        logger.info(ip + " - "+ request.getParameter("event"));
         return clientService.clientHeartBeat(request);
     }
 }

@@ -23,8 +23,8 @@ public class PreConfServiceImpl implements PreConfService {
     DataSourceFactory dataSourceFactory;
 
     @Override
-    public Map getConf(String type, String item, String pname) {
-        logger.info("Get Conf -- " + "Type:" + type + "ProgramName:" + pname + " Appname:" + item);
+    public Map getConf(String type, String item, String pname, String ip) {
+        logger.info("Client ip: " + ip +" - Get Conf - " + "Type:" + type + "ProgramName:" + pname + " Appname:" + item);
 
         MngService service = dataSourceFactory.getService(type);
         return service.getConf(item,pname);

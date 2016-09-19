@@ -45,11 +45,13 @@ public class PreviewController {
 
     @RequestMapping(value = "/conf/pull", method = RequestMethod.POST)
     @ResponseBody
-    public Map mysqlIndex(@RequestBody ItemModel requestBody) {
+    public Map mysqlIndex(@RequestBody ItemModel requestBody, HttpServletRequest request) {
         Map map = preConfService.getConf(
                 requestBody.getType(),
                 requestBody.getItem(),
-                requestBody.getPname());
+                requestBody.getPname(),
+                request.getRemoteAddr()
+        );
         return map;
     }
 }
