@@ -138,6 +138,7 @@ public class MySQLServiceImpl implements MngService {
 
         String dataid    = request.getParameter("pappname").trim(); // pcode, appname
         String pname     = request.getParameter("pname").trim();    // program name
+        String ptype     = request.getParameter("ptype").trim();
         String groupid   = request.getParameter("pgroupname").trim();
         String dbname    = request.getParameter("pdbname").trim();
         String tbprefix  = request.getParameter("ptbprefix").trim();
@@ -161,8 +162,8 @@ public class MySQLServiceImpl implements MngService {
 
         // 清理config_info表相应数据
         String sql2 = "DELETE FROM config_info " +
-                "WHERE program_id=? AND  data_id=? AND group_id=?";
-        jdbcTemplate.update(sql2, pname, appname, groupname);
+                "WHERE program_id=? AND  data_id=? AND group_id=? AND type=?";
+        jdbcTemplate.update(sql2, pname, appname, groupname, ptype);
 
         // 增加groupname_info_mysql表相应数据
         // 新增master
@@ -197,9 +198,9 @@ public class MySQLServiceImpl implements MngService {
 
         // 增加config_info表相应数据
         jdbcTemplate.update("INSERT INTO config_info(" +
-                        "program_id,data_id,group_id,content,md5,gmt_create,gmt_modified) " +
-                        "VALUE (?,?,?,?,?,?,?)",
-                pname, dataid, groupid, content, md5, gmt_create, gmt_create);
+                        "program_id,data_id,type,group_id,content,md5,gmt_create,gmt_modified) " +
+                        "VALUE (?,?,?,?,?,?,?,?)",
+                pname, dataid, ptype, groupid, content, md5, gmt_create, gmt_create);
     }
 
     @Override

@@ -122,6 +122,7 @@ public class RedisServiceImpl implements MngService{
         String groupname   = request.getParameter("pgroupname");
         String timeout     = request.getParameter("ptimeout");
         String readtimeout = request.getParameter("preadtimeout");
+        String ptype       = request.getParameter("ptype");
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -135,8 +136,8 @@ public class RedisServiceImpl implements MngService{
 
         //清理config_info表
         String sql2 = "DELETE FROM config_info " +
-                "WHERE program_id=? AND data_id=? AND group_id=?";
-        jdbcTemplate.update(sql2, pname, appname, groupname);
+                "WHERE program_id=? AND data_id=? AND group_id=? AND type=?";
+        jdbcTemplate.update(sql2, pname, appname, groupname, ptype);
 
         //新增groupname_info_redis表相关信息
         OtherUtil util = new OtherUtil();
@@ -161,9 +162,9 @@ public class RedisServiceImpl implements MngService{
         String content = JSON.toJSONString(map);
         String md5     = DigestUtils.md5Hex(content);
         String sql4 = "INSERT INTO config_info(" +
-                "program_id,data_id,group_id,content,md5,gmt_create,gmt_modified)" +
-                "VALUES(?,?,?,?,?,?,?)";
-        jdbcTemplate.update(sql4,pname,appname,groupname,content,md5,gmt_create,gmt_modified);
+                "program_id,data_id,type,group_id,content,md5,gmt_create,gmt_modified)" +
+                "VALUES(?,?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql4,pname,appname,ptype,groupname,content,md5,gmt_create,gmt_modified);
     }
 
     @Override
