@@ -42,7 +42,8 @@ public class MysqlController {
     @RequestMapping("/project/myconfmodify")
     public ModelAndView myconfmodify(String pcode, String pgroupname, String pname){
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconfmodify");
-        Map map = mySQLService.getConf(pcode, pname, pgroupname);
+        String type = "MySQL";
+        Map map = mySQLService.getConf(pcode, pname, pgroupname, type);
         modelAndView.addObject("pcode",    pcode);
         modelAndView.addObject("pname",    pname);
         modelAndView.addObject("pcontent", map.get("item_content"));
@@ -73,13 +74,14 @@ public class MysqlController {
 
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
 
+        String type = "MySQL";
         Map myMap = new HashMap();
         if (pcode == null || pcode.length() <= 0) {
             return null;
         } else if (groupid == null || groupid.length() <= 0) {
-            myMap = mySQLService.getConf(pcode, pname);
+            myMap = mySQLService.getConf(pcode, pname, type);
         } else {
-            myMap = mySQLService.getConf(pcode, pname, groupid);
+            myMap = mySQLService.getConf(pcode, pname, groupid, type);
         }
 
         ModelAndView modelAndView = new ModelAndView("manager/mysql/myconf");

@@ -168,11 +168,11 @@ public class RedisServiceImpl implements MngService{
     }
 
     @Override
-    public Map checkConf(String appname, String pname, String groupname) throws Exception {
+    public Map checkConf(String appname, String pname, String groupname, String type) throws Exception {
         Map map = new HashMap();
         Map resMap = new HashMap();
 
-        List redisList = configService.getConf(appname, pname, groupname);
+        List redisList = configService.getConf(appname, pname, groupname, type);
         OtherUtil util = new OtherUtil();
         Map redisContetMap = (Map) util.genRedisResMap(redisList).get("item_content");
 
@@ -198,8 +198,8 @@ public class RedisServiceImpl implements MngService{
     }
 
     @Override
-    public Map getConf(String dataid, String pname) {
-        List redisList = configService.getConf(dataid, pname);
+    public Map getConf(String dataid, String pname, String type) {
+        List redisList = configService.getConf(dataid, pname, type);
         logger.debug(redisList);
 
         OtherUtil util = new OtherUtil();
@@ -207,8 +207,8 @@ public class RedisServiceImpl implements MngService{
     }
 
     @Override
-    public Map getConf(String dataid, String pname, String groupid) {
-        List redisList = configService.getConf(dataid, pname, groupid);
+    public Map getConf(String dataid, String pname, String groupid, String type) {
+        List redisList = configService.getConf(dataid, pname, groupid, type);
         logger.debug(redisList);
         OtherUtil util = new OtherUtil();
         return util.genRedisResMap(redisList);

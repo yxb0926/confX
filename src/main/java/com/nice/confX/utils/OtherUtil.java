@@ -37,7 +37,6 @@ public class OtherUtil {
 
     public Map setMysqlInfo(HttpServletRequest request) throws Exception{
         Map map = new HashMap();
-        System.out.println(request);
 
         String dataid   = request.getParameter("pappname").trim(); // pcode, appname
         String groupid  = request.getParameter("pgroupname").trim();

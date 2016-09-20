@@ -30,12 +30,13 @@ public class RedisController {
         Map map = new HashMap();
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
 
+        String type = "Redis";
         if ( pcode == null || pcode.length() <=0 ){
             return null;
         }else if( groupid == null || groupid.length() <=0 ){
-            map = redisService.getConf(pcode,pname);
+            map = redisService.getConf(pcode,pname,type);
         }else {
-            map = redisService.getConf(pcode, pname, groupid);
+            map = redisService.getConf(pcode,pname,groupid,type);
         }
 
         ModelAndView modelAndView = new ModelAndView("manager/redis/rdsconf");
@@ -63,7 +64,8 @@ public class RedisController {
         modelAndView.addObject("pcode", pcode);
         modelAndView.addObject("pname", pname);
 
-        Map map = redisService.getConf(pcode, pname, pgroupname);
+        String type = "Redis";
+        Map map = redisService.getConf(pcode, pname, pgroupname, type);
 
         modelAndView.addObject("pcontent", map.get("item_content"));
 

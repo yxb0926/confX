@@ -21,16 +21,16 @@ public class ConfigService {
     private JdbcTemplate jdbcTemplate;
 
 
-    public List getConf(String dataid, String pname){
+    public List getConf(String dataid, String pname, String type){
         String sql = "";
         sql = "SELECT program_id, data_id, group_id, content, md5 " +
-                "FROM config_info WHERE data_id=? AND program_id=?";
+                "FROM config_info WHERE data_id=? AND program_id=? AND type=?";
 
-        return getData(sql, dataid, pname);
+        return getData(sql, dataid, pname, type);
     }
 
 
-    public List getConf(String dataid, String pname, String groupid){
+    public List getConf(String dataid, String pname, String groupid, String type){
         String sql = "";
         String[] groupidx = groupid.split("\\|");
         String group_id = "";
@@ -44,17 +44,17 @@ public class ConfigService {
 
         sql = "SELECT data_id, group_id, content, md5 " +
                 "FROM config_info " +
-                "WHERE data_id=? AND program_id=? AND group_id in (" + group_id + ")";
+                "WHERE data_id=? AND program_id=? AND group_id in (" + group_id + ") AND type=?";
 
         logger.info(sql);
 
-        return getData(sql, dataid, pname);
+        return getData(sql, dataid, pname, type);
     }
 
 
-    protected List getData(String sql, String dataid, String pname){
+    protected List getData(String sql, String dataid, String pname, String type){
         try {
-            return jdbcTemplate.queryForList(sql, dataid, pname);
+            return jdbcTemplate.queryForList(sql, dataid, pname, type);
         }catch (DataAccessException e){
             logger.error(e);
             return new ArrayList();

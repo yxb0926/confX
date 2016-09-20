@@ -204,10 +204,10 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Map checkConf(String appname, String pname, String groupname) throws Exception {
+    public Map checkConf(String appname, String pname, String groupname, String type) throws Exception {
         Map map = new HashMap();
         Map resMap = new HashMap();
-        List myList = configService.getConf(appname, pname, groupname);
+        List myList = configService.getConf(appname, pname, groupname, type);
 
         OtherUtil util = new OtherUtil();
         Map itemMap = (Map) util.genResMap(myList).get("item_content");
@@ -238,8 +238,8 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Map getConf(String dataid, String pname) {
-        List myList = configService.getConf(dataid, pname);
+    public Map getConf(String dataid, String pname, String type) {
+        List myList = configService.getConf(dataid, pname, type);
         logger.debug(myList);
         OtherUtil util = new OtherUtil();
 
@@ -248,8 +248,8 @@ public class MySQLServiceImpl implements MngService {
     }
 
     @Override
-    public Map getConf(String dataid, String pname, String groupid) {
-        List myList = configService.getConf(dataid, pname, groupid);
+    public Map getConf(String dataid, String pname, String groupid, String type) {
+        List myList = configService.getConf(dataid, pname, groupid, type);
         logger.debug(myList);
         OtherUtil util = new OtherUtil();
 

@@ -27,7 +27,7 @@ public class PreConfServiceImpl implements PreConfService {
         logger.info("Client ip: " + ip +" - Get Conf - " + "Type:" + type + "ProgramName:" + pname + " Appname:" + item);
 
         MngService service = dataSourceFactory.getService(type);
-        return service.getConf(item,pname);
+        return service.getConf(item,pname,type);
     }
 
 }
