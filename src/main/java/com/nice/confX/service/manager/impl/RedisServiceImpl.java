@@ -93,9 +93,9 @@ public class RedisServiceImpl implements MngService{
 
         // 更新config_info 表
         String sql3 = "INSERT INTO config_info(" +
-                "program_id,data_id,group_id,content,md5,gmt_create,gmt_modified)" +
-                "VALUES(?,?,?,?,?,?,?)";
-        jdbcTemplate.update(sql3,pname,dataid,groupid,content,md5,gmt_create,gmt_modified);
+                "program_id,data_id,type,group_id,content,md5,gmt_create,gmt_modified)" +
+                "VALUES(?,?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql3,pname,dataid,type,groupid,content,md5,gmt_create,gmt_modified);
     }
 
     @Override
@@ -110,8 +110,8 @@ public class RedisServiceImpl implements MngService{
         jdbcTemplate.update(sql2, pname, appname, groupname);
 
         // 清理config_info表相关信息
-        String sql3 = "DELETE FROM config_info WHERE program_id=? AND data_id=? AND group_id=?";
-        jdbcTemplate.update(sql3, pname, appname, groupname);
+        String sql3 = "DELETE FROM config_info WHERE program_id=? AND data_id=? AND group_id=? AND type=?";
+        jdbcTemplate.update(sql3, pname, appname, groupname, type);
     }
 
     @Transactional
