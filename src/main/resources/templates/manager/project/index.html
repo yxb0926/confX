@@ -54,10 +54,33 @@
         </div>
     </div>
 
+    <div class="modal fade" id="myModal" tabindex="-1"
+         role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Check Ping 结果</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="mpname" class="control-label" >项目编码:</label>
+                        <label id="mpname"  class="control-label" ></label>
+                    </div>
+
+                    <div id="failedlist" class="form-group"></div>
+                    <div id="allok" class="form-group"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script type = "text/javascript" >
     function check(pname,appname,type) {
-        console.log(appname, pname, type);
-        // groupname is NULL
         $.ajax({
             url:"/manager/project/confcheck",
             dataType:"json",
@@ -72,12 +95,34 @@
             beforeSend:function(){
             },
             success:function (req) {
-                console.log(req);
+                var failed = 0;
+                $('#mpname').text(appname);
+                $('#failedlist').empty();
+                $('#allok').empty();
+                $.each(req.data, function(gname, resdata){
+                    if (resdata.master.failed.length > 0 || resdata.slave.failed.length > 0){
+                        failed ++;
+                        failedgroup  = "<div>";
+                        failedgroup += "GroupName:";
+                        failedgroup += gname;
+                        failedgroup += " Failed!"
+                        failedgroup += "</div>";
+                        $('#failedlist').append(failedgroup);
+                    }
+                });
+
+                if (failed == 0){
+                    $('#allok').empty();
+                    allok  = "<div>";
+                    allok += "All OK!";
+                    allok  += "</div>";
+
+                    $('#allok').append(allok);
+                }
+                $('#myModal').modal('show');
             }
         });
     }
-    
-    
     
     function del (programname, projectname, type) {
         var r=confirm("删除不能恢复,确认删除?")
