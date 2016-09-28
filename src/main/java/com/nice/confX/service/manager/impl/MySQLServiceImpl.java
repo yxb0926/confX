@@ -208,29 +208,23 @@ public class MySQLServiceImpl implements MngService {
         Map map = new HashMap();
         Map resMap = new HashMap();
         List myList = configService.getConf(appname, pname, groupname, type);
+        logger.debug(myList);
 
-        OtherUtil util = new OtherUtil();
-        Map itemMap = (Map) util.genResMap(myList).get("item_content");
-        for ( Object tmpMap : itemMap.values()){
-            Map mmap = (Map) tmpMap;
-            Map contentMap = (Map) mmap.get("content");
-            Map dbkeyMap   = (Map) contentMap.get("dbkey");
-            List masterList  = (List) dbkeyMap.get("master");
-            List slaveList   = (List) dbkeyMap.get("slave");
-            Map  attachMap   = (Map) dbkeyMap.get("attach");
+        resMap = check(myList);
 
-            String dbname   = contentMap.get("dbname").toString();
-            String username = attachMap.get("user").toString();
-            String passwd   = attachMap.get("passwd").toString();
+        map.put("status",  200);
+        map.put("data", resMap);
+        return map;
+    }
 
-            Map mMap = util.pingMysql(masterList,username,passwd,dbname);
-            Map sMap = util.pingMysql(slaveList, username,passwd,dbname);
-            Map msMap = new HashMap();
-            msMap.put("master", mMap);
-            msMap.put("slave",  sMap);
+    @Override
+    public Map checkConf(String appname, String pname, String type) throws Exception {
+        Map map = new HashMap();
+        Map resMap = new HashMap();
+        List myList = configService.getConf(appname, pname, type);
+        logger.debug(myList);
 
-            resMap.put(groupname, msMap);
-        }
+        resMap = check(myList);
 
         map.put("status",  200);
         map.put("data", resMap);
@@ -254,6 +248,36 @@ public class MySQLServiceImpl implements MngService {
         OtherUtil util = new OtherUtil();
 
         return util.genResMap(myList);
+    }
+
+    private Map check(List myList){
+        Map resMap = new HashMap();
+
+        OtherUtil util = new OtherUtil();
+        Map itemMap = (Map) util.genResMap(myList).get("item_content");
+        for ( Object tmpMap : itemMap.values()){
+            Map mmap = (Map) tmpMap;
+            Map contentMap   = (Map) mmap.get("content");
+            Map dbkeyMap     = (Map) contentMap.get("dbkey");
+            String groupid   = contentMap.get("groupid").toString();
+            List masterList  = (List) dbkeyMap.get("master");
+            List slaveList   = (List) dbkeyMap.get("slave");
+            Map  attachMap   = (Map) dbkeyMap.get("attach");
+
+            String dbname   = contentMap.get("dbname").toString();
+            String username = attachMap.get("user").toString();
+            String passwd   = attachMap.get("passwd").toString();
+
+            Map mMap = util.pingMysql(masterList,username,passwd,dbname);
+            Map sMap = util.pingMysql(slaveList, username,passwd,dbname);
+            Map msMap = new HashMap();
+            msMap.put("master", mMap);
+            msMap.put("slave",  sMap);
+
+            resMap.put(groupid, msMap);
+        }
+
+        return resMap;
     }
 }
 

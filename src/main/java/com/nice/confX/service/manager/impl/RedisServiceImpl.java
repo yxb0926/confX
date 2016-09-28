@@ -173,24 +173,21 @@ public class RedisServiceImpl implements MngService{
         Map resMap = new HashMap();
 
         List redisList = configService.getConf(appname, pname, groupname, type);
-        OtherUtil util = new OtherUtil();
-        Map redisContetMap = (Map) util.genRedisResMap(redisList).get("item_content");
 
-        for ( Object tmpMap : redisContetMap.values()){
-            Map mmap = (Map) tmpMap;
-            Map contentMap = (Map) mmap.get("content");
-            Map dbkeyMap   = (Map) contentMap.get("dbkey");
-            List masterList  = (List) dbkeyMap.get("master");
-            List slaveList   = (List) dbkeyMap.get("slave");
+        resMap = check(redisList);
 
-            Map mMap = util.pingRedis(masterList);
-            Map sMap = util.pingRedis(slaveList);
-            Map msMap = new HashMap();
-            msMap.put("master", mMap);
-            msMap.put("slave",  sMap);
+        map.put("status",  200);
+        map.put("data", resMap);
+        return map;
+    }
 
-            resMap.put(groupname, msMap);
-        }
+    @Override
+    public Map checkConf(String appname, String pname, String type) throws Exception {
+        Map map = new HashMap();
+        Map resMap = new HashMap();
+        List redisList = configService.getConf(appname, pname, type);
+
+        resMap = check(redisList);
 
         map.put("status",  200);
         map.put("data", resMap);
@@ -212,5 +209,30 @@ public class RedisServiceImpl implements MngService{
         logger.debug(redisList);
         OtherUtil util = new OtherUtil();
         return util.genRedisResMap(redisList);
+    }
+
+    private Map check(List redisList){
+        Map resMap = new HashMap();
+
+        OtherUtil util     = new OtherUtil();
+        Map redisContetMap = (Map) util.genRedisResMap(redisList).get("item_content");
+
+        for ( Object tmpMap : redisContetMap.values()){
+            Map mmap = (Map) tmpMap;
+            Map contentMap = (Map) mmap.get("content");
+            Map dbkeyMap   = (Map) contentMap.get("dbkey");
+            String groupid = contentMap.get("groupid").toString();
+            List masterList  = (List) dbkeyMap.get("master");
+            List slaveList   = (List) dbkeyMap.get("slave");
+
+            Map mMap = util.pingRedis(masterList);
+            Map sMap = util.pingRedis(slaveList);
+            Map msMap = new HashMap();
+            msMap.put("master", mMap);
+            msMap.put("slave",  sMap);
+
+            resMap.put(groupid, msMap);
+        }
+        return resMap;
     }
 }

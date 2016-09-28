@@ -40,6 +40,7 @@
                         <span th:if="${role eq 'admin'}">
                         <td><a th:onclick="'javascript:del(\''+${list.pname}+'\', \''+${list.pcode}+'\', \''+${list.ptype}+'\')'">删除</a>
                             <a>修改</a>
+                            <a th:onclick="'javascript:check(\''+${list.pname}+'\', \''+${list.pcode}+'\', \''+${list.ptype}+'\')'">检测</a>
                         </td>
                         </span>
                     </tr>
@@ -54,6 +55,30 @@
     </div>
 
 <script type = "text/javascript" >
+    function check(pname,appname,type) {
+        console.log(appname, pname, type);
+        // groupname is NULL
+        $.ajax({
+            url:"/manager/project/confcheck",
+            dataType:"json",
+            async:true,
+            data:{
+                "appname": appname,
+                "pname":   pname,
+                "groupname": '',
+                "type": type
+            },
+            type:"POST",
+            beforeSend:function(){
+            },
+            success:function (req) {
+                console.log(req);
+            }
+        });
+    }
+    
+    
+    
     function del (programname, projectname, type) {
         var r=confirm("删除不能恢复,确认删除?")
         if (r==true)

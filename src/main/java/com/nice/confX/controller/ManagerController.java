@@ -122,7 +122,11 @@ public class ManagerController {
         MngService service = dataSourceFactory.getService(type);
         Map map = new HashMap();
         try {
-            map = service.checkConf(appname, pname, groupname, type);
+            if (groupname.equals("") || groupname == null){
+                map = service.checkConf(appname,pname,type);
+            } else {
+                map = service.checkConf(appname, pname, groupname, type);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

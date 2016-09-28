@@ -46,8 +46,6 @@ public class ConfigService {
                 "FROM config_info " +
                 "WHERE data_id=? AND program_id=? AND group_id in (" + group_id + ") AND type=?";
 
-        logger.info(sql);
-
         return getData(sql, dataid, pname, type);
     }
 

@@ -33,6 +33,7 @@ public interface MngService {
      * 检测一个mysql|redis的配置
      * */
     Map checkConf(String appname, String pname, String groupname, String type) throws Exception;
+    Map checkConf(String appname, String pname, String type) throws Exception;
 
     Map getConf(String dataid, String pname, String type);
     Map getConf(String dataid, String pname, String groupid, String type);
