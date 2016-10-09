@@ -36,103 +36,6 @@ public class ManagerController {
     @Autowired
     private ClientService clientService;
 
-    @RequestMapping(value = "/project/confadd", method = RequestMethod.POST)
-    public String addconf(HttpServletRequest httpServletRequest,
-                          RedirectAttributes redirectAttributes) {
-        String ptype = httpServletRequest.getParameter("ptype");
-        String pcode = httpServletRequest.getParameter("pappname");
-        String pname = httpServletRequest.getParameter("pname");
-        MngService service = dataSourceFactory.getService(ptype);
-        Map urlMap = dataSourceFactory.getUrl(ptype, pcode, pname);
-
-        try {
-            service.addConf(httpServletRequest);
-            return "redirect:"+urlMap.get("okurl");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e);
-            redirectAttributes.addAttribute("errmsg", "添加失败,请检查后重新添加!");
-
-            return "redirect:"+urlMap.get("errurl");
-        }
-    }
-
-    @RequestMapping(value = "/project/confdel", method = RequestMethod.POST)
-    @ResponseBody
-    public Map delconf(HttpServletRequest httpServletRequest){
-        Map map = new HashMap();
-        map.put("code", 200);
-        map.put("msg", "ok");
-        String type        = httpServletRequest.getParameter("type");
-        String appname     = httpServletRequest.getParameter("appname");
-        String pname       = httpServletRequest.getParameter("pname");
-        String groupname   = httpServletRequest.getParameter("groupname");
-        MngService service = dataSourceFactory.getService(type);
-
-        try {
-            service.delConf(appname, pname, groupname, type);
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("code",201);
-            map.put("msg", "failed");
-        }
-        return map;
-    }
-
-
-    /**
-    * 修改接口
-    * */
-    @RequestMapping(value = "/project/confmodify", method = RequestMethod.POST)
-    public String modifyconf(HttpServletRequest httpServletRequest,
-                             RedirectAttributes redirectAttributes){
-        String type        = httpServletRequest.getParameter("ptype");
-        String appname     = httpServletRequest.getParameter("pappname");
-        String pname       = httpServletRequest.getParameter("pname");
-        MngService service = dataSourceFactory.getService(type);
-        Map         urlMap = dataSourceFactory.getUrl(type, appname, pname);
-
-        try {
-            service.modifyConf(httpServletRequest);
-            return "redirect:"+urlMap.get("okurl");
-        }catch (Exception e){
-            e.printStackTrace();
-            redirectAttributes.addAttribute("errmsg", "修改失败,请检查后重新修改!");
-
-            return "redirect:"+urlMap.get("errurl");
-        }
-    }
-
-    /**
-     *  check接口
-     *
-     * */
-
-    @RequestMapping(value = "/project/confcheck", method = RequestMethod.POST)
-    @ResponseBody
-    public Map checkconf(HttpServletRequest httpServletRequest,
-                            RedirectAttributes redirectAttributes){
-
-        String type      = httpServletRequest.getParameter("type");
-        String appname   = httpServletRequest.getParameter("appname");
-        String pname     = httpServletRequest.getParameter("pname") ;
-        String groupname = httpServletRequest.getParameter("groupname");
-
-        MngService service = dataSourceFactory.getService(type);
-        Map map = new HashMap();
-        try {
-            if (groupname.equals("") || groupname == null){
-                map = service.checkConf(appname,pname,type);
-            } else {
-                map = service.checkConf(appname, pname, groupname, type);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
-
     @RequestMapping("/project/ngxconf")
     public ModelAndView ngxconf() {
         return new ModelAndView("manager/nginx/ngxconf");
@@ -212,6 +115,14 @@ public class ManagerController {
         myList = clientService.getClientInfo(pname);
         modelAndView.addObject("clientinfo", myList);
         modelAndView.addObject("pname", pname);
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/project/copyconf", method = RequestMethod.GET)
+    public ModelAndView copyconf(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView("manager/project/copyconf");
+
         return modelAndView;
     }
 }
