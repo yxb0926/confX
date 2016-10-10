@@ -75,8 +75,6 @@ public class CopyConfService {
         Map map = new HashMap();
         // fgroupname 为空的话,就是复制所有group的数据,否则只覆盖指定的group数据
         if (fgroupname == null || fgroupname.equals("")){
-
-
             // 需要check目标项目中,group是否已经存在,如果存在则为了防止发生覆盖,需要进行check,如果有
             // 重复的,则不能复制
 
@@ -193,7 +191,6 @@ public class CopyConfService {
             resMap.put("data", err);
 
             return resMap;
-            //throw new Exception(err);
         }
 
         if(cntt <= 0) {
@@ -205,7 +202,6 @@ public class CopyConfService {
             resMap.put("data", err);
 
             return resMap;
-            //throw new Exception(err);
         }
 
         // 如果To项目中已经存在相应的group,则不能复制,需要停止;
@@ -232,7 +228,6 @@ public class CopyConfService {
             return resMap;
         }
     }
-
 
 
     @Transactional
@@ -303,6 +298,11 @@ public class CopyConfService {
             }
 
         }
+    }
+
+    @Transactional
+    private void updateRedisinfo(){
+
     }
 
     @Transactional
