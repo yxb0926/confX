@@ -1,5 +1,6 @@
 package com.nice.confX.controller;
 
+import com.nice.confX.service.manager.CopyConfService;
 import com.nice.confX.service.manager.DataSourceFactory;
 import com.nice.confX.service.manager.MngService;
 import org.apache.log4j.Logger;
@@ -24,8 +25,12 @@ import java.util.Map;
 public class ConfController {
 
     private Logger logger = Logger.getLogger(ConfController.class);
+
     @Autowired
     DataSourceFactory dataSourceFactory;
+
+    @Autowired
+    CopyConfService copyConfService;
 
     /**
      *  check接口
@@ -138,12 +143,9 @@ public class ConfController {
         map.put("data","");
         map.put("msg", "OK!");
 
-
-        String type = request.getParameter("ftype");
-        MngService service = dataSourceFactory.getService(type);
         ModelAndView modelAndView = new ModelAndView("manager/project/resconf");
         try {
-            service.copyConf(request);
+            copyConfService.copyConf(request);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);

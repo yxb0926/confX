@@ -35,6 +35,4 @@ public interface MngService {
 
     Map getConf(String dataid, String pname, String type);
     Map getConf(String dataid, String pname, String groupid, String type);
-
-    void copyConf(HttpServletRequest request) throws Exception;
 }
