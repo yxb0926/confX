@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,15 @@ public class ProgramController extends HandlerInterceptorAdapter {
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
 
         ModelAndView modelAndView = new ModelAndView("manager/project/program");
-        List pList = projectService.queryAllProgram();
+        List pList = new ArrayList();
+        String iport;
+        if (request.getParameter("iport") == null){
+            pList = projectService.queryAllProgram();
+        }else {
+            iport = request.getParameter("iport").trim();
+            pList = projectService.queryProgramUseIport(iport);
+        }
+
         modelAndView.addObject("pList", pList);
         modelAndView.addObject("role", sessionUser.getRole());
 
