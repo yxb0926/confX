@@ -35,24 +35,27 @@ public class OtherUtil {
         return ipstr;
     }
 
-    public Map setMysqlInfo(HttpServletRequest request) throws Exception{
+    //public Map setMysqlInfo(HttpServletRequest request) throws Exception{
+    public Map setMysqlInfo(String dataid, String groupid, String dbname, String tbprefix,
+                            String username, String passwd, String charset, String timeout,
+                            String[] master, String[] slaver) throws Exception{
         Map map = new HashMap();
 
-        String dataid   = request.getParameter("pappname").trim(); // pcode, appname
-        String groupid  = request.getParameter("pgroupname").trim();
-        String dbname   = request.getParameter("pdbname").trim();
-        String tbprefix = request.getParameter("ptbprefix").trim();
-        String username = request.getParameter("puser").trim();
-        String passwd   = request.getParameter("ppass").trim();
-        String charset  = request.getParameter("pcharsetx").trim();
-        String timeout  = request.getParameter("ptimeoutx").trim();
-        String[] master = request.getParameter("pmiport").trim().split(",");
-        String[] slaver = request.getParameter("psiport").trim().split(",");
+        //String dataid   = request.getParameter("pappname").trim(); // pcode, appname
+        //String groupid  = request.getParameter("pgroupname").trim();
+        //String dbname   = request.getParameter("pdbname").trim();
+        //String tbprefix = request.getParameter("ptbprefix").trim();
+        //String username = request.getParameter("puser").trim();
+        //String passwd   = request.getParameter("ppass").trim();
+        //String charset  = request.getParameter("pcharsetx").trim();
+        //String timeout  = request.getParameter("ptimeoutx").trim();
+        //String[] master = request.getParameter("pmiport").trim().split(",");
+        //String[] slaver = request.getParameter("psiport").trim().split(",");
 
         List masterarr = new ArrayList();
 
         if (master.length != 1){
-            throw new Exception("Master 只能有一个!");
+            throw new Exception("Master 有且只能有一个, 目前Master有"+master.length+"个!");
         }
 
         /**

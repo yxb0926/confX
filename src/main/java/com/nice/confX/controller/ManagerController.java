@@ -119,11 +119,6 @@ public class ManagerController {
     }
 
 
-    @RequestMapping(value = "/project/copyconf", method = RequestMethod.GET)
-    public ModelAndView copyconf(HttpServletRequest request){
-        ModelAndView modelAndView = new ModelAndView("manager/project/copyconf");
 
-        return modelAndView;
-    }
 }
 

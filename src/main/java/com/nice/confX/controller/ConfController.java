@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -120,5 +121,36 @@ public class ConfController {
             map.put("msg", "failed");
         }
         return map;
+    }
+
+    @RequestMapping(value = "/project/copyconf", method = RequestMethod.GET)
+    public ModelAndView copyconf(){
+        ModelAndView modelAndView = new ModelAndView("manager/project/copyconf");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/project/copyconf", method = RequestMethod.POST)
+    public ModelAndView copyconf(HttpServletRequest request){
+        Map map = new HashMap();
+
+        map.put("code", 200);
+        map.put("data","");
+        map.put("msg", "OK!");
+
+
+        String type = request.getParameter("ftype");
+        MngService service = dataSourceFactory.getService(type);
+        ModelAndView modelAndView = new ModelAndView("manager/project/resconf");
+        try {
+            service.copyConf(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e);
+            map.put("msg", e);
+        }
+
+        modelAndView.addObject("data", map);
+        return modelAndView;
     }
 }

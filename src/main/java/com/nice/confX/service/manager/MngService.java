@@ -13,9 +13,7 @@ import java.util.Map;
 @Service
 public interface MngService {
     /**
-     * 添加一个mysql的配置
-     *
-     *
+     * 添加一个mysql|redis的配置
      * @param request*/
     void addConf(HttpServletRequest request) throws Exception;
 
@@ -38,4 +36,5 @@ public interface MngService {
     Map getConf(String dataid, String pname, String type);
     Map getConf(String dataid, String pname, String groupid, String type);
 
+    void copyConf(HttpServletRequest request) throws Exception;
 }

@@ -211,6 +211,11 @@ public class RedisServiceImpl implements MngService{
         return util.genRedisResMap(redisList);
     }
 
+    @Override
+    public void copyConf(HttpServletRequest request) throws Exception {
+
+    }
+
     private Map check(List redisList){
         Map resMap = new HashMap();
 
