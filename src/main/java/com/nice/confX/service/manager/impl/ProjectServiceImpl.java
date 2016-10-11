@@ -98,6 +98,70 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
+    public List getProject(HttpServletRequest request) {
+        String pname  = request.getParameter("pname");
+        String ip     = request.getParameter("ip");
+        String dbname = request.getParameter("dbname");
+        String type   = request.getParameter("type");
+
+        List list = new ArrayList();
+        String sql_mysqlgroup = "SELECT pname, appname FROM groupname_info_mysql WHERE 1 = 1";
+        String sql_redisgroup = "SELECT pname, appname FROM groupname_info_redis WHERE 1 = 1";
+        String sql_group = null;
+        if (type == null) {
+            list = this.queryAllProgram();
+            return list;
+        } else if (type.equalsIgnoreCase("ALL")) {
+            if (pname != null && pname.trim().length() > 0) {
+                sql_mysqlgroup += " AND pname='" + pname.trim() + "'";
+                sql_redisgroup += " AND pname='" + pname.trim() + "'";
+            }
+
+            if (ip != null && ip.trim().length() > 0) {
+                sql_mysqlgroup += " AND ip='" + ip.trim() + "'";
+                sql_redisgroup += " AND ip='" + ip.trim() + "'";
+            }
+
+            if (dbname != null && dbname.trim().length() > 0) {
+                sql_mysqlgroup += " AND dbname='" + dbname.trim() + "'";
+            }
+            sql_group = sql_mysqlgroup + " union " + sql_redisgroup;
+        } else if (type.equalsIgnoreCase("MySQL")) {
+            if (pname != null && pname.trim().length() > 0) {
+                sql_mysqlgroup += " AND pname='" + pname.trim() + "'";
+            }
+            if (ip != null && ip.trim().length() > 0) {
+                sql_mysqlgroup += " AND ip='" + ip.trim() + "'";
+            }
+            if (dbname != null && dbname.trim().length() > 0) {
+                sql_mysqlgroup += " AND dbname='" + dbname.trim() + "'";
+            }
+            sql_group = sql_mysqlgroup;
+        } else if (type.equalsIgnoreCase("Redis")) {
+            if (pname != null && pname.trim().length() > 0) {
+                sql_redisgroup += " AND pname='" + pname.trim() + "'";
+            }
+            if (ip != null && ip.trim().length() > 0) {
+                sql_redisgroup += " AND ip='" + ip.trim() + "'";
+            }
+            sql_group = sql_redisgroup;
+        }
+
+        List list_group = jdbcTemplate.queryForList(sql_group);
+        System.out.println(list_group);
+
+        return list;
+
+    }
+
+
+    @Override
+    public List queryProjectByIpDBnameType(String ip, String dbname, String type) {
+        return null;
+    }
+
+    @Override
     public Boolean checkExist(String dataid, String groupid) {
         try{
             String sql = "SELECT COUNT(1) AS cnt FROM config_info WHERE data_id=? AND group_id=? ";

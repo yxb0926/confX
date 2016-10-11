@@ -18,6 +18,41 @@
             <br/>
             <div class="table-responsive">
                 <hr/>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form class="form-inline" action="index" method="post" autocomplete="off">
+                            <div class="col-sm-3">
+                                <label class="form-label">工程名:</label>
+                                <input th:value="${pname}" type="text" class="form-control" name="pname" id="pname" placeholder="工程名" />
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="form-label">Ip:</label>
+                                <input type="text" class="form-control" name="ip" id="ip" placeholder="ip" />
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="form-label">DBname:</label>
+                                <input type="text" class="form-control" name="dbname" id="dbname" placeholder="dbname" />
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label class="form-label">Type:</label>
+                                <select class="form-control" name="type" id="type">
+                                    <option>ALL</option>
+                                    <option>MySQL</option>
+                                    <option>Redis</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-default" type="submit"> Search </button>
+                        </form>
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+
+
+                <hr/>
                 <span>
                     <a type="button" class="btn btn-success" href="copyconf" target="_blank">拷贝配置</a>
                 </span>

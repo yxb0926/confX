@@ -37,6 +37,10 @@ public interface ProjectService {
      * */
     List queryProject(String pname);
 
+    List getProject(HttpServletRequest request);
+
+    List queryProjectByIpDBnameType(String ip, String dbname, String type);
+
     /**
      *  检查groupname是否已经存在
      * */

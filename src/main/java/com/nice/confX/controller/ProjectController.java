@@ -32,9 +32,12 @@ public class ProjectController {
     @RequestMapping("/project/index")
     public ModelAndView index(HttpServletRequest request, String pname) {
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
-
         ModelAndView modelAndView = new ModelAndView("manager/project/index");
         List list = new ArrayList();
+
+
+        projectService.getProject(request);
+
         if (pname != null && pname !=""){
             list = projectService.queryProject(pname);
         } else {
