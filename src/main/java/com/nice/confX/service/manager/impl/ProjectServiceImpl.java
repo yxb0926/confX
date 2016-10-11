@@ -3,6 +3,7 @@ package com.nice.confX.service.manager.impl;
 import com.nice.confX.service.manager.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.SQLWarningException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,8 +170,43 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List queryProgramUseIport(String iport) {
-        return null;
+    @Transactional
+    public List queryProgramByIport(String iport) {
+        List list = new ArrayList();
+        try {
+            //select pname from groupname_info_mysql where ip like '%10.10.10.81%'
+            // union select pname from groupname_info_redis where ip like '%10.10.10.81%';
+            String sql  = "SELECT pname FROM groupname_info_mysql " +
+                    "WHERE ip LIKE ? OR pname LIKE ? OR appname LIKE ? OR groupname LIKE ? OR dbname LIKE ? " +
+                    "UNION SELECT pname FROM groupname_info_redis " +
+                    "WHERE ip LIKE ? OR pname LIKE ? OR appname LIKE ? OR groupname LIKE ? ";
+            List<Map<String, Object>> list1 =
+                    jdbcTemplate.queryForList(sql, "%"+iport+"%", "%"+iport+"%", "%"+iport+"%", "%"+iport+"%",
+                            "%"+iport+"%", "%"+iport+"%", "%"+iport+"%", "%"+iport+"%", "%"+iport+"%");
+
+            String tmpStr = "";
+            for (int i=0; i<list1.size(); i++){
+                tmpStr += "'"+list1.get(i).get("pname")+"'";
+                tmpStr += ",";
+            }
+            String whereStr;
+            if( tmpStr.length()>=1){
+                whereStr = tmpStr.substring(0,tmpStr.length()-1);
+            }else {
+                whereStr = "''";
+            }
+
+            String sql1 = "SELECT pname, pstatus, pdesc, prange, " +
+                    "owner, path, pcmd, psysuser, pcodetype, gmt_created " +
+                    "FROM project_project WHERE pname in "+ "("+ whereStr + ")"
+                    +" ORDER BY pstatus DESC";
+
+            list = jdbcTemplate.queryForList(sql1);
+
+        }catch (SQLWarningException e){
+            e.printStackTrace();
+        }
+        return list;
     }
 
     @Override

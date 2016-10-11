@@ -33,11 +33,11 @@ public class ProgramController extends HandlerInterceptorAdapter {
         ModelAndView modelAndView = new ModelAndView("manager/project/program");
         List pList = new ArrayList();
         String iport;
-        if (request.getParameter("iport") == null){
+        if (request.getParameter("iport") == null || request.getParameter("iport").toString().trim().length()==0){
             pList = projectService.queryAllProgram();
         }else {
             iport = request.getParameter("iport").trim();
-            pList = projectService.queryProgramUseIport(iport);
+            pList = projectService.queryProgramByIport(iport);
         }
 
         modelAndView.addObject("pList", pList);

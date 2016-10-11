@@ -53,7 +53,7 @@ public interface ProjectService {
 
     List queryAllProgram();
 
-    List queryProgramUseIport(String iport);
+    List queryProgramByIport(String iport);
 
     List queryProgram(String pname);
 
