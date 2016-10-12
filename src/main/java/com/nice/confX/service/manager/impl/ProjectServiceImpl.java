@@ -110,7 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
         String sql_redisgroup = "SELECT pname, appname FROM groupname_info_redis WHERE 1 = 1";
         String sql_group = null;
         if (type == null) {
-            list = this.queryAllProgram();
+            list = this.queryAllProject();
             return list;
         } else if (type.equalsIgnoreCase("ALL")) {
             if (pname != null && pname.trim().length() > 0) {
@@ -148,11 +148,34 @@ public class ProjectServiceImpl implements ProjectService {
             sql_group = sql_redisgroup;
         }
 
-        List list_group = jdbcTemplate.queryForList(sql_group);
-        System.out.println(list_group);
+        List<Map<String, Object>> list_group = jdbcTemplate.queryForList(sql_group);
+
+        String sql = "SELECT * FROM project_info WHERE 1=1 ";
+
+        String sqlstr_pname   = "";
+        String sqlstr_appname = "";
+        String where_pname    = "";
+        String where_appname  = "";
+        if (list_group.size() == 0 ){
+           return list;
+        }else{
+            for (int i=0; i<list_group.size(); i++){
+                String pgramname = list_group.get(i).get("pname").toString();
+                String appname   = list_group.get(i).get("appname").toString();
+
+                sqlstr_pname += "'" + pgramname + "',";
+                sqlstr_appname += "'" + appname + "',";
+            }
+        }
+
+        where_pname = sqlstr_pname.substring(0, sqlstr_pname.length()-1);
+        where_appname = sqlstr_appname.substring(0,sqlstr_appname.length()-1);
+
+        String projectSql = sql + " AND pname in(" + where_pname + ")" + " AND pcode in(" + where_appname + ")";
+
+        list = jdbcTemplate.queryForList(projectSql);
 
         return list;
-
     }
 
 

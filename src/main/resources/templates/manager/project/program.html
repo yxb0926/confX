@@ -49,7 +49,7 @@
                 </tr>
                 <tr th:each="key : ${pList}">
                     <td th:title="${key.pdesc}"><a th:text="${key.pname}"
-                           th:href="@{index(pname=${key.pname})}"></a>
+                           th:href="@{index(pname=${key.pname}, type='ALL')}"></a>
                     </td>
                     <td th:text="${key.prange}"></td>
                     <td th:text="${key.pcodetype}"></td>

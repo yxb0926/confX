@@ -36,13 +36,15 @@ public class ProjectController {
         List list = new ArrayList();
 
 
-        projectService.getProject(request);
+        list = projectService.getProject(request);
 
+        /**
         if (pname != null && pname !=""){
             list = projectService.queryProject(pname);
         } else {
             list = projectService.queryAllProject();
         }
+        */
         modelAndView.addObject("plist", list);
         modelAndView.addObject("pname", pname);
         modelAndView.addObject("role", sessionUser.getRole());
