@@ -2,17 +2,13 @@ package com.nice.confX.controller;
 
 import com.nice.confX.service.manager.ClientService;
 import com.nice.confX.service.manager.DataSourceFactory;
-import com.nice.confX.service.manager.MngService;
-import com.nice.confX.service.manager.ProjectService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -118,7 +114,31 @@ public class ManagerController {
         return modelAndView;
     }
 
+    @RequestMapping("/project/clientdashboard")
+    public Object clientDashBoard(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView("manager/project/clientDashBoard");
 
+        List errList = clientService.getErrClient();
+        List allList = clientService.getAllClient();
+        List<Map<String, Object>> top10progarm = clientService.getTop10Program();
 
+        Map map = new HashMap();
+        List top10list = new ArrayList();
+        for (int i=0; i<top10progarm.size(); i++){
+
+            List tmplist = new ArrayList();
+            tmplist.add(top10progarm.get(i).get("pname"));
+            tmplist.add(top10progarm.get(i).get("cnt"));
+
+            top10list.add(tmplist);
+
+        }
+
+        modelAndView.addObject("errlist", errList);
+        modelAndView.addObject("alllist", allList);
+        modelAndView.addObject("top10p",  top10list);
+
+        return modelAndView;
+    }
 }
 

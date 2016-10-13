@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yxb on 16/7/25.
@@ -191,5 +188,40 @@ public class ClientServiceImpl implements ClientService{
                 "UPDATE client_list " +
                 "SET isdel=?,gmt_modified=? " + "WHERE pname=? AND client_ip=?";
         jdbcTemplate.update(sql, 1,gmt_modified, program, ip);
+    }
+
+    @Override
+    public List getErrClient() {
+        String gmt_modified_10m = getTimeByMinute(-10);
+
+        String sql = "SELECT * FROM client_list WHERE event_code!=? OR gmt_modified<?";
+        List list = jdbcTemplate.queryForList(sql, 1000, gmt_modified_10m);
+        return list;
+    }
+
+    @Override
+    public List getAllClient() {
+        String sql = "SELECT * FROM client_list";
+        List list = jdbcTemplate.queryForList(sql);
+
+        return list;
+    }
+
+    @Override
+    public List<Map<String, Object>> getTop10Program() {
+        String sql = "select pname,count(client_ip) as cnt from client_list group by pname order by cnt desc limit 10";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+
+        return list;
+    }
+
+    private static String getTimeByMinute(int minute) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.add(Calendar.MINUTE, minute);
+
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+
     }
 }

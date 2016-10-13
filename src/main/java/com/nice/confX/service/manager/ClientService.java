@@ -21,4 +21,10 @@ public interface ClientService {
 
     public void clientDel(String groupname, String ip) throws Exception;
 
+    public List getErrClient();
+
+    public List getAllClient();
+
+    public List<Map<String, Object>> getTop10Program();
+
 }

@@ -1,0 +1,192 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+    <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <title>confx 配置管理系统</title>
+</head>
+
+<body>
+<div class="container">
+
+
+    <div class="row">
+        <br/>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="pgroup"></div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="collect"></div>
+    </div>
+
+    <hr/>
+
+    <div class="table-responsive col-lg-12 col-md-12 col-sm-6 col-xs-6" >
+        <h2>异常client列表(code非1000|超过10分钟没有上报)</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>工程</th>
+                <th>ip</th>
+                <th>host</th>
+                <th>code</th>
+                <th>msg</th>
+                <th>运行时间</th>
+                <th>最近上报时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="list:${errlist}">
+                <td th:text="${list.pname}"></td>
+                <td th:text="${list.client_ip}"></td>
+                <td th:text="${list.hostname}"></td>
+                <td th:text="${list.event_code}"></td>
+                <td th:text="${list.event_msg}"></td>
+                <td th:text="${list.uptime}"></td>
+                <td th:text="${list.gmt_modified}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr/>
+    <div class="table-responsive col-lg-12 col-md-12 col-sm-6 col-xs-6" >
+        <h2>client列表</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>工程</th>
+                <th>ip</th>
+                <th>host</th>
+                <th>code</th>
+                <th>msg</th>
+                <th>运行时间</th>
+                <th>最近上报时间</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="list:${alllist}">
+                    <td th:text="${list.pname}"></td>
+                    <td th:text="${list.client_ip}"></td>
+                    <td th:text="${list.hostname}"></td>
+                    <td th:text="${list.event_code}"></td>
+                    <td th:text="${list.event_msg}"></td>
+                    <td th:text="${list.uptime}"></td>
+                    <td th:text="${list.gmt_modified}"></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    $(function () {
+        $(function () {
+            var top10p = /*[[${top10p}]]*/;
+            $('#pgroup').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: 'Top10工程'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                        },
+                        showInLegend: true
+                    }
+                },
+                legend:{
+                    enabled:false
+                },
+                series: [{
+                    type: 'pie',
+                    data: top10p
+                }]
+            });
+        });
+
+    });
+
+</script>
+<script>
+$(function () {
+$('#collect').highcharts({
+chart: {
+type: 'column'
+},
+title: {
+text: 'Monthly Average Rainfall'
+},
+subtitle: {
+text: 'Source: WorldClimate.com'
+},
+xAxis: {
+categories: [
+'Jan',
+'Feb',
+'Mar',
+'Apr',
+'May',
+],
+crosshair: true
+},
+yAxis: {
+min: 0,
+title: {
+text: 'Rainfall (mm)'
+}
+},
+tooltip: {
+headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+    footerFormat: '</table>',
+shared: true,
+useHTML: true
+},
+plotOptions: {
+column: {
+pointPadding: 0.2,
+borderWidth: 0
+}
+},
+series: [{
+name: 'Tokyo',
+data: [49.9, 71.5, 106.4, 129.2, 144.0]
+}, {
+name: 'New York',
+data: [83.6, 78.8, 98.5, 93.4, 106.0]
+}, {
+name: 'London',
+data: [48.9, 38.8, 39.3, 41.4, 47.0]
+}, {
+name: 'Berlin',
+data: [42.4, 33.2, 34.5, 39.7, 52.6]
+}]
+});
+});
+</script>
+
+
+
+</body>
+</html>
