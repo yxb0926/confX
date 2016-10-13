@@ -5,6 +5,7 @@ import com.nice.confX.model.ClientEvent;
 import com.nice.confX.model.ClientProperties;
 import com.nice.confX.service.manager.ClientService;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.digester.ObjectCreateRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -211,6 +212,43 @@ public class ClientServiceImpl implements ClientService{
     public List<Map<String, Object>> getTop10Program() {
         String sql = "select pname,count(client_ip) as cnt from client_list group by pname order by cnt desc limit 10";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public List getCollectClient() {
+        List list = new ArrayList();
+        String sql1 = "select count(distinct pname) as pcnt,count(client_ip) as ccnt from client_list";
+        List<Map<String, Object>> list1 = jdbcTemplate.queryForList(sql1);
+
+        List tmplist10 = new ArrayList();
+        tmplist10.add("工程数");
+        tmplist10.add(list1.get(0).get("pcnt"));
+        list.add(tmplist10);
+
+        List tmplist11 = new ArrayList();
+        tmplist11.add("客户端数");
+        tmplist11.add(list1.get(0).get("ccnt"));
+        list.add(tmplist11);
+
+        String gmt_modified_10m = getTimeByMinute(-10);
+        String sql2 = "SELECT count(1) as cnt FROM client_list WHERE event_code!=? OR gmt_modified<?";
+        List<Map<String, Object>> list2 = jdbcTemplate.queryForList(sql2, 1000, gmt_modified_10m);
+
+        List tmplist20 = new ArrayList();
+        tmplist20.add("异常数");
+        tmplist20.add(list2.get(0).get("cnt"));
+        list.add(tmplist20);
+
+        String sql3 = "SELECT count(1) as cnt FROM client_list WHERE isdel=?";
+        List<Map<String, Object>> list3 = jdbcTemplate.queryForList(sql3,1);
+
+        List tmplist30 = new ArrayList();
+        tmplist30.add("删除");
+        tmplist30.add(list3.get(0).get("cnt"));
+        list.add(tmplist30);
 
         return list;
     }

@@ -27,4 +27,6 @@ public interface ClientService {
 
     public List<Map<String, Object>> getTop10Program();
 
+    public List getCollectClient();
+
 }

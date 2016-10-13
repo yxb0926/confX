@@ -121,6 +121,9 @@ public class ManagerController {
         List errList = clientService.getErrClient();
         List allList = clientService.getAllClient();
         List<Map<String, Object>> top10progarm = clientService.getTop10Program();
+        List ccollect = clientService.getCollectClient();
+
+        System.out.println(ccollect);
 
         Map map = new HashMap();
         List top10list = new ArrayList();
@@ -137,6 +140,7 @@ public class ManagerController {
         modelAndView.addObject("errlist", errList);
         modelAndView.addObject("alllist", allList);
         modelAndView.addObject("top10p",  top10list);
+        modelAndView.addObject("collect", ccollect);
 
         return modelAndView;
     }
