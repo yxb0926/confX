@@ -1,6 +1,7 @@
 package com.nice.confX.controller;
 
 import com.nice.confX.service.manager.ClientService;
+import com.nice.confX.service.manager.ConfigService;
 import com.nice.confX.service.manager.DataSourceFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class ManagerController {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private ConfigService configService;
 
     @RequestMapping("/project/ngxconf")
     public ModelAndView ngxconf() {
@@ -114,16 +118,16 @@ public class ManagerController {
         return modelAndView;
     }
 
-    @RequestMapping("/project/clientdashboard")
+    @RequestMapping("/project/dashboard")
     public Object clientDashBoard(HttpServletRequest request){
-        ModelAndView modelAndView = new ModelAndView("manager/project/clientDashBoard");
+        ModelAndView modelAndView = new ModelAndView("manager/project/dashboard");
 
         List errList = clientService.getErrClient();
         List allList = clientService.getAllClient();
         List<Map<String, Object>> top10progarm = clientService.getTop10Program();
         List ccollect = clientService.getCollectClient();
-
-        System.out.println(ccollect);
+        List grouplist = configService.getGroupCnt();
+        List hostlist  = configService.getHostCnt();
 
         Map map = new HashMap();
         List top10list = new ArrayList();
@@ -141,6 +145,8 @@ public class ManagerController {
         modelAndView.addObject("alllist", allList);
         modelAndView.addObject("top10p",  top10list);
         modelAndView.addObject("collect", ccollect);
+        modelAndView.addObject("group",   grouplist);
+        modelAndView.addObject("hostx",   hostlist);
 
         return modelAndView;
     }

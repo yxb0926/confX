@@ -28,7 +28,7 @@ public class UserSecurityController {
         ModelAndView modelAndView = new ModelAndView();
         User sessionUser = (User) request.getSession().getAttribute("sessionUser");
         if ( sessionUser != null){
-            modelAndView.setViewName("redirect:program");
+            modelAndView.setViewName("redirect:dashboard");
         } else {
             modelAndView.setViewName("manager/project/login");
         }
@@ -48,7 +48,7 @@ public class UserSecurityController {
             request.getSession().setMaxInactiveInterval(60 * 60 * 24);  // 过期时间为1天
             request.getSession().setAttribute("sessionUser", result);
 
-            modelAndView.setViewName("redirect:program");
+            modelAndView.setViewName("redirect:dashboard");
 
         } else {
             //登陆失败

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,4 +36,5 @@ public interface MngService {
 
     Map getConf(String dataid, String pname, String type);
     Map getConf(String dataid, String pname, String groupid, String type);
+
 }

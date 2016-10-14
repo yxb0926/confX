@@ -3,12 +3,15 @@ package com.nice.confX.service.manager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.SQLWarningException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yxb on 16/7/29.
@@ -60,5 +63,50 @@ public class ConfigService {
         }
     }
 
+    public List getGroupCnt(){
+        List list1 = new ArrayList();
+        try {
+            String sql = "select count(group_id) as cnt,type from config_info group by type";
+            List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 
+            list1 = new ArrayList();
+            for(int i=0;i<list.size();i++){
+                List tmplist = new ArrayList();
+                tmplist.add(list.get(i).get("type"));
+                tmplist.add(list.get(i).get("cnt"));
+                list1.add(tmplist);
+            }
+
+        }catch (SQLWarningException e){
+            e.printStackTrace();
+        }
+        return list1;
+    }
+
+    public List getHostCnt(){
+        List list = new ArrayList();
+        try{
+            String sql_mysql = "select count(distinct ip) AS cnt from groupname_info_mysql";
+            String sql_redis = "select count(distinct ip) AS cnt from groupname_info_redis";
+
+            List<Map<String, Object>> list_mysql = jdbcTemplate.queryForList(sql_mysql);
+            List<Map<String, Object>> list_redis = jdbcTemplate.queryForList(sql_redis);
+
+            List tmplistmysql = new ArrayList();
+            List tmplistredis = new ArrayList();
+
+            tmplistmysql.add("mysql");
+            tmplistmysql.add(list_mysql.get(0).get("cnt"));
+
+            tmplistredis.add("redis");
+            tmplistredis.add(list_redis.get(0).get("cnt"));
+
+            list.add(tmplistmysql);
+            list.add(tmplistredis);
+
+        }catch (SQLWarningException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
