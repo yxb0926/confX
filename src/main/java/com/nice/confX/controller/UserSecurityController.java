@@ -65,8 +65,6 @@ public class UserSecurityController {
         ModelAndView modelAndView = new ModelAndView("manager/project/login");
         request.getSession().invalidate();
 
-        System.out.println("logout");
-
         return modelAndView;
     }
 
