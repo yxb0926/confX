@@ -61,8 +61,11 @@ public class UserSecurityController {
     }
 
     @RequestMapping(value = "/project/logout", method = RequestMethod.GET)
-    public ModelAndView logout(){
-        ModelAndView modelAndView = new ModelAndView("manager/project/logout");
+    public ModelAndView logout(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView("manager/project/login");
+        request.getSession().invalidate();
+
+        System.out.println("logout");
 
         return modelAndView;
     }

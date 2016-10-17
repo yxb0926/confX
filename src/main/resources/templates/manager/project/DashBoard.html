@@ -10,15 +10,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/bootstrap-3.3.6-dist/css/templatemo_main.css}"/>
 
     <!-- js files -->
     <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/templatemo_script.js}"></script>
     <title>confx 配置管理系统</title>
 </head>
 
 <body>
-<div class="container">
+<div th:include="layout :: header" class="navbar navbar-inverse"></div>
+<div th:include="layout :: layout" class="template-page-wrapper"></div>
 
+<div class="container">
 
     <div class="row">
         <br/>
