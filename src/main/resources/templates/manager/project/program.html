@@ -35,8 +35,6 @@
                 </div><!-- /.col-lg-6 -->
             </div><!-- /.row -->
 
-            <hr/>
-
             <table class="table table-bordered">
                 <tr>
                     <th>工程名称</th>
@@ -52,7 +50,7 @@
                     </span>
                 </tr>
                 <tr th:each="key : ${pList}">
-                    <td th:title="${key.pdesc}"><a th:text="${key.pname}"
+                    <td  th:title="${key.pdesc}"><a th:text="${key.pname}"
                            th:href="@{index(pname=${key.pname}, type='ALL')}"></a>
                     </td>
                     <td th:text="${key.prange}"></td>
