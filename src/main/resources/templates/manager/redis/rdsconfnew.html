@@ -7,6 +7,7 @@
     <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/bootstrap-3.3.6-dist/css/templatemo_main.css}"/>
 
     <!-- js files -->
     <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
@@ -14,9 +15,11 @@
 </head>
 
 <body>
-    <div class="container">
+<div th:include="layout :: header" class="navbar navbar-inverse"></div>
+<div th:include="layout :: layout" class="template-page-wrapper"></div>
+
+<div class="templatemo-content">
         <div class="row">
-            <hr/>
             <p class="text-center" th:text="${errmsg}" style="font-size:17px;color:red;font-weight:bold;">errmsg</p>
 
             <form class="form-horizontal" th:action="@{confadd}" method="post" autocomplete="off">

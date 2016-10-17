@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/bootstrap-3.3.6-dist/css/templatemo_main.css}"/>
 
     <!-- js files -->
     <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
@@ -13,9 +14,10 @@
 </head>
 
 <body>
-<div class="container">
-    <hr/>
-    <div>
+<div th:include="layout :: header" class="navbar navbar-inverse"></div>
+<div th:include="layout :: layout" class="template-page-wrapper"></div>
+
+<div class="templatemo-content">
         <form class="form-horizontal" action="copyconf" method="post" autocomplete="off">
 
             <span class="label label-success">From</span>
@@ -63,14 +65,13 @@
 
             <hr/>
             <div class="form-group">
-                <div class="col-sm-offset-5 col-sm-10">
+                <div class="col-sm-offset-3 col-sm-10">
                     <button type="submit" class="btn btn-success">确定复制</button>
                 </div>
             </div>
 
         </form>
     </div>
-</div>
 
 </body>
 </html>
