@@ -21,44 +21,39 @@
     <div class="templatemo-content">
         <div class="row">
             <div class="table-responsive">
-                <div class="row">
-                    <div class="col-lg-12" style="word-break:break-all;">
-                        <form class="form-inline" action="index" method="get" autocomplete="off">
-                            <div class="col-sm-3">
-                                <label class="form-label">工程名:</label>
-                                <input th:value="${pname}" type="text" class="form-control" name="pname" id="pname" placeholder="工程名" />
+                <div class="col-xs-12">
+                    <div class="col-xs-12 col-sm-12 widget-container-col">
+                        <form class="form-horizontal" action="index" method="get" autocomplete="off">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label class="form-label">工程名:</label>
+                                    <input th:value="${pname}" type="text" class="form-control" name="pname" id="pname" placeholder="工程名" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label">Ip:</label>
+                                    <input type="text" class="form-control" name="ip" id="ip" placeholder="ip" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">DBname:</label>
+                                    <input type="text" class="form-control" name="dbname" id="dbname" placeholder="dbname" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Type:</label>
+                                    <select class="form-control" name="type" id="type">
+                                        <option>ALL</option>
+                                        <option>MySQL</option>
+                                        <option>Redis</option>
+                                    </select>
+                                </div>
+
+                                <button class="btn btn-default" type="submit" style="position: absolute;top: 25px;"> Search </button>
                             </div>
 
-                            <div class="col-sm-3">
-                                <label class="form-label">Ip:</label>
-                                <input type="text" class="form-control" name="ip" id="ip" placeholder="ip" />
-                            </div>
-
-                            <div class="col-sm-3">
-                                <label class="form-label">DBname:</label>
-                                <input type="text" class="form-control" name="dbname" id="dbname" placeholder="dbname" />
-                            </div>
-
-                            <div class="col-sm-2">
-                                <label class="form-label">Type:</label>
-                                <select class="form-control" name="type" id="type">
-                                    <option>ALL</option>
-                                    <option>MySQL</option>
-                                    <option>Redis</option>
-                                </select>
-                            </div>
-
-                            <button class="btn btn-default" type="submit"> Search </button>
                         </form>
                     </div><!-- /.col-lg-6 -->
                 </div><!-- /.row -->
 
-
-                <hr/>
-                <span>
-                    <a type="button" class="btn btn-success" href="copyconf" target="_blank">拷贝配置</a>
-                </span>
-                <hr/>
+                <span><br/></span>
                 <table class="table table-bordered">
                     <tr>
                         <th>工程名称</th>
@@ -85,12 +80,13 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-md-5 col-md-offset-5">
+            <div class="col-md-4 col-md-offset-4">
                 <span th:if="${role eq 'admin'}">
                     <a class="btn btn-primary" th:href="@{new(pname=${pname})}" role="button">新建项目</a>
                 </span>
             </div>
         </div>
+        <span><br/></span>
     </div>
 
     <div class="modal fade" id="myModal" tabindex="-1"
