@@ -187,8 +187,8 @@ public class ClientServiceImpl implements ClientService{
 
         String sql =
                 "UPDATE client_list " +
-                "SET isdel=?,gmt_modified=? " + "WHERE pname=? AND client_ip=?";
-        jdbcTemplate.update(sql, 1,gmt_modified, program, ip);
+                "SET isdel=?,gmt_modified=?,event_msg=? " + "WHERE pname=? AND client_ip=?";
+        jdbcTemplate.update(sql, 1,gmt_modified,"已删除", program, ip);
     }
 
     @Override

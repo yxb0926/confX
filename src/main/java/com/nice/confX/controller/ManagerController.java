@@ -108,13 +108,22 @@ public class ManagerController {
     }
 
     @RequestMapping(value = "/project/clientconf", method = RequestMethod.GET)
-    public Object clientInfo(String pname) {
+    public ModelAndView clientInfo(String pname) {
         ModelAndView modelAndView = new ModelAndView("manager/project/clientconf");
 
         List myList = new ArrayList();
         myList = clientService.getClientInfo(pname);
         modelAndView.addObject("clientinfo", myList);
         modelAndView.addObject("pname", pname);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/project/clientmng", method = RequestMethod.GET)
+    public ModelAndView clientMng(){
+        ModelAndView modelAndView = new ModelAndView("manager/project/clientmng");
+
+        List list = clientService.getAllClient();
+        modelAndView.addObject("clientinfo", list);
         return modelAndView;
     }
 

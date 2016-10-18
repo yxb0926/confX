@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/bootstrap-3.3.6-dist/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/bootstrap-3.3.6-dist/css/templatemo_main.css}"/>
+
+    <!-- js files -->
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/bootstrap-3.3.6-dist/js/templatemo_script.js}"></script>
+    <title>confx 配置管理系统 - Client 配置管理</title>
+</head>
+<body>
+<div th:include="layout :: header" class="navbar navbar-inverse"></div>
+<div th:include="layout :: layout" class="template-page-wrapper"></div>
+
+<div class="templatemo-content">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tr>
+                <th>工程名称</th>
+                <th>host</th>
+                <th>ip</th>
+                <th>port</th>
+                <th>code</th>
+                <th>msg</th>
+                <th>运行时间(S)</th>
+                <td>描述</td>
+                <th>最近上报时间</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="list:${clientinfo}">
+                <td th:text="${list.pname}"></td>
+                <td th:text="${list.hostname}"></td>
+                <td th:title="${list.hostname}" th:text="${list.client_ip}"></td>
+                <td th:text="${list.client_port}"></td>
+                <td th:text="${list.event_code}"></td>
+                <td th:text="${list.event_msg}"></td>
+                <td th:title="${list.client_launch_time}" th:text="${list.uptime}"></td>
+                <td th:text="${list.data}"></td>
+                <td th:text="${list.gmt_modified}"></td>
+                <td> <a href="javascript:void(0)" th:onclick="'javascript:clientdel(\''+${list.pname}+'\', \''+${list.client_ip}+'\');'">删除</a> </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+<script type="application/javascript" th:inline="javascript">
+    function clientdel(program, ip) {
+        var r=confirm("删除不能恢复,确认删除?")
+        if (r == true){
+            $.ajax({
+                url:"/manager/project/clientdel",
+                dataType:"json",
+                async:true,
+                data:{
+                    "groupname": program,
+                    "ip": ip
+                },
+                type:"POST",
+                beforeSend:function(){
+
+                },
+                success:function(req){
+                    console.log(req);
+                },
+                complete:function(){
+                    window.location.reload();
+                },
+                error:function () {
+                    alert("操作出错,请检查!");
+                }
+
+            })
+        }else {
+            //do nothing
+        }
+    }
+</script>
+
+</body>
+</html>
