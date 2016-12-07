@@ -165,7 +165,11 @@ public class ClientServiceImpl implements ClientService{
             map.put("status", 200);
             map.put("msg", "ok");
             map.put("heartbeat_interval", 10);
-            map.put("items", myList);
+            if(myList == null || myList.size() == 0) {
+                map.put("items", "");
+            }else {
+                map.put("items", myList);
+            }
 
             return map;
 
