@@ -122,7 +122,7 @@ public class ClientServiceImpl implements ClientService{
             String sql = "UPDATE client_list " +
                     "SET gmt_modified=?, client_port=?, hostname=?, uptime=?, client_launch_time=?," +
                     "event_msg=?, event_code=?, data=? " +
-                    "WHERE client_ip=?";
+                    "WHERE client_ip=? AND isdel=0";
             int rows = jdbcTemplate.update(sql,
                     gmt_modified,
                     port, hostname,
@@ -153,7 +153,7 @@ public class ClientServiceImpl implements ClientService{
                     "pp.pcmd AS cmd, pp.psysuser AS sysuser, pp.pcodetype AS codetype " +
                     "FROM project_info p,client_list c, project_project pp " +
                     "WHERE c.pname=p.pname AND c.client_ip=? " +
-                    "AND pp.pname=c.pname  AND pp.pstatus=?";
+                    "AND pp.pname=c.pname  AND pp.pstatus=? AND c.isdel=0";
             /**
             String sql = "SELECT pcode AS item, ptype AS type " +
                     " FROM client_list " +
