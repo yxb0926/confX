@@ -167,7 +167,7 @@ public class ClientServiceImpl implements ClientService{
             map.put("heartbeat_interval", 10);
             if(myList == null || myList.size() == 0) {
                 map.put("items", "");
-            }else {
+            } else {
                 map.put("items", myList);
             }
 
